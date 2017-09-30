@@ -37,7 +37,7 @@
 function [EEG_tmp, full_selected_channels] = happe_bandpass_cleanline_rejchan (EEG_orig,chan_IDs, curr_srate, src_linenoise)
 
 %1 Hz highpass, if srate> 250, bandpass 1-249 Hz (ICA doesn't reliably work well here with frequencies above 250hz)
-if curr_srate <= 250
+if curr_srate <500
     EEG_tmp = pop_eegfiltnew(EEG_orig, [],1,[],1,[],0);
 else
     EEG_tmp = pop_eegfiltnew(EEG_orig, 1,249,[],0,[],0);

@@ -40,7 +40,7 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function EEG = beapp2eeglab(file_proc_info,eeg_curr_rec_period,curr_rec_period,event_data)
+function EEG = beapp2eeglab(file_proc_info,eeg_curr_rec_period,curr_rec_period,event_data,beapp_stage)
 % initialize EEGLab structure using EEGLab script
 EEG=eeg_emptyset;
 EEG.data = eeg_curr_rec_period;

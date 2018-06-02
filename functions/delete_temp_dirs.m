@@ -30,16 +30,22 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function delete_temp_dirs (mod_names,mod_on,mod_export_on,mod_xls_on,mod_dir,mod_input_type,mod_output_type)
 
-if (mod_on ~= mod_export_on) && isdir(mod_dir{1})
-    if ~mod_xls_on
-        warning('off', 'MATLAB:RMDIR:RemovedFromPath')
-        rmdir(mod_dir{1},'s')
-        disp(['Removed temporary directory for module: ' mod_names{1}])
-    else 
-        cd(mod_dir{1})
-        delete *.mat
-        disp(['Removed .mat outputs for module: ' mod_names{1} ', left .xls outputs'])
+if (mod_on)
+    if (~mod_export_on) && isdir(mod_dir{1})
+        try
+            if ~mod_xls_on
+                warning('off', 'MATLAB:RMDIR:RemovedFromPath')
+                rmdir(mod_dir{1},'s')
+                disp(['Removed temporary directory for module: ' mod_names{1}])
+            else
+                cd(mod_dir{1})
+                delete *.mat
+                disp(['Removed .mat outputs for module: ' mod_names{1} ', left .xls outputs'])
+            end
+            warning('on', 'MATLAB:RMDIR:RemovedFromPath')
+        catch
+            warning('Could not delete one or more BEAPP output directories');
+        end
     end
-     warning('on', 'MATLAB:RMDIR:RemovedFromPath')   
 end
     

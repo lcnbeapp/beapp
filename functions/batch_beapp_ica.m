@@ -42,7 +42,7 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function batch_beapp_ica(grp_proc_info_in)
+function grp_proc_info_in = batch_beapp_ica(grp_proc_info_in)
 
 src_dir = find_input_dir('ica',grp_proc_info_in.beapp_toggle_mods);
 
@@ -73,9 +73,12 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         tic;
+        
+        ica_chan_labels_in_eeglab_format =  cellfun(@(x) strrep(cellstr(strcat('E', num2str(x(:)))),' ','')',grp_proc_info_in.beapp_ica_additional_chans_lbls,'UniformOutput',0);
+       
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
-            grp_proc_info_in.beapp_ica_additional_chans_lbls,grp_proc_info_in.name_10_20_elecs);
+            ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude);
         
         for curr_rec_period = 1:size(eeg,2)
             
@@ -154,7 +157,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             ICA_report_table.Number_Channels_UserSelected(curr_file) = {length(chan_IDs)};
             ICA_report_table.Number_Good_Channels_Selected_Per_Rec_Period(curr_file) = {ica_report_struct.good_chans_per_rec_period};
             ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) = {ica_report_struct.num_interp_per_rec_period};
-            if ~grp_proc_info_in.beapp_ica_type ==3
+            if ~(grp_proc_info_in.beapp_ica_type ==3)
                 ICA_report_table.Percent_ICs_Rejected_Per_Rec_Period(curr_file) = {ica_report_struct.percent_ICs_rej_per_rec_period};
                 ICA_report_table.Percent_Variance_Kept_of_Data_Input_to_MARA_Per_Rec_Period(curr_file) = {ica_report_struct.perc_var_post_wave_per_rec_period};
                 ICA_report_table.Mean_Artifact_Probability_of_Kept_ICs_Per_Rec_Period(curr_file) = {ica_report_struct.mn_art_prob_per_rec_period};
@@ -165,7 +168,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         file_proc_info.ica_stats.Number_Good_Channels_Selected_Per_Rec_Period = {ica_report_struct.good_chans_per_rec_period};
         
-        if ~grp_proc_info_in.beapp_ica_type ==3
+        if ~(grp_proc_info_in.beapp_ica_type ==3)
             file_proc_info.ica_stats.Percent_ICs_Rejected_Per_Rec_Period = {ica_report_struct.percent_ICs_rej_per_rec_period};
             file_proc_info.ica_stats.Percent_Variance_Kept_of_Data_Input_to_MARA_Per_Rec_Period = {ica_report_struct.perc_var_post_wave_per_rec_period};
             file_proc_info.ica_stats.Mean_Artifact_Probability_of_Kept_ICs_Per_Rec_Period = {ica_report_struct.mn_art_prob_per_rec_period};

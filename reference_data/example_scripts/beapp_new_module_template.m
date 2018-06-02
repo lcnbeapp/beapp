@@ -33,51 +33,35 @@
 
 function batch_beapp_new_module (grp_proc_info_in)
 
-% get the source directory for module using the new module string
 src_dir = find_input_dir('new_module',grp_proc_info_in.beapp_toggle_mods);
 
-% loop through files 
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
   
-    % go to the source directory
     cd(src_dir{1});
     
-    % load the file adn start the file timer if the file exists
       if exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
          tic;
          
          % load eeg if module takes continuous input
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg_w','file_proc_info');
-        
 
+        
         %% // YOUR CODE HERE//
         
-        % apply your module process
-        %
-        % Note: you may also choose to use beapp_init_generic_analysis_report
-        % and beapp_add_row_generic_analysis_report to generate BEAPP
-        % format report values in the module (see batch_beapp_psd for an
-        % example)
+   
         
-        % eeg_out = your_function_applied(eeg_w);
+        
+        
         
         
         %% save and update file history
+        cd(grp_proc_info_in.beapp_toggle_mods{'new_module','Module_Dir'}{1});
         
-        % if any of the cells in eeg_out have data
-        if ~all(cellfun(@isempty,eeg_out))
-            
-            % stop the time tracking, cd to the out directory, and save file
-            % history
+        if ~all(cellfun(@isempty,eeg_w))
             file_proc_info = beapp_prepare_to_save_file('new_module',file_proc_info, grp_proc_info_in, src_dir{1});
-            
-            % save the variables you want to keep
-            save(file_proc_info.beapp_fname{1},'eeg_out','file_proc_info');
+            save(file_proc_info.beapp_fname{1},'eeg_w','file_proc_info');
         end
         
         clearvars -except grp_proc_info_in src_dir curr_file
       end
 end
-
-% Note: you may choose to use mk_generic_analysis report (or a wrapper function, as with mk_psd_report)
-% to generate BEAPP format report tables and outputs

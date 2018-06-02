@@ -42,56 +42,102 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function mk_psd_report(grp_proc_info_in,report_info,report_values,report_values_condition_labels, all_obsv_sizes)
 
+curr_tabname = 1;
+
 if grp_proc_info_in.beapp_xlsout_av_on
     if grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{1}='mean_AbsPSD';
+        tabnames{curr_tabname}='mean_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
 
     if grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{2}='mean_NormPSD';
+        tabnames{curr_tabname}='mean_NormAbsPwr';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{3}='mean_Log_AbsPSD';
+        tabnames{curr_tabname}='mean_Log_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{4}='mean_Log_NormPSD';
+      tabnames{curr_tabname}='mean_Log_NormAbsPwr';
+      curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{5}='mean_Log10_AbsPSD';
+        tabnames{curr_tabname}='mean_Log10_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{6}='mean_Log10_NormPSD';
+      tabnames{curr_tabname}='mean_Log10_NormAbsPwr';
+      curr_tabname = curr_tabname +1;
     end
 end
 
 
 if grp_proc_info_in.beapp_xlsout_sd_on
     if grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{7}='sd_AbsPSD';
+        tabnames{curr_tabname}='sd_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{8}='sd_NormPSD';
+        tabnames{curr_tabname}='sd_NormAbsPwr';
+        curr_tabname = curr_tabname +1;
     end
 
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{9}='sd_Log_AbsPSD';
+        tabnames{curr_tabname}='sd_Log_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{10}='sd_Log_NormPSD';
+        tabnames{curr_tabname}='sd_Log_NormAbsPwr';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_raw_on
-        tabnames{11}='sd_Log10_AbsPSD';
+        tabnames{curr_tabname}='sd_Log10_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{12}='sd_Log10_NormPSD';
+        tabnames{curr_tabname}='sd_Log10_NormAbsPwr';
+        curr_tabname = curr_tabname +1;
+    end
+end
+
+if grp_proc_info_in.beapp_xlsout_med_on
+    if grp_proc_info_in.beapp_xlsout_raw_on
+        tabnames{curr_tabname}='med_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
+    end
+
+    if grp_proc_info_in.beapp_xlsout_norm_on
+        tabnames{curr_tabname}='med_NormAbsPwr';
+        curr_tabname = curr_tabname +1;
+    end
+    
+    if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_raw_on
+        tabnames{curr_tabname}='med_Log_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
+    end
+    
+    if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
+      tabnames{curr_tabname}='med_Log_NormAbsPwr';
+      curr_tabname = curr_tabname +1;
+    end
+    
+    if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_raw_on
+        tabnames{curr_tabname}='med_Log10_Pwr_Per_Hz';
+        curr_tabname = curr_tabname +1;
+    end
+    
+    if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
+      tabnames{curr_tabname}='med_Log10_NormAbsPwr';
+      curr_tabname = curr_tabname +1;
     end
 end
 

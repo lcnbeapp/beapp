@@ -1,7 +1,7 @@
 %% beapp_rerun_setup 
 % 
 % prepare to run re-run (format module off), collect list of file names to
-% run, unique net information in dataset (srate, net type etc), load nets
+% run, unique net information in dataset (net type etc), load nets
 % Inputs and outputs all correspond to grp_proc_info structure:
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
@@ -32,8 +32,8 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function [beapp_fname_all,unique_srates,src_unique_net_vstructs,unique_net_types,src_unique_net_ref_rows,src_net_10_20_elecs,largest_nchan] =...
-    beapp_rerun_set_up(beapp_toggle_mods, first_module_on,rerun_fselect_table_str,beapp_use_rerun_table,unique_srates,unique_net_types,...
+function [beapp_fname_all,src_unique_net_vstructs,unique_net_types,src_unique_net_ref_rows,src_net_10_20_elecs,largest_nchan] =...
+    beapp_rerun_set_up(beapp_toggle_mods, first_module_on,rerun_fselect_table_str,beapp_use_rerun_table,unique_net_types,...
     ref_net_library_options,ref_net_library_dir)
 
 % find first module on in this run
@@ -53,9 +53,8 @@ else
         load(rerun_fselect_table_str);
         [beapp_fname_all,indexes_in_table] = intersect(rerun_fselect_table.FileName,src_dir_flist);
         beapp_fname_all= beapp_fname_all';
-        if isempty(unique_srates) || isempty(unique_net_types{1})
-            if ismember('SamplingRate', rerun_fselect_table.Properties.VariableNames) &&  ismember('NetType', rerun_fselect_table.Properties.VariableNames);
-                unique_srates = unique(rerun_fselect_table.SamplingRate(indexes_in_table));
+        if isempty(unique_net_types{1})
+            if  ismember('NetType', rerun_fselect_table.Properties.VariableNames);
                 unique_net_types = unique(rerun_fselect_table.NetType(indexes_in_table));
             end
         end
@@ -63,14 +62,12 @@ else
         beapp_fname_all=src_dir_flist;
     end
     
-    % get srates and net types if not in user inputs or rerun table
-    if isempty(unique_srates) || isempty(unique_net_types{1})
+    % get net types if not in user inputs or rerun table
+    if isempty(unique_net_types{1})
         for curr_file = 1:length(beapp_fname_all)
             load(beapp_fname_all{curr_file},'file_proc_info');
-            src_srate_all(curr_file)=file_proc_info.src_srate;
             src_net_type_all(curr_file)= file_proc_info.net_typ;
         end
-        unique_srates = unique(src_srate_all);
         unique_net_types= unique(src_net_type_all);
     end
     

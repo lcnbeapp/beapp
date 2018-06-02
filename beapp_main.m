@@ -1,3 +1,5 @@
+function beapp_main(grp_proc_info_main)
+
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
@@ -93,74 +95,77 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 tic;
 
+% set defaults and path, get user inputs if using scripts
+if isequal(grp_proc_info_main, 'use_script')
+    grp_proc_info_main = beapp_configure_settings;
+end
+
 % check inputs, set output directories
-grp_proc_info = prepare_to_run_main;
+grp_proc_info_main = prepare_to_run_main (grp_proc_info_main);
 
 % run pipeline modules
-if grp_proc_info.beapp_toggle_mods{'format','Module_On'}
-    batch_beapp_format;
+if grp_proc_info_main.beapp_toggle_mods{'format','Module_On'}
+    grp_proc_info_main = batch_beapp_format(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'prepp','Module_On'}
-    batch_beapp_prepp(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'prepp','Module_On'}
+    grp_proc_info_main = batch_beapp_prepp(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'filt','Module_On'}
-    grp_proc_info = batch_beapp_filt(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'filt','Module_On'}
+    grp_proc_info_main = batch_beapp_filt(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'rsamp','Module_On'}
-    batch_beapp_rsamp(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'rsamp','Module_On'}
+    grp_proc_info_main = batch_beapp_rsamp(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'ica','Module_On'}
-    batch_beapp_ica(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'ica','Module_On'}
+    grp_proc_info_main = batch_beapp_ica(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'rereference','Module_On'}
-    batch_beapp_rereference(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'rereference','Module_On'}
+    grp_proc_info_main = batch_beapp_rereference(grp_proc_info_main);
 end
 
 
-if grp_proc_info.beapp_toggle_mods{'detrend','Module_On'}
-    batch_beapp_detrend(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'detrend','Module_On'}
+    grp_proc_info_main = batch_beapp_detrend(grp_proc_info_main);
 end
 
 %create segments/analysis windows from the data according to data type
-if grp_proc_info.beapp_toggle_mods{'segment','Module_On'}
-    batch_beapp_segment;
+if grp_proc_info_main.beapp_toggle_mods{'segment','Module_On'}
+    grp_proc_info_main = batch_beapp_segment(grp_proc_info_main);
 end
 
 %%  output modules
-if grp_proc_info.beapp_toggle_mods{'psd','Module_On'}
-    batch_beapp_psd(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'psd','Module_On'}
+    grp_proc_info_main =batch_beapp_psd(grp_proc_info_main);
 end
 
-if grp_proc_info.beapp_toggle_mods{'itpc','Module_On'}
-    batch_beapp_itpc(grp_proc_info);
+if grp_proc_info_main.beapp_toggle_mods{'itpc','Module_On'}
+    grp_proc_info_main = batch_beapp_itpc(grp_proc_info_main);
 end
 
 diary off;
-cd(grp_proc_info.src_dir{1});
+cd(grp_proc_info_main.src_dir{1});
 
 % deletes temporary directories
-rowfun(@delete_temp_dirs,grp_proc_info.beapp_toggle_mods,'NumOutputs',0);
+rowfun(@delete_temp_dirs,grp_proc_info_main.beapp_toggle_mods,'NumOutputs',0);
 
 %end the timer
-grp_proc_info.proc_etime=toc;
+grp_proc_info_main.proc_etime=toc;
 
 %runtime report is written into out directory
-mk_runtime_report(grp_proc_info);
-
-%removes the pathnames that point to the BEAPP source code
-%rmv_beapp_path;
+mk_runtime_report(grp_proc_info_main);
 
 %return to the source code directory
-if isdir(grp_proc_info.beapp_root_dir{1})
+if isdir(grp_proc_info_main.beapp_root_dir{1})
     disp('Processing completed returning to the BEAPP source code directory');
-    cd(grp_proc_info.beapp_root_dir{1});
+    cd(grp_proc_info_main.beapp_root_dir{1});
 else
     disp('Processing completed');
 end
 
 clearvars;
+end

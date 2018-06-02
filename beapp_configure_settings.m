@@ -31,8 +31,8 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function grp_proc_info = beapp_configure_settings
-set_beapp_def;
-set_beapp_path;
+grp_proc_info = set_beapp_def;
+grp_proc_info = set_beapp_path (grp_proc_info);
 beapp_set_input_file_locations;
 
 % get basic user inputs from default or user specified location
@@ -54,15 +54,10 @@ if grp_proc_info.beapp_advinputs_on
 end
 
 % get mat file user inputs from default or user specified location
-if ~strcmp(grp_proc_info.beapp_alt_mat_file_info_table_location{1},'')
-    grp_proc_info.mat_file_info_table = grp_proc_info.beapp_alt_mat_file_info_table_location{1};
+if ~strcmp(grp_proc_info.beapp_alt_beapp_file_info_table_location{1},'')
+    grp_proc_info.beapp_file_info_table = grp_proc_info.beapp_alt_beapp_file_info_table_location{1};
 end
-    
-% get mat file user inputs from default or user specified location
-if ~strcmp(grp_proc_info.beapp_alt_mff_file_info_table_location{1},'')
-    grp_proc_info.mff_file_info_table = grp_proc_info.beapp_alt_mff_file_info_table_location{1};
-end 
- 
+     
 % get rerun file sub-selection user from default or user specified location
 if ~strcmp (grp_proc_info.beapp_alt_rerun_file_info_table_location{1},'')
     grp_proc_info.rerun_file_info_table = grp_proc_info.beapp_alt_rerun_file_info_table_location{1};

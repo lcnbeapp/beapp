@@ -3,7 +3,7 @@
 % Converts .mff files (continuous or pre-segmented) to BEAPP format,
 % including event tags if applicable. 
 % Takes BEAPP grp_proc_info structure and, if files have different line
-% noise frequencies or event tag offsets, an mff_file_info_table. 
+% noise frequencies or event tag offsets,  beapp_file_info_table. 
 %
 % Many of the functions used to read in MFFs below are adapted from the EGI
 % API written by Colin Davey for FieldTrip in 2006-2014. 
@@ -58,7 +58,7 @@ addpath(ref_dir);
 [grp_proc_info_in.src_fname_all,grp_proc_info_in.src_linenoise_all,...
     grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all] = ...
     beapp_load_nonmat_flist_and_evt_table(grp_proc_info_in.src_dir,'.mff',...
-    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.mff_file_info_table);
+    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table);
 
 % load nets the user has input, for speed
 if ~isempty(grp_proc_info_in.src_unique_nets{1})
@@ -67,6 +67,19 @@ if ~isempty(grp_proc_info_in.src_unique_nets{1})
     add_nets_to_library(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,grp_proc_info_in.ref_eeglab_loc_dir,grp_proc_info_in.name_10_20_elecs);
     [grp_proc_info_in.src_unique_net_vstructs,grp_proc_info_in.src_unique_net_ref_rows, grp_proc_info_in.src_net_10_20_elecs,grp_proc_info_in.largest_nchan] = load_nets_in_dataset(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options, grp_proc_info_in.ref_net_library_dir);
     cd(grp_proc_info_in.src_dir{1})
+end
+
+% if user wants to ignore specific channels, store which channels for which
+% nets (otherwise get all net information from beapp_file_info_table)
+if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
+    if ~(isequal(length(grp_proc_info_in.src_unique_nets),length(grp_proc_info_in.beapp_indx_chans_to_exclude))&& ~isempty(grp_proc_info_in.src_unique_nets))
+        if isempty(grp_proc_info_in.src_unique_nets)
+            error ('User has asked to exclude channels but not included net information in grp_proc_info.src_unique_nets');
+        elseif ~isequal(length(grp_proc_info_in.src_unique_nets),length(grp_proc_info_in.beapp_indx_chans_to_exclude))
+            error ('User has asked to exclude channels but number of nets in grp_proc_info.src_unique_nets does not \n%s',...
+                'correspond to number of nets expected from grp_proc_info.beapp_indx_chans_to_exclude');
+        end
+    end
 end
 
 %% extract events and eeg data for each file
@@ -118,11 +131,20 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
         file_proc_info= beapp_read_mff_segment_info(full_filepath,file_proc_info,time_units_exp);   
         
         %% initialize file channel related variables 
+        
+        beapp_indx_init = 1:file_proc_info.src_nchan;
+        if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
+              uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
+              chans_to_exclude = grp_proc_info_in.beapp_indx_chans_to_exclude{uniq_net_ind};
+              beapp_indx_init  = setdiff(beapp_indx_init,chans_to_exclude);
+        end
+        
         file_proc_info.beapp_indx= cell(file_proc_info.src_num_epochs,1);
-        file_proc_info.beapp_indx(:) = {[1:file_proc_info.src_nchan]};
+        file_proc_info.beapp_indx(:) = {[beapp_indx_init]};
         file_proc_info.beapp_bad_chans= cell(file_proc_info.src_num_epochs,1);
         file_proc_info.beapp_bad_chans(:) = {[]};
-        file_proc_info.beapp_nchans_used=file_proc_info.src_nchan*ones(1,file_proc_info.src_num_epochs);
+        file_proc_info.beapp_nchans_used=length(beapp_indx_init)*ones(1,file_proc_info.src_num_epochs);
+        clear beapp_indx_init
     end
     
     %% read in mff events: read in all tracks, sorts by sample number, and split by recording period
@@ -145,6 +167,9 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     total_samples_in_file=sum(file_proc_info.src_epoch_nsamps);
     total_samples_in_file=total_samples_in_file(1);
     eeg=beapp_read_mff_eeg_data(1,total_samples_in_file,500000,tmp_signal_info,file_proc_info);
+    if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
+        eeg = cellfun(@(x) exclude_data_for_chans(chans_to_exclude,x),eeg,'UniformOutput',0);
+    end
     
     %% format and save
     
@@ -190,5 +215,10 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     
     clearvars -except grp_proc_info_in curr_file grp_proc_info_in.src_offsets_in_ms_all ref_dir
 end
-grp_proc_info_in.src_unique_srates = unique(grp_proc_info_in.src_srate_all);
+
 clear grp_proc_info_in.src_srate_all file_proc_info
+end
+
+function eeg_curr_rec_period = exclude_data_for_chans(chans_to_exclude,eeg_curr_rec_period)
+    eeg_curr_rec_period(chans_to_exclude ,:) = deal(NaN);  
+end

@@ -2,7 +2,7 @@
 % 
 % Converts .mat files exported from various file types to BEAPP format. 
 % Takes BEAPP grp_proc_info structure and requires corresponding 
-% mat_file_info_table (see Running BEAPP With Different Source File Formats
+% beapp_file_info_table (see Running BEAPP With Different Source File Formats
 % in the user guide). 
 % 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -36,37 +36,52 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function grp_proc_info_in=batch_matexport2beapp(grp_proc_info_in)
 
-% load group information for files
-load(grp_proc_info_in.mat_file_info_table)
 cd(grp_proc_info_in.src_dir{1});
 mat_files_in_src_dir = dir('*.mat');
 mat_files_in_src_dir = {mat_files_in_src_dir.name};
 
+% load group information for files
+load(grp_proc_info_in.beapp_file_info_table)
+
 %% store information for files listed in both the user input table and the source directory 
-[src_fname_all,indexes_in_table] = intersect(mat_file_info_table.FileName,mat_files_in_src_dir,'stable');
+[src_fname_all,indexes_in_table] = intersect(beapp_file_info_table.FileName,mat_files_in_src_dir,'stable');
 
 if isempty(src_fname_all)
-    error (['BEAPP: No data listed in mat_file_info_table found in source directory' grp_proc_info_in.src_dir{1}]);
+    error (['BEAPP: No data listed in beapp_file_info_table found in source directory' grp_proc_info_in.src_dir{1}]);
 else 
     grp_proc_info_in.src_fname_all = src_fname_all';
     grp_proc_info_in.beapp_fname_all = grp_proc_info_in.src_fname_all;
 end
 
+% if user wants to ignore specific channels, store which channels for which
+% nets (otherwise get all net information from beapp_file_info_table)
+if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
+    if ~isempty(grp_proc_info_in.src_unique_nets) && isequal(length(grp_proc_info_in.src_unique_nets),length(grp_proc_info_in.beapp_indx_chans_to_exclude))
+        user_unique_nets = grp_proc_info_in.src_unique_nets;
+    else 
+        if isempty(grp_proc_info_in.src_unique_nets)
+            error ('User has asked to exclude channels but not included net information in grp_proc_info.src_unique_nets');
+        elseif ~isequal(length(grp_proc_info_in.src_unique_nets),length(grp_proc_info_in.beapp_indx_chans_to_exclude))
+            error ('User has asked to exclude channels but number of nets in grp_proc_info.src_unique_nets does not \n%s',...
+                'correspond to number of nets expected from grp_proc_info.beapp_indx_chans_to_exclude');
+        end
+    end
+end
+
 % store group net types and sampling rates (from table)
-grp_proc_info_in.src_net_typ_all = mat_file_info_table.NetType(indexes_in_table);
-grp_proc_info_in.src_srate_all = mat_file_info_table.SamplingRate(indexes_in_table);
-grp_proc_info_in.src_unique_srates = unique(grp_proc_info_in.src_srate_all);
+grp_proc_info_in.src_net_typ_all = beapp_file_info_table.NetType(indexes_in_table);
+grp_proc_info_in.src_srate_all = beapp_file_info_table.SamplingRate(indexes_in_table);
 grp_proc_info_in.src_unique_nets = unique(grp_proc_info_in.src_net_typ_all);
 
 % check if user has given file-specific line noise specifications
 if ~isnumeric(grp_proc_info_in.src_linenoise)
     if strcmp(grp_proc_info_in.src_linenoise,'input_table')
-       grp_proc_info_in.src_linenoise_all = mat_file_info_table.Line_Noise_Freq(indexes_in_table);  
+       grp_proc_info_in.src_linenoise_all = beapp_file_info_table.Line_Noise_Freq(indexes_in_table);  
     end
 else
      grp_proc_info_in.src_linenoise_all = grp_proc_info_in.src_linenoise*ones(length(indexes_in_table));
 end
-clear tmp_flist indexes_in_table mat_file_info_table
+clear tmp_flist indexes_in_table beapp_file_info_table
 
 % add new nets to library if necessary, load nets being used in dataset
 add_nets_to_library(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,grp_proc_info_in.ref_eeglab_loc_dir,grp_proc_info_in.name_10_20_elecs);
@@ -115,6 +130,17 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
         file_proc_info.net_vstruct = grp_proc_info_in.src_unique_net_vstructs{uniq_net_ind};
         file_proc_info.net_10_20_elecs = grp_proc_info_in.src_net_10_20_elecs{uniq_net_ind};
         file_proc_info.net_ref_elec_rnum = grp_proc_info_in.src_unique_net_ref_rows(uniq_net_ind);
+        if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
+
+            uniq_net_ind_user_inputs = find(strcmp(user_unique_nets, file_proc_info.net_typ{1}));
+            if isempty(uniq_net_ind_user_inputs)
+                error(['User has asked to exclude channels but not included net information for net ' file_proc_info.net_typ{1} ' in grp_proc_info.src_unique_nets']);
+            else
+                file_proc_info.beapp_indx = {setdiff(file_proc_info.beapp_indx{1},grp_proc_info_in.beapp_indx_chans_to_exclude{uniq_net_ind_user_inputs})};
+                eeg{1}(grp_proc_info_in.beapp_indx_chans_to_exclude{uniq_net_ind_user_inputs} ,:) = deal(NaN);
+                file_proc_info.beapp_nchans_used=[length(file_proc_info.beapp_indx{1})];
+            end
+        end
 
         % initialize file history information
         file_proc_info.hist_run_tag=grp_proc_info_in.hist_run_tag; % updated in each run
@@ -128,7 +154,7 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
             save(file_proc_info.beapp_fname{1},'file_proc_info','eeg');
         end
     end
-    clearvars -except grp_proc_info_in curr_file 
+    clearvars -except grp_proc_info_in curr_file user_unique_nets
 end
 
 clear grp_proc_info_in.src_srate_all grp_proc_info_in.src_linenoise_all grp_proc_info_in.src_net_typ_all

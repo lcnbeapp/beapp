@@ -36,8 +36,9 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function evt_info =  beapp_exclude_trials_using_behavioral_codes (evt_info)
+function [evt_info,any_behav_vals] =  beapp_exclude_trials_using_behavioral_codes (evt_info)
 behav_value_current = 0;
+any_behav_vals = 0;
 
 for curr_epoch = 1:length(evt_info)
     
@@ -48,6 +49,7 @@ for curr_epoch = 1:length(evt_info)
         % of interest
         if ~isnan(evt_info{curr_epoch}(curr_tag).behav_code)
             behav_value_current = evt_info{curr_epoch}(curr_tag).behav_code;
+            any_behav_vals = 1;
         
             % if tag is evt tag AND there isn't already a behavioral code,
             % use the saved behavioral code for this tag

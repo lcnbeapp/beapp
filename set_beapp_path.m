@@ -96,6 +96,7 @@
 % of single-trial EEG dynamics. Journal of Neuroscience Methods 134:9-21
 %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function grp_proc_info = set_beapp_path (grp_proc_info)
 if isdir(grp_proc_info.beapp_root_dir{1})
 %     warning('EEGLAB packages have a number of functions with the same names as MATLAB builtins. This may cause errors');
 %     warning('off','MATLAB:dispatcher:nameConflict');
@@ -106,8 +107,15 @@ if isdir(grp_proc_info.beapp_root_dir{1})
     
     % add EEGLAB and plugin paths
     addpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,grp_proc_info.eeglab_ver{1}]);
-    beapp_eeglab_path_adding;
+    try
+        beapp_eeglab_path_adding;
+    catch
+        error('Please make sure Packages folder is in the beapp source directory');
+    end
     addpath(genpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,'CSDtoolbox']));
+    addpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,'REST_MATLAB_v1.1_20170828']);
+     addpath(genpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,'REST_MATLAB_v1.1_20170828',filesep,'function',filesep,'LeadField']));
+    
 %     rmpath(genpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep,'functions',filesep,'octavefunc']));
 %     rmpath(genpath([grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep,'plugins',filesep,'tmullen-cleanline-696a7181b7d0'...
 %         'external',filesep,'bcilab_partial',filesep,'dependencies',filesep,'PropertyGrid-2010-09-16-mod']));

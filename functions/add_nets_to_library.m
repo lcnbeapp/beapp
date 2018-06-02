@@ -46,13 +46,13 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function add_nets_to_library (net_list_to_check, net_library_options_location,net_library_location,eeglab_loc_dir,name_10_20_elecs)
+function net_out_list = add_nets_to_library (net_list_to_check, net_library_options_location,net_library_location,eeglab_loc_dir,name_10_20_elecs)
 
 % load table that contains current catalog of nets in the library on this computer
 load(net_library_options_location);
 
 % find nets present in this dataset that are not in the net library
-nets_not_in_library = setdiff(net_list_to_check, net_library_options.Net_Full_Name);
+nets_not_in_library = setdiff(net_list_to_check, net_library_options.Net_Full_Name,'stable');
 
 % add unrecgonized nets to library
 for curr_new_net = 1:length(nets_not_in_library)
@@ -64,9 +64,14 @@ for curr_new_net = 1:length(nets_not_in_library)
     disp(['Select the file with coordinates for: ' curr_net_string ' including reference']);
     [new_net_filename,new_net_pathname,~] = uigetfile('*.*',net_dialog_string);
     
-    % if file isn't in EEGLAB's loc directory, add it
-    if ~strcmp(new_net_pathname,eeglab_loc_dir) && ~strcmp(new_net_pathname(1:end-1),eeglab_loc_dir)
-        copyfile(strcat(new_net_pathname,new_net_filename),eeglab_loc_dir)
+    if ~(new_net_filename ==0)
+        % if file isn't in EEGLAB's loc directory, add it
+        if ~strcmp(new_net_pathname,eeglab_loc_dir) && ~strcmp(new_net_pathname(1:end-1),eeglab_loc_dir)
+            copyfile(strcat(new_net_pathname,new_net_filename),eeglab_loc_dir)
+        end
+    else
+        warndlg(['No file selected, sensor layout "' curr_net_string '" not added to library']); 
+        continue;
     end
     
     % use EEGLAB function to read coordinates for different filetypes
@@ -85,12 +90,35 @@ for curr_new_net = 1:length(nets_not_in_library)
     new_net_defaultans = {predicted_elec_num{1},predicted_elec_num{1},new_net_abb,curr_net_string};
     new_net_answer = inputdlg(new_net_prompt,'New Net Specifications',1,new_net_defaultans);
     
-    new_net_10_20s = add_10_20_equivalents_gui;
+    elec_10_20_list=[{{'style','text','string', ...
+        'Enter channel number for corresponding 10-20 electrodes'}},...
+        {{'style','uitable','data',[name_10_20_elecs',num2cell(NaN(length(name_10_20_elecs),1))],'tag','add_10_20_equiv_table', ...
+        'ColumnFormat',{'char','char'},'ColumnEditable',[false,true],'ColumnName',{'10-20 Electrode Name','Electrode Number in Net'}}}];
+    
+    button_10_20_geometry = {1 1};
+    button_10_20_ver_geometry = [1 6];
+    
+    % make figure for module advanced settings
+    [~, ~, strhalt_10_20s, resstruct_1020s, ~] = inputgui_mod_for_beapp('geometry',button_10_20_geometry ,...
+        'uilist', elec_10_20_list,'title','Add New Sensor Layouts','geomvert',button_10_20_ver_geometry,...
+        'tag','elec_10_20_add_fig');
+    
+    if ~strcmp (strhalt_10_20s,'')
+        
+        if ~all(cellfun(@isempty, resstruct_1020s.add_10_20_equiv_table.data(:,2),'UniformOutput',1))
+            new_net_10_20s = cell2mat(resstruct_1020s.add_10_20_equiv_table.data(:,2)');
+        else
+            warndlg('No sensor layout names entered, no sensor layouts added to library');
+        end
+    end
     
     % if present, remove the EGI FID fields to prevent PREP issues
     Fid_indexes = strfind({sensor_layout.labels}, 'Fid');
     sensor_layout(find(not(cellfun('isempty', Fid_indexes))))=[];
     
+    % create REST lead matrix if needed
+    beapp_create_REST_lead_matrix(net_library_location, sensor_layout, new_net_answer{3},new_net_answer{4});
+
     % save new net in library and update library catalog
     save(new_net_answer{3},'sensor_layout')
     new_row_net_table=cell2table({new_net_answer{4},new_net_answer{3},str2num(new_net_answer{1}),str2num(new_net_answer{2}),{new_net_10_20s}});
@@ -107,4 +135,5 @@ else
 end
 
 save(net_library_options_location,'net_library_options');
+net_out_list = net_library_options.Net_Full_Name;
 end

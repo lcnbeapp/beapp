@@ -33,7 +33,7 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function batch_beapp_detrend (grp_proc_info_in)
+function grp_proc_info_in = batch_beapp_detrend (grp_proc_info_in)
 
 src_dir = find_input_dir('detrend',grp_proc_info_in.beapp_toggle_mods);
 

@@ -35,6 +35,31 @@ function grp_proc_info_in = batch_beapp_filt(grp_proc_info_in)
 % identify data source directory based on processing history
 src_dir = find_input_dir('filt',grp_proc_info_in.beapp_toggle_mods);
 
+
+% set cutoff for lowpass filter
+if grp_proc_info_in.beapp_filters{'Lowpass','Filt_On'}
+    disp(['Applying a low pass filter of type: ' grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1}])
+    
+    high_freq_cutoff = grp_proc_info_in.beapp_filters{'Lowpass','Filt_Cutoff_Freq'};
+    
+else
+    high_freq_cutoff = [];
+end
+
+if grp_proc_info_in.beapp_filters{'Highpass','Filt_On'}
+    disp(['Applying a highpass filter of type: ' grp_proc_info_in.beapp_filters{'Highpass','Filt_Name'}{1}]);
+    low_freq_cutoff = grp_proc_info_in.beapp_filters{'Highpass','Filt_Cutoff_Freq'};
+else
+    low_freq_cutoff = [];
+end
+
+% add path to cleanline
+if exist('cleanline', 'file') && grp_proc_info_in.beapp_filters{'Cleanline','Filt_On'}
+    cleanline_path = which('eegplugin_cleanline.m');
+    cleanline_path = cleanline_path(1:findstr(cleanline_path,'eegplugin_cleanline.m')-1);
+    addpath(genpath(cleanline_path));
+end;
+
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     
     cd(src_dir{1})
@@ -45,41 +70,33 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         for curr_epoch = 1:size(eeg,2)
             diary off;
-            % filtering types in a table in case we want to add more
-            % options
             
-            % lowpass filtering
-            if grp_proc_info_in.beapp_filters{'Lowpass','Filt_On'}
-                disp(['Applying a low pass filter of type: ' grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1}])
-                
-                % eegfilt checks for nyquist
-                if strcmp(grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1},'eegfilt')
-                    eeg{curr_epoch}=eegfilt(eeg{curr_epoch},file_proc_info.beapp_srate,0,grp_proc_info_in.beapp_filters{'Lowpass','Filt_Cutoff_Freq'});
+            EEG_curr_rec_period = curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_epoch},curr_epoch);
+            
+            % highpass/lowpass/bandpass
+            if grp_proc_info_in.beapp_filters{'Highpass','Filt_On'} || grp_proc_info_in.beapp_filters{'Lowpass','Filt_On'}
+                if strcmp(grp_proc_info_in.beapp_filters{'Highpass','Filt_Name'}{1},'eegfilt') || strcmp(grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1},'eegfilt')
+                    EEG_curr_rec_period = pop_eegfiltnew(EEG_curr_rec_period,low_freq_cutoff, high_freq_cutoff, [],0,[],0);
                 end
             end
-            
-            % highpass filtering
-            if grp_proc_info_in.beapp_filters{'Highpass','Filt_On'}
-                disp(['Applying a highpass filter of type: ' grp_proc_info_in.beapp_filters{'Highpass','Filt_Name'}{1}]);
-                eeg{curr_epoch}=eegfilt(eeg{curr_epoch},file_proc_info.beapp_srate,grp_proc_info_in.beapp_filters{'Highpass','Filt_Cutoff_Freq'},0);
-            end
-            
+                                   
             % notch filter
             if grp_proc_info_in.beapp_filters{'Notch','Filt_On'}
                 disp(['Applying a notch filter for ' int2str(file_proc_info.src_linenoise) ' Hz line noise']);
-                eeg{curr_epoch}=beapp_notch_filt(eeg{curr_epoch},file_proc_info.src_linenoise,file_proc_info.beapp_srate/2); %use proc_info because later each file may have a new linenoise value when there is a mix of US and international data files
+                EEG_curr_rec_period.data = beapp_notch_filt(EEG_curr_rec_period.data,file_proc_info.src_linenoise,file_proc_info.beapp_srate/2); 
             end
             
+            % cleanline
             if grp_proc_info_in.beapp_filters{'Cleanline','Filt_On'}
                 
-                EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_epoch},curr_epoch);
-                EEG_tmp = pop_cleanline(EEG_tmp, 'Bandwidth',2,'chanlist',[file_proc_info.beapp_indx{curr_epoch}],...
+                EEG_curr_rec_period = pop_cleanline(EEG_curr_rec_period, 'Bandwidth',2,'chanlist',[file_proc_info.beapp_indx{curr_epoch}],...
                     'computepower',1,'linefreqs',[file_proc_info.src_linenoise file_proc_info.src_linenoise*2] ,...
                     'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',1,'sigtype',...
                     'Channels','tau',100,'verb',0,'winsize',4,'winstep',1, 'ComputeSpectralPower','False');
                 close all;
-                eeg{curr_epoch} = EEG_tmp.data;
             end
+            
+            eeg{curr_epoch} = EEG_curr_rec_period.data;
         end
         
         diary on;
@@ -88,6 +105,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             file_proc_info = beapp_prepare_to_save_file('filt',file_proc_info, grp_proc_info_in, src_dir{1});
             save(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         end
-        clearvars -except grp_proc_info_in curr_file src_dir lowp_filt srate_high
+        clearvars -except grp_proc_info_in curr_file src_dir lowp_filt srate_high low_freq_cutoff high_freq_cutoff cleanline_path
     end
+end
+
+if grp_proc_info_in.beapp_filters{'Cleanline','Filt_On'} && exist (cleanline_path,'var')
+    % remove cleanline path
+    rmpath(genpath(cleanline_path));
 end

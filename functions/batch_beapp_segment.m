@@ -31,13 +31,14 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-if (grp_proc_info.src_data_type == 1) || (grp_proc_info.src_data_type == 3)
+function grp_proc_info_in = batch_beapp_segment(grp_proc_info_in)
+if (grp_proc_info_in.src_data_type == 1) || (grp_proc_info_in.src_data_type == 3)
     
     % baseline data with or without conditions
-    batch_beapp_create_baseline_segs(grp_proc_info);
+    grp_proc_info_in = batch_beapp_create_baseline_segs(grp_proc_info_in);
     
     % event related data or event coded baseline data
-elseif (grp_proc_info.src_data_type == 2)
-    batch_beapp_create_event_segs(grp_proc_info);
+elseif (grp_proc_info_in.src_data_type == 2)
+    grp_proc_info_in = batch_beapp_create_event_segs(grp_proc_info_in);
+end
 end

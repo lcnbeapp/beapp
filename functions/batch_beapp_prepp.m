@@ -31,7 +31,7 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function batch_beapp_prepp(grp_proc_info_in)
+function grp_proc_info_in = batch_beapp_prepp(grp_proc_info_in)
 
 prepp_def_loc = which('getPipelineDefaults');
 if isempty(prepp_def_loc)
@@ -74,6 +74,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             %Update params for file
             params = struct();
             params.name=file_proc_info.beapp_fname{1};
+            params.referenceChannels = file_proc_info.beapp_indx{curr_epoch};
             params.rereferenceChannels=file_proc_info.beapp_indx{curr_epoch};
             params.evaluationChannels=file_proc_info.beapp_indx{curr_epoch};
             params.rereferencedChannels=file_proc_info.beapp_indx{curr_epoch};
@@ -123,18 +124,23 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 PREP_report_table.Num_Epochs(curr_file) = num2cell(curr_epoch);
                 PREP_report_table.PREP_Error_Status{curr_file} = [sprintf('%s ',err_status_strings{1:end-1}),err_status_strings{end}];
             end
-            PREP_report_table.File_Epoch_Lengths_In_Secs(curr_file) = {epoch_lengths_in_secs};
-            PREP_report_table.Epochs_With_Errors{curr_file} =epochs_w_errors;
+            PREP_report_table.File_Epoch_Lengths_In_Secs(curr_file) = ...
+            {strjoin(cellfun(@mat2str,num2cell(epoch_lengths_in_secs),'UniformOutput',0),',')};
+            PREP_report_table.Epochs_With_Errors{curr_file} =...
+                 {strjoin(cellfun(@mat2str,num2cell(epochs_w_errors),'UniformOutput',0),',')};
             PREP_report_table.Num_Epochs(curr_file) = num2cell(curr_epoch);
-            PREP_report_table.File_Epoch_Lengths_In_Secs(curr_file) = {epoch_lengths_in_secs};
-            PREP_report_table.Number_Bad_Channels_Detected(curr_file) = {length(file_proc_info.beapp_bad_chans{curr_epoch})};
-            PREP_report_table.Interpolated_Channel_IDs_Per_Epoch(curr_file) = {file_proc_info.beapp_bad_chans(curr_epoch)};
+            PREP_report_table.File_Epoch_Lengths_In_Secs(curr_file) = ...
+             {strjoin(cellfun(@mat2str,num2cell(epoch_lengths_in_secs),'UniformOutput',0),',')};
+            PREP_report_table.Number_Bad_Channels_Detected(curr_file) = ...
+                 {strjoin(cellfun(@mat2str,cellfun(@length,file_proc_info.beapp_bad_chans,'UniformOutput',0),'UniformOutput',0),',')};
+            PREP_report_table.Interpolated_Channel_IDs_Per_Epoch(curr_file) = ...
+                {strjoin(cellfun(@mat2str,file_proc_info.beapp_bad_chans,'UniformOutput',0),',')};
         end
         
         % store error information for outputs
         if ~isempty (epochs_w_errors)
             files_failed_in_prepp{curr_file} = file_proc_info.beapp_fname{1};
-            file_epochs_failed{curr_file} = epochs_w_errors;
+            file_epochs_failed(curr_file) = {strjoin(cellfun(@mat2str,num2cell(epochs_w_errors),'UniformOutput',0),',')};
         end
         
         cd(grp_proc_info_in.beapp_toggle_mods{'prepp','Module_Dir'}{1});

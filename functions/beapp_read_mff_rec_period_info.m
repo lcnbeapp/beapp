@@ -6,8 +6,6 @@
 % time_units_exp = exponent on MFF file version timestamps. 
 % 6 = microseconds, 9 = nanoseconds
 %
-%
-%
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017

@@ -36,10 +36,10 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function tmp_eeg_w = beapp_extract_segments(eeg_msk,file_proc_info,grp_proc_info_in,eeg,curr_epoch)
+function tmp_eeg_w = beapp_extract_segments(eeg_msk_curr_cond_curr_epoch,file_proc_info,grp_proc_info_in,eeg_curr_epoch)
 
             % find indices where data hasn't been flagged bad
-            good_data=find(eeg_msk{curr_epoch}==0);
+            good_data=find(eeg_msk_curr_cond_curr_epoch==0);
             grouped_good_data=group(good_data); 
             clear tmpf1;
             
@@ -59,8 +59,8 @@ function tmp_eeg_w = beapp_extract_segments(eeg_msk,file_proc_info,grp_proc_info
                         %loop through each of the possible analysis windows and add
                         %them to eeg_w a three dimensional EEG
                         for curr_window=1:pot_good_windows
-                            window_idxs=(1:file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs)+(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs)*(curr_window-1);
-                            tmp_wind_out=eeg{curr_epoch}(:,good_data(window_idxs))';
+                            window_idxs=(1:floor(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs))+floor(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs)*(curr_window-1);
+                            tmp_wind_out=eeg_curr_epoch(:,good_data(window_idxs))';
                             wind_out=detrend(tmp_wind_out,'constant');
                             tmp_eeg_w(:,:,segment_num)=wind_out';
                             segment_num=segment_num+1;

@@ -12,12 +12,12 @@
 % Output: 
 % report_info: structure with current report info for previous files
 %           -.Src_Net_Type = array of net names for files run in mod
-%           -.Src_Sampling_Rate = src srates for files run in mod
-%           -.Current_Sampling_Rate=  current srates for files run in mod
-%           -.Src_Num_Epochs = number of recording periods in source file
-%           -.Idx_Epochs_Analyzed = indexes of recording periods analyzed
-%           -.Bad_Chans_By_Epoch = bad channels for each recording period
-%           -.Num_Good_Chans_Analyzed_By_Epoch = number of good channels 
+%           -.Src_SRate = src srates for files run in mod
+%           -.Current_SRate=  current srates for files run in mod
+%           -.Src_Num_Rec_Periods = number of recording periods in source file
+%           -.Idx_Rec_Periods_Analyzed = indexes of recording periods analyzed
+%           -.Num_Bad_Chans_By_Rec_Period = bad channels for each recording period
+%           -.Num_Good_Chans_Analyzed_By_Rec_Period = number of good channels 
 % all_condition_labels : conditions being analyzed during run
 % all_obsv_sizes : number of segments preserved for each file
 % 
@@ -55,18 +55,25 @@ function [report_info,all_condition_labels,all_obsv_sizes,report_values] = beapp
 FileName = fname_all';
 Condition_Name = cell(length(fname_all),1);
 Src_Net_Type = cell(length(fname_all),1);
-Src_Sampling_Rate = NaN(length(fname_all),1);
-Current_Sampling_Rate = NaN(length(fname_all),1);
-Src_Num_Epochs = NaN(length(fname_all),1);
-Idx_Epochs_Analyzed =cell(length(fname_all),1);
-Bad_Chans_By_Epoch = cell(length(fname_all),1);
-Num_Good_Chans_Analyzed_By_Epoch = cell(length(fname_all),1);
-Number_of_Observations = NaN(length(fname_all),1);
+Src_SRate = NaN(length(fname_all),1);
+Current_SRate = NaN(length(fname_all),1);
+Src_Num_Rec_Periods = NaN(length(fname_all),1);
+Idx_Rec_Periods_Analyzed =cell(length(fname_all),1);
+Num_Bad_Chans_By_Rec_Period = cell(length(fname_all),1);
+Bad_Chans_By_Rec_Period= cell(length(fname_all),1);
+Num_Good_Chans_By_Rec_Period = cell(length(fname_all),1);
+Num_Segs = NaN(length(fname_all),1);
+Num_Segs_Pre_Rej = NaN(length(fname_all),1);
+Num_Segs_Good_Behav = NaN(length(fname_all),1);
 
-report_info = table(FileName, Condition_Name,Src_Net_Type, Src_Sampling_Rate,...
-    Current_Sampling_Rate,Src_Num_Epochs, Idx_Epochs_Analyzed, Bad_Chans_By_Epoch, Num_Good_Chans_Analyzed_By_Epoch,Number_of_Observations);
+report_info = table(FileName, Condition_Name,Src_Net_Type, Src_SRate,...
+    Current_SRate,Src_Num_Rec_Periods, Idx_Rec_Periods_Analyzed, Num_Bad_Chans_By_Rec_Period,...
+    Num_Good_Chans_By_Rec_Period,Num_Segs,Num_Segs_Pre_Rej,Num_Segs_Good_Behav, Bad_Chans_By_Rec_Period);
 all_condition_labels = cell(length(fname_all),length(all_possible_conds));
-all_obsv_sizes = num2cell(NaN(length(fname_all),length(all_possible_conds)));
+
+% 3d array -- file x condition x seg_count_type (final segs, segs pre_rej,
+% segs good behav) 
+all_obsv_sizes = NaN(length(fname_all),length(all_possible_conds),3);
 
 report_values =cell(length(all_possible_conds),1);
 [report_values{:}] =deal(NaN(length(fname_all),(bands_incl_total*largest_nchan),ntabs));

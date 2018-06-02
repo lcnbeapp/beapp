@@ -48,6 +48,7 @@ function [evt_info, conditions_being_analyzed,skip_file] = beapp_extract_conditi
 % remove extra rows in header
 header_no_cond = 0;
 skip_file = 0;
+conditions_being_analyzed = [];
 
 % extract condition info from eprime file header if present
 if (~isempty(header_tag_info))
@@ -70,15 +71,23 @@ if (~isempty(header_tag_info))
     end
     
 else % otherwise just get events present in cel
-    disp([beapp_fname ': condition info not stored in event track, using condition info provided in user inputs']);
-    cels = [];
-    non_native_condition_set = 1;
-    for curr_epoch = 1: length(evt_info)
-        cels_epoch = unique([evt_info{curr_epoch}.evt_cel_type]);
-        cels = unique([cels_epoch cels]);
+     if ~isempty(evt_info) 
+        if src_data_type ~=1
+            disp([beapp_fname ': condition info not stored in event track, using condition info provided in user inputs']);
+        end
+        cels = [];
+        non_native_condition_set = 1;
+        for curr_epoch = 1: length(evt_info)
+            cels_epoch = unique([evt_info{curr_epoch}.evt_cel_type]);
+            cels = unique([cels_epoch cels]);
+        end
+        cels(isnan(cels))=[];
+        condition_labels_detected = [];
+    else
+        warning([beapp_fname ': expected events but no events in event track, skipping file']);
+        skip_file = 1;
+        return;
     end
-    cels(isnan(cels))=[];
-    condition_labels_detected = [];
 end
 
 %% clumsy for now--  some version of this is necessary given unreliable ISP naming
@@ -113,12 +122,14 @@ if (isempty(condition_labels_detected) || header_no_cond) && (length_largest_ove
     condition_labels_detected = table(cell(length_largest_overlap,1),...
         beapp_event_eprime_values.condition_names(indexes_for_curr_best_match)',...
         beapp_event_eprime_values.event_codes(indexes_for_curr_best_match,column_w_curr_largest_overlap(1)),...
-        'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes'});
+        NaN(length_largest_overlap,1),NaN(length_largest_overlap,1),NaN(length_largest_overlap,1),...
+        'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes','Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
 end
 
 conditions_being_analyzed = table();
 if src_data_type == 1 % baseline, no tag data
-    conditions_being_analyzed = table(NaN,{'baseline'},{''},'VariableNames',{'Evt_Codes','Condition_Name','Native_File_Condition_Name'});
+    conditions_being_analyzed = table(NaN,{'baseline'},{''}, NaN(1,1),NaN(1,1),NaN(1,1),NaN(1,1),...
+        'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes','All_Evt_Codes_for_Cond','Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
 else % standard event related data
     if isempty(condition_labels_detected) || ~exist('indexes_for_curr_best_match','var')
         warning([beapp_fname ' : condition info not stored in event track, matching info not found in user inputs, moving on to next file']);
@@ -128,17 +139,22 @@ else % standard event related data
         % clumsy way of finding appropriate indices -- change when time
         [conditions_being_analyzed.Evt_Codes,~,ind2]=intersect(beapp_event_eprime_values.event_codes(indexes_for_curr_best_match,column_w_curr_largest_overlap(1)),condition_labels_detected.Evt_Codes);
         conditions_being_analyzed.Condition_Name = beapp_event_eprime_values.condition_names(indexes_for_curr_best_match)';
+        conditions_being_analyzed.All_Evt_Codes_for_Cond = num2cell(conditions_being_analyzed.Evt_Codes);
+        
         if ~non_native_condition_set
-            conditions_being_analyzed.Native_File_Condition_Name = condition_labels_detected.Condition_Name(ind2);
+            conditions_being_analyzed.Native_File_Condition_Name = condition_labels_detected.Condition_Name(ind2);            
         else
             conditions_being_analyzed.Native_File_Condition_Name = cell(length(ind2),1);
             conditions_being_analyzed.Native_File_Condition_Name(:) = {''};
         end
+            conditions_being_analyzed.Num_Segs_Pre_Rej = zeros(length(conditions_being_analyzed.Condition_Name),1);
+            conditions_being_analyzed.Num_Segs_Post_Rej = NaN(length(conditions_being_analyzed.Condition_Name),1);
+            conditions_being_analyzed.Good_Behav_Trials_Pre_Rej = NaN(length(conditions_being_analyzed.Condition_Name),1);
     end
 end
 
 % if condition information is empty, skip file
-if isempty(conditions_being_analyzed) && (src_data_type == 2)
+if isempty(conditions_being_analyzed) && (src_data_type ~= 1)
     skip_file = 1;
     return;
 end
@@ -147,7 +163,12 @@ end
 % loop through epochs (rec periods) and update .type field for segmenting
 for curr_epoch = 1: length(evt_info)
     % set condition strings for event tag of interest
-    [evt_info{curr_epoch}(:).type]=deal('Non_Target');
+     if ~isempty (evt_info{curr_epoch})
+        % set condition strings for event tag of interest
+        [evt_info{curr_epoch}(:).type]=deal('Non_Target');
+    else
+        continue;
+    end
     
     for curr_condition = 1:length(conditions_being_analyzed.Condition_Name)
         cond_ind=conditions_being_analyzed.Evt_Codes(curr_condition)==[evt_info{curr_epoch}.evt_cel_type];
@@ -160,7 +181,42 @@ for curr_epoch = 1: length(evt_info)
     tag_ind{curr_epoch} = sum(tag_ind{curr_epoch},2);
     [evt_info{curr_epoch}(~tag_ind{curr_epoch}).type]=deal('Non_Target');
     
+    [unique_vals,~,type_of_val] = unique({evt_info{curr_epoch}(:).type});
+    bincounts_conds = histc(type_of_val,unique(type_of_val));
+    
+    if ~isequal(unique_vals,{'Non_Target'})
+        [conds,cond_inds_table,cond_inds_values]=intersect(conditions_being_analyzed.Condition_Name,unique_vals);
+        % will only fill in first instance of each condition
+        conditions_being_analyzed.Num_Segs_Pre_Rej(cond_inds_table) = bincounts_conds(cond_inds_values) +   conditions_being_analyzed.Num_Segs_Pre_Rej(cond_inds_table);
+    end
 end
+
+% check to see if user is collapsing conditions from the native
+% file -- not used ir
+if ~isequal(unique(conditions_being_analyzed.Condition_Name,'stable'),conditions_being_analyzed.Condition_Name)
+    
+    rows_to_delete = zeros(length(conditions_being_analyzed.Condition_Name),1);
+    % if yes, collapse them in conditions_being_analyzed
+    [vals,~,un_cond_inds] = unique(conditions_being_analyzed.Condition_Name,'stable');
+    repeated_conds = find(hist(un_cond_inds,unique(un_cond_inds))>1);
+    
+    for curr_rep_cond = 1:length(repeated_conds)
+        
+        cond_inds_rep = ismember(un_cond_inds,repeated_conds(curr_rep_cond));
+        first_occurence = find(cond_inds_rep,1,'first');
+        conditions_being_analyzed.All_Evt_Codes_for_Cond(first_occurence) = {horzcat(conditions_being_analyzed.Evt_Codes(cond_inds_rep))};
+        conditions_being_analyzed.Evt_Codes(first_occurence) = NaN;
+        conditions_being_analyzed.Native_File_Condition_Name(first_occurence) =...
+            {strjoin(cellfun(@(x) mat2str(x),conditions_being_analyzed.Native_File_Condition_Name(cond_inds_rep),'UniformOutput',0),',')};
+        cond_inds_rep(first_occurence) =0;
+        
+        rows_to_delete = or(rows_to_delete,cond_inds_rep);
+    end
+    
+    % delete extra rows
+    conditions_being_analyzed(rows_to_delete,:) = [];
+end
+
 clear empty_indexes_evt eventInd e_start_time_samp e_start_time_samp_actual condition_labels
 clear event_time_epoch_samps event_time_ms event_time_samps epoch_lengths curr_track eprime_vals
 clear non_tag_ind cond_ind curr_condition

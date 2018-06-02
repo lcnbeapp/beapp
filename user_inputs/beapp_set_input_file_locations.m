@@ -2,7 +2,7 @@
 % 
 % use to set user inputs, advanced inputs, and input tables to non-default files
 % To use default scripts and tables (beapp_userinputs.m, beapp_advinputs.m,
-% mat_file_info_table) set inputs blank. Otherwise, specify relevant
+% beapp_file_info_table) set inputs blank. Otherwise, specify relevant
 % filepaths to input scripts and tables
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
@@ -39,6 +39,5 @@ grp_proc_info.beapp_alt_user_input_location = {''}; % def = {''}, which will use
 grp_proc_info.beapp_alt_adv_user_input_location = {''}; % def = {''}, which will use beapp_advinputs.m
 
 % set location for beapp to load mat, mff, or rerun file info tables
-grp_proc_info.beapp_alt_mat_file_info_table_location = {''}; % def = {''}, which will use mat_file_info_table.mat
-grp_proc_info.beapp_alt_mff_file_info_table_location = {''}; % def = {''}, which will use mff_file_info_table.mat
+grp_proc_info.beapp_alt_beapp_file_info_table_location = {''}; % def = {''}, which will use beapp_file_info_table.mat
 grp_proc_info.beapp_alt_rerun_file_info_table_location = {''}; % def = {''},  which will use rerun_fselect_table.mat

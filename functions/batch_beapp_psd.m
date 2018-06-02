@@ -32,13 +32,13 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function batch_beapp_psd(grp_proc_info_in)
+function grp_proc_info_in =batch_beapp_psd(grp_proc_info_in)
 
 src_dir = find_input_dir('psd',grp_proc_info_in.beapp_toggle_mods);
 save_warn_as_error= warning('error', 'MATLAB:save:sizeTooBigForMATFile');
 report_initialized = 0;
 
-nstats =  grp_proc_info_in.beapp_xlsout_av_on +grp_proc_info_in.beapp_xlsout_sd_on;
+nstats =  grp_proc_info_in.beapp_xlsout_av_on +grp_proc_info_in.beapp_xlsout_sd_on+ grp_proc_info_in.beapp_xlsout_med_on;
 ndtyps =  grp_proc_info_in.beapp_xlsout_raw_on + grp_proc_info_in.beapp_xlsout_norm_on;
 ntransfs = grp_proc_info_in.beapp_xlsout_log_on+grp_proc_info_in.beapp_xlsout_log10_on+1;
 ntabs=nstats*ndtyps*ntransfs;
@@ -51,7 +51,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg_w','file_proc_info');
         tic;
         
-        if grp_proc_info_in.src_data_type ==2 || grp_proc_info_in.src_data_type ==3
+        % if event tagged data or pre-segmented data
+        if grp_proc_info_in.src_data_type ==2 || grp_proc_info_in.src_format_typ ==3
             analysis_win_start = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_analysis_win_start .* file_proc_info.beapp_srate));
             analysis_win_end = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_analysis_win_end .* file_proc_info.beapp_srate))-1;
             
@@ -87,6 +88,21 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     end
                 end
                 
+                if ~isempty(grp_proc_info_in.win_select_n_trials)
+                    
+                    if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
+                        
+                        % only keep n trials
+                        inds_to_select = sort(randperm(size(eeg_w{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
+                        eeg_w{curr_condition,1} = eeg_w{curr_condition,1}(:,:,inds_to_select);
+                    else 
+                        disp(['BEAPP file: ' file_proc_info.beapp_fname{1} ' condition ' file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition} ' does not have the user selected number of segments. Skipping...']);
+                        eeg_wfp{curr_condition,1} = [];
+                        continue;
+                    end
+                    
+                end
+                
                 [eeg_wfp{curr_condition,1}, eeg_wf{curr_condition,1},f{curr_condition,1}] = calc_psd_of_win_typ(grp_proc_info_in.psd_win_typ,...
                     eeg_w{curr_condition,1},file_proc_info.beapp_srate,grp_proc_info_in.psd_pmtm_alpha,grp_proc_info_in.psd_nfft);
                 
@@ -118,8 +134,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 save(file_proc_info.beapp_fname{1},'eeg_wfp','f','file_proc_info');
             catch ME
                 if  (strcmp(ME.identifier,'MATLAB:save:sizeTooBigForMATFile'))
-                    save(file_proc_info.beapp_fname{1},'eeg_wfp','f','file_proc_info','-v7.3');
                     disp([file_proc_info.beapp_fname{1} ': file is too large to save with v6, saving using MAT-file v7.3 (may take longer)']);
+                    save(file_proc_info.beapp_fname{1},'eeg_wfp','f','file_proc_info','-v7.3');
                 end
             end
             

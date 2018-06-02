@@ -54,7 +54,7 @@ EEG_tmp = pop_cleanline(EEG_tmp, 'Bandwidth',2,'chanlist',[1:length(chan_IDs)],.
     'computepower',1,'linefreqs',[src_linenoise src_linenoise*2] ,...
     'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',1,'sigtype',...
     'Channels','tau',100,'verb',0,'winsize',4,'winstep',1, 'ComputeSpectralPower','False');
-close all;
+close gcf;
 
 %crude bad channel detection using spectrum criteria and 3SDeviations as channel outlier threshold, done twice
 EEG_tmp = pop_rejchan(EEG_tmp, 'elec',[1:length(chan_IDs)],'threshold',[-3 3],'norm','on','measure','spec','freqrange',[1 125]);

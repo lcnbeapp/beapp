@@ -32,7 +32,7 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function batch_beapp_rsamp(grp_proc_info_in)
+function grp_proc_info_in = batch_beapp_rsamp(grp_proc_info_in)
 
 src_dir = find_input_dir('rsamp',grp_proc_info_in.beapp_toggle_mods);
 

@@ -2,7 +2,8 @@
 % 
 % calculate report values for desired ITPC metrics for a given condition
 % Inputs:
-% eeg_itc_curr_cond - itc output from newtimef for current condition
+% eeg_itc_curr_cond - itc output from newtimef for current condition for
+% time points specified in sub-analysis window in user inputs
 % f - frequency bins from newtime f
 % t - time axis from newtimef
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

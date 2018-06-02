@@ -48,7 +48,7 @@ file_proc_info.evt_seg_win_evt_ind = time2samples(nanmean([file_proc_info.seg_in
 
 for curr_condition = 1:length(user_set_condition_names)
     
-    if ismember(conditions_in_segments, user_set_condition_names{curr_condition})
+    if any(ismember(conditions_in_segments, user_set_condition_names{curr_condition}))
         % if throw out bad segments, grab good segs for each condition
         if throw_out_bad_segments
             cond_seg_idxs = intersect(find(~strcmp('bad', {file_proc_info.seg_info.s_status})), find(strcmp(conditions_in_segments{curr_condition}, {file_proc_info.seg_info.condition_name})));

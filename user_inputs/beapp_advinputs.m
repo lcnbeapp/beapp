@@ -123,7 +123,6 @@ grp_proc_info.kalman_b=0.9999; %used to determine smoothing in the Kalman filter
 grp_proc_info.kalman_q_init=1; %used to determine smoothing in Kalman filter
 
 % SEGMENTING SPECIFICATIONS
-grp_proc_info.segment_linear_detrend = 0;  % def = 0; detrend segments. 0 off, 1 = linear, 2 = mean detrend
 grp_proc_info.beapp_happe_seg_rej_plotting_on = 0; % def = 0; show jointprob visualizations if happe segment rejection is on 
 
 %for moving average filter applied to ERP data
@@ -132,10 +131,11 @@ grp_proc_info.beapp_erp_maf_order=30; %Order of the moving average filter
 
 %% output measure settings
 % PSD XLS report settings
-% number of tapers 
+grp_proc_info.psd_output_typ = 1; % psd = 1, power = 2, def = 1
 grp_proc_info.psd_pmtm_l=3; %number of tapers to use if using the multitaper window type, should be a positive integer 3 or greater
 grp_proc_info.beapp_xlsout_av_on=1; %toggles on the mean power option
 grp_proc_info.beapp_xlsout_sd_on=1; %toggles on the standard deviation option
+grp_proc_info.beapp_xlsout_med_on=1; %toggles on the median option
 grp_proc_info.beapp_xlsout_raw_on=1; %toggles on that the absolute power should be reported
 grp_proc_info.beapp_xlsout_norm_on=1; %toggles on that the normalized power should be reported
 grp_proc_info.beapp_xlsout_log_on=1; %toggles on that the natural log should be reported

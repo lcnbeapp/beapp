@@ -73,17 +73,22 @@ end
 dir_prev_exist = rowfun(@beapp_create_outdirs,grp_proc_info_in.beapp_toggle_mods,'NumOutputs',1);
 
 if any(dir_prev_exist.Var1)
-    disp('The following directories already exist:')
-    disp([grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))])
-    disp(sprintf('Continuing with the pipeline could result in deleting copies of data currently in these directories\n'));
     if grp_proc_info_in.beapp_dir_warn_off ~= 1
-        usr_cont=input('Would you like to continue (Y/N)?','s');
-        if (usr_cont=='Y' || usr_cont=='y')
-            disp(sprintf('\n Continuing with pipeline.\n Could not create directories:'));
+               
+    usr_cont = questdlg(['The following directories already exist:';
+        [grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))];
+        'Continuing with the pipeline could result in deleting copies of data currently in these directories';...
+        'Would you like to continue?'],'BEAPP Directory Warning','Yes','No','Yes');
+        if strcmp('Yes',usr_cont)
+            disp(sprintf(' \n Continuing with pipeline. \n Could not create directories:'));
             disp([grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))])
-        elseif (usr_cont=='N' || usr_cont=='n')
-            error('Exiting Code'); % return won't work since not main function
+        elseif  strcmp('No',usr_cont)
+            error('Exiting BEAPP'); 
         end
+    else
+        disp(['The following directories already exist and were not recreated, data may be overwritten'; '';...
+        [grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))];...
+       'Continuing with pipeline';]);
     end
 end
 

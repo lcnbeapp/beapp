@@ -96,22 +96,22 @@
 % BEAPP was written in Matlab 2016a. Older versions of Matlab may not
 % support certain functions used in BEAPP. 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+function grp_proc_info = set_beapp_def 
 %% version numbers for BEAPP and packages
 grp_proc_info.beapp_ver={'BEAPP_v4_1'};
 grp_proc_info.eeglab_ver = {'eeglab14_0_0b'};
 grp_proc_info.fieldtrip_ver = {'fieldtrip-20160917'};
+grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
 
 %% directory defaults and paths
 grp_proc_info.beapp_pname={''}; %the Matlab paths where the BEAPP code is located 
 grp_proc_info.src_dir={''}; %source directory containing the EEG data exported from Netstation, left empty in defaults because it must be set by the user 
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
-grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc','coh'};
-Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','seg'}'; 
-Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','out','out','out'}';
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc'};
+Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg'}'; 
+Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','out','out'}';
 
 Mod_Names=ModuleNames(:);
 Module_On = true(length(ModuleNames),1); % flag all modules on as default
@@ -125,12 +125,17 @@ clear ModuleNames Module_On Module_Export_On Module_Dir
 clear Module_Xls_Out_On Mod_Names Module_Input_Type Module_Output_Type
 
 %% initialize module and export toggles that are different from standard module on, export off
+grp_proc_info.beapp_toggle_mods{'ica','Module_Xls_Out_On'}=1; % flag that toggles segment xls report option on
+grp_proc_info.beapp_toggle_mods{'segment','Module_Xls_Out_On'}=1; % flag that toggles segment xls report option on
 grp_proc_info.beapp_toggle_mods{'psd','Module_Export_On'}=1; %flag that toggles the data export option for the psd code 
 grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}=1; % export psd to tables
-grp_proc_info.beapp_toggle_mods{'coh','Module_Xls_Out_On'}=0; %export coherence to tables
 grp_proc_info.beapp_toggle_mods{'itpc','Module_On'}=0; %turns ITPC analysis on, use with event data only
-grp_proc_info.beapp_toggle_mods{'itpc','Module_Xls_Out_On'}=0; %flags the export data to xls option on
-grp_proc_info.beapp_toggle_mods{'coh',{'Module_On','Module_Export_On'}}=[0,0];% turns coherence off
+grp_proc_info.beapp_toggle_mods{'itpc','Module_Xls_Out_On'}=1; %flags the export data to xls option on
+grp_proc_info.beapp_toggle_mods{'prepp','Module_Xls_Out_On'}=1; %flags the export data to xls option on
+
+% coherence is not yet an option
+%grp_proc_info.beapp_toggle_mods{'coh','Module_Xls_Out_On'}=0; %export coherence to tables
+%grp_proc_info.beapp_toggle_mods{'coh',{'Module_On','Module_Export_On'}}=[0,0];% turns coherence off
 
 %% paths for packages and tables
 grp_proc_info.beapp_ft_pname={[grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep,grp_proc_info.fieldtrip_ver{1}]}; 
@@ -138,14 +143,13 @@ grp_proc_info.beapp_format_mff_jar_lib = [grp_proc_info.beapp_root_dir{1} filese
 grp_proc_info.ref_net_library_dir=[grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library'];
 grp_proc_info.ref_net_library_options = ([grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library_options.mat']);
 grp_proc_info.ref_eeglab_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep, 'sample_locs'];
+grp_proc_info.ref_def_template_folder = [fileparts(mfilename('fullpath')) filesep, 'run_templates'];
 
 % initialize input tables: only necessary if inputs are .mats, non-uniform offset information is
 % needed for mff files, or if you'd like to rerun a subselection of files
-grp_proc_info.mat_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'mat_file_info_table.mat'];
-grp_proc_info.mff_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'mff_file_info_table.mat'];
+grp_proc_info.beapp_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'beapp_file_info_table.mat'];
 grp_proc_info.rerun_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'rerun_fselect_table.mat'];
-grp_proc_info.beapp_alt_mff_file_info_table_location = {''};
-grp_proc_info.beapp_alt_mat_file_info_table_location = {''};
+grp_proc_info.beapp_alt_beapp_file_info_table_location = {''};
 grp_proc_info.beapp_alt_rerun_file_info_table_location = {''};
 
 %% general defaults
@@ -166,22 +170,25 @@ grp_proc_info.src_format_typ=1; %type of source file 1=.mat files, 2=mff, 3=PRE-
 grp_proc_info.src_data_type = 1; % type of data being processed (for segmenting,see user guide): 1 = baseline, 2 = event related
 grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
 grp_proc_info.src_unique_nets={''}; % unique net names in dataset 
-grp_proc_info.src_unique_srates = []; % unique srates in dataset (must match net order exactly)
 grp_proc_info.src_fname_all={''}; %list of source file names, set during get_beapp_srcflist or as a user input
 grp_proc_info.src_eeg_vname={'Category_1_Segment1'}; %variable name of the EEG data EEG_Segment1
 grp_proc_info.src_format_typ=1; %type of source file 1=netstation, 2=mff, 3=mff in *.mat format, previously proc_info.beapp_format_typ
 grp_proc_info.src_net_typ_all=[]; %list of net types from source files set in get_beapp_srcnettyp
-grp_proc_info.src_srate_all=[]; %list of sampling rates from files set in get_beapp_srcsrate
+grp_proc_info.src_srate_all=[]; %list of net types from source files set in get_beapp_srcsrate
 grp_proc_info.src_linenoise=60; %line noise frequency in the source data, later replace with fft to test for 60 or 70
 grp_proc_info.src_buff_start_nsec=2; %number of seconds buffer at the start of the EEG recording that can be excluded after filtering and artifact removal (buff1_nsec)- GROUP OR FILE?
 grp_proc_info.src_buff_end_nsec=2; %number of seconds buffer at the end of the EEG recording that can be excluded after filtering and artifact removal (buff2_nsec) -GROUP OR FILE?
 grp_proc_info.mff_seg_throw_out_bad_segments =1; % determines whether to throw out bad segments 
+grp_proc_info.src_presentation_software =1; % presentation software used for paradigm (0 = none, 1 = EPrime, 2 = Presentation, 3 = EEGLAB formatted (see user guide).  def = 1)
+grp_proc_info.beapp_indx_chans_to_exclude = {}; % index of channels to exclude in each net. def  = {};
+grp_proc_info.src_eeglab_cond_info_field= 'condition'; % name of field with condition information (ex .cel_type or .condition)
 
 %% event formatting defaults
-grp_proc_info.beapp_event_code_onset_str={''}; %the event code assigned during data collection to signifiy the onset of the stimulus
+grp_proc_info.beapp_event_code_onset_strs={''}; %the event codes assigned during data collection to signifiy the onset of the stimulus
+grp_proc_info.beapp_event_code_offset_strs={''};  %Ex {'TRSP'} the event codes assigned during data collection to signifiy the offset of the stimulus (should match onset strs)
 grp_proc_info.beapp_event_eprime_values.condition_names = {''};
 grp_proc_info.beapp_event_eprime_values.event_codes = []; % 2d array -- groups x condition codes
-grp_proc_info.event_tag_offsets = 0; % def = 0 OR 'offset_table'. Event offset in ms. If offset is not uniform across dataset, set to offset_table and input information as in mff_file_info_table example 
+grp_proc_info.event_tag_offsets = 0; % def = 0 OR 'input_table'. Event offset in ms. If offset is not uniform across dataset, set to input_table and input information as in evt_file_info_table example 
 
 %% Formatting specifications: Behavioral Coding
 grp_proc_info.behavioral_coding.events = {''}; % def = {''}. Ex {'TRSP'} Events containing behavioral coding information
@@ -209,7 +216,7 @@ grp_proc_info.beapp_rsamp_nsamp=[]; %number of samples after resampling
 %% ICA variables
 grp_proc_info.name_10_20_elecs = {'FP1','FP2','F7','F3','F4','F8','C3','C4','T5','PZ','T6','O1','O2','T3','T4','P3','P4','Fz'}; % does not include CZ
 grp_proc_info.beapp_ica_type  = 1; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
-grp_proc_info.beapp_ica_additional_chans_lbls {1}= {''}; %additional channels to use in ICA module besides 10-20
+grp_proc_info.beapp_ica_additional_chans_lbls {1}= []; %additional channels to use in ICA module besides 10-20
 grp_proc_info.happe_plotting_on = 0 ; % if 1, plot visualizations from MARA, require user input
 
 %% rereference module defaults
@@ -229,17 +236,18 @@ grp_proc_info.kalman_b=0.9999; %used to determine smoothing in the Kalman filter
 grp_proc_info.kalman_q_init=1; %used to determine smoothing in Kalman filter 
 
 %% segmentation defaults
+grp_proc_info.beapp_reject_segs_by_amplitude= 0; % def = 1; flag that toggles amplitude-based rejection of segments after segment creation
 grp_proc_info.art_thresh=150; %threshold in uV for artifact (scale will need to change if using CSDLP)
-grp_proc_info.segment_linear_detrend = 1;  % apply linear detrend to segments in segmentation module 0 off, 1 = linear, 2 = mean detrend
+grp_proc_info.segment_linear_detrend = 0;  % apply linear detrend to segments in segmentation module 0 off, 1 = linear, 2 = mean detrend
 grp_proc_info.beapp_happe_segment_rejection = 0; %def = 0; eeg_thresh and jointprob rejection after segmentation
 grp_proc_info.beapp_happe_seg_rej_plotting_on = 0; % def = 0; visualizations during joint prob
 
 %% defaults for baseline segmentation module
 % flag that toggles the removal of high-amplitude artifact before segmentation (only used for baseline)
-grp_proc_info.beapp_baseline_msk_artifact=1; % def = 1;
+grp_proc_info.beapp_baseline_msk_artifact=1; % def = 1; 0= off, 1 = on, 2 = by percent
 
 % percent (0-100) of channels being analyzed above threshold required to mask sample for pre-segmentation rejection
-grp_proc_info.beapp_baseline_rej_perc_above_threshold = 1; % def = 1; (1%)
+grp_proc_info.beapp_baseline_rej_perc_above_threshold = .01; % def = .01; (.01%, should reject if any channels bad assuming channel # <1000) 
 grp_proc_info.win_size_in_secs=1; % length of windows for segmenting (baseline length of good data needed)
 %% defaults for event segmentation module
 grp_proc_info.beapp_erp_maf_on=0; %flags on the moving average filter when the ERP events are generated
@@ -253,9 +261,26 @@ grp_proc_info.evt_analysis_win_end = 0.800;  % def = .800; end time in seconds f
 %Set which event data is baseline 
 grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module. 
 grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
-grp_proc_info.evt_trial_baseline_win_end = -.001; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
+grp_proc_info.evt_trial_baseline_win_end = 0; % def = 0;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
 
 %% variables for general output module processing 
+%OUTPUT MEASURE SPECIFICATIONS
+% trial selection specifications
+% select n of usable segments PER CONDITION to use for output measure
+% [] = use all possible segments, n = use specific number, discard file if file has
+% fewer than n
+grp_proc_info.win_select_n_trials = [];
+
+% def = 0; select number of trials based on segments pre-rejection
+% (automatically 0 for resting)
+% 1 = select trials after segment rejection
+grp_proc_info.win_select_trials_post_rej = 0; 
+
+% select trials from trial range ex[25,50];. def = []; (select at random) 
+% if .win_select_trials_post_rej = 1, trial ranges will apply to good
+% trials after rejection
+grp_proc_info.win_select_trials_in_range = []; 
+
 %removed the option of reusing previously calculated frequency info
 grp_proc_info.bw(1,1:2)=[2,4]; %bandwidth 1 start and end frequencies (the first band), can have as many or as few bandwidths as the user would like
 grp_proc_info.bw_name(1)={'Delta'}; %name of bandwidth 1
@@ -270,10 +295,11 @@ grp_proc_info.bw_name(5)={'Beta'}; %name of bandwidth 5
 grp_proc_info.bw(6,1:2)=[30,50]; %bandwidth 6
 grp_proc_info.bw_name(6)={'Gamma'}; %name of bandwidth 6
 grp_proc_info.bw_total_freqs = [1:100]; % frequencies to include in calculation of total power (for normalization). def = [1:100].
-
+grp_proc_info.win_select_n_trials = []; % use all available trials
 %% PSD default variables
+grp_proc_info.psd_output_typ = 1; % psd = 1, power = 2, def = 1
 grp_proc_info.psd_win_typ=1; %windowing type 0=rectangular window, 1=hanning window, 2=multitaper (recomended 2 seconds or longer)
-grp_proc_info.psd_interp_typ=2; %type of interpolation of psd 1 none, 2 linear, 3 nearest neighbor, 4 piecewise cubic spline  
+grp_proc_info.psd_interp_typ=1; %type of interpolation of psd 1 none, 2 linear, 3 nearest neighbor, 4 piecewise cubic spline  
 grp_proc_info.psd_interp_typ_name(1)={'None'}; %no interpolation
 grp_proc_info.psd_interp_typ_name(2)={'linear'}; %linear interpolation, the default in current and previous versions of BEAPP
 grp_proc_info.psd_interp_typ_name(3)={'nearest'}; %nearest neighbor
@@ -289,6 +315,7 @@ grp_proc_info.beapp_xlsout_ntab=1; %this is determined by the number of types of
 grp_proc_info.beapp_xlsout_hdr={'FileName','NetType','ArtifactThreshold','DetrendType','WindowSizeSeconds','WindowType','NumberOfObservations'};% header for values generated in reports
 grp_proc_info.beapp_xlsout_av_on=1; %toggles on the mean power option
 grp_proc_info.beapp_xlsout_sd_on=0; %toggles on the standard deviation option
+grp_proc_info.beapp_xlsout_med_on=1; %toggles on the median option
 grp_proc_info.beapp_xlsout_raw_on=1; %toggles on that the absolute power should be reported
 grp_proc_info.beapp_xlsout_norm_on=1; %toggles on that the normalized power should be reported
 grp_proc_info.beapp_xlsout_log_on=0; %toggles on that the natural log should be reported
@@ -298,3 +325,4 @@ grp_proc_info.beapp_xlsout_elect_indx=1:129; %Channel numbers for the report. If
 grp_proc_info.beapp_itpc_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max itpc
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean itpc
+end

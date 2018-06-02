@@ -58,8 +58,10 @@ end
 % type
 for curr_condition= 1: length(report_values)
      report_info.Condition_Name=all_condition_labels(:,curr_condition);
-     report_info.Number_of_Observations = cell2mat(all_obsv_sizes(:,curr_condition)); 
-     
+     report_info.Num_Segs= all_obsv_sizes(:,curr_condition,1); 
+     report_info.Num_Segs_Pre_Rej =  all_obsv_sizes(:,curr_condition,2); 
+     report_info.Num_Segs_Good_Behav =  all_obsv_sizes(:,curr_condition,3); 
+
     for curr_analysis = 1:length(tname_out)
         curr_output_table = [report_info array2table(report_values{curr_condition}(:,:,curr_analysis))];
         curr_output_table.Properties.VariableNames(length(report_info.Properties.VariableNames)+1:end) = [hdr(curr_analysis,:)];

@@ -1,8 +1,6 @@
-function grp_proc_info_in = prepare_to_run_main
+function grp_proc_info_in = prepare_to_run_main (grp_proc_info_in)
 
-% set defaults and path, get user inputs
-grp_proc_info_in = beapp_configure_settings;
-
+grp_proc_info_in.hist_run_tag = datetime('now'); 
 %% check user inputs and adjust settings
 grp_proc_info_in=orderfields(grp_proc_info_in);
 if ~(islogical(grp_proc_info_in.beapp_toggle_mods.Module_On)&&islogical(grp_proc_info_in.beapp_toggle_mods.Module_Export_On)&&islogical(grp_proc_info_in.beapp_toggle_mods.Module_Xls_Out_On))
@@ -30,7 +28,7 @@ net_variable_list = dir('*.mat');
 net_variable_list = {net_variable_list.name};
 net_variable_list = strrep(net_variable_list,'.mat','');
 load(grp_proc_info_in.ref_net_library_options)
-[nets_to_add,nets_to_add_indexes] = setdiff(net_library_options.Net_Variable_Name,net_variable_list);
+[nets_to_add,nets_to_add_indexes] = setdiff(net_library_options.Net_Variable_Name,net_variable_list,'stable');
 
 if ~isempty(nets_to_add)
     net_list = net_library_options.Net_Full_Name(nets_to_add_indexes)';
@@ -63,8 +61,8 @@ end
 
 %% collect needed info if rerun
 if ~grp_proc_info_in.beapp_toggle_mods{'format','Module_On'}
-    [grp_proc_info_in.beapp_fname_all,grp_proc_info_in.src_unique_srates,grp_proc_info_in.src_unique_net_vstructs,grp_proc_info_in.src_unique_nets,...
+    [grp_proc_info_in.beapp_fname_all,grp_proc_info_in.src_unique_net_vstructs,grp_proc_info_in.src_unique_nets,...
         grp_proc_info_in.src_unique_net_ref_rows, grp_proc_info_in.src_net_10_20_elecs,grp_proc_info_in.largest_nchan]=...
         beapp_rerun_set_up(grp_proc_info_in.beapp_toggle_mods,modnames{first_mod_ind},grp_proc_info_in.rerun_file_info_table,grp_proc_info_in.beapp_use_rerun_table,...
-        grp_proc_info_in.src_unique_srates,grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir);
+        grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir);
 end

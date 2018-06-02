@@ -35,9 +35,14 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function batch_beapp_rereference(grp_proc_info_in)
+function grp_proc_info_in = batch_beapp_rereference(grp_proc_info_in)
 
 src_dir = find_input_dir('rereference',grp_proc_info_in.beapp_toggle_mods);
+
+if grp_proc_info_in.reref_typ ==4 % REST
+    [rest_leads] = load_REST_lead_matrices_and_create_gs(grp_proc_info_in);
+end
+
 
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     
@@ -88,7 +93,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     diary on;
                     eeg{curr_epoch} = EEG_tmp.data;
                     clear EEG_tmp chans_exclude
-                
+                case 4 % REST
+                     uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
+                     eeg{curr_epoch} = compute_REST_reref(eeg{curr_epoch},rest_leads{uniq_net_ind});
             end
         end
         
@@ -99,6 +106,6 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         else 
             save(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         end
-        clearvars -except grp_proc_info_in src_dir curr_file
+        clearvars -except grp_proc_info_in src_dir curr_file rest_leads
     end
 end

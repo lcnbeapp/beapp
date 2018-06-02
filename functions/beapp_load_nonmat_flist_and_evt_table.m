@@ -10,7 +10,7 @@
 % src_dir = grp_proc_info.src_dir
 % event_tag_offsets = grp_proc_info.event_tag_offsets
 % src_linenoise = grp_proc_info.src_linenoise
-% event_file_info_table_loc = grp_proc_info.mff_file_info_table
+% event_file_info_table_loc = grp_proc_info.beapp_file_info_table
 %
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
@@ -59,7 +59,7 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise)
     load(event_file_info_table_loc);
     
     % find files listed both in source directory and offset info table
-    [src_fname_all,ind_table] =  intersect(mff_file_info_table.FileName,src_file_list,'stable');
+    [src_fname_all,ind_table] =  intersect(beapp_file_info_table.FileName,src_file_list,'stable');
     src_fname_all = src_fname_all';
     
     if isempty(src_fname_all)
@@ -67,15 +67,15 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise)
     end 
     
     % load offset info if file specific,otherwise use group value for all
-    if strcmp(event_tag_offsets,'offset_table')
-        src_offsets_in_ms_all = mff_file_info_table.FileOffset(ind_table);
+    if strcmp(event_tag_offsets,'input_table')
+        src_offsets_in_ms_all = beapp_file_info_table.FileOffset(ind_table);
     else
         src_offsets_in_ms_all = event_tag_offsets* ones(1,length(src_fname_all));
     end
     
     % load linenoise freq if file specific,otherwise use group value for all
     if strcmp(src_linenoise,'input_table')
-       src_linenoise_all = mff_file_info_table.Line_Noise_Freq(ind_table);  
+       src_linenoise_all = beapp_file_info_table.Line_Noise_Freq(ind_table);  
     else
        src_linenoise_all = src_linenoise *ones(1,length(src_fname_all));
     end 

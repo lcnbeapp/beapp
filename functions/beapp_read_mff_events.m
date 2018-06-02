@@ -85,7 +85,7 @@ if event_tracks.size() > 0
                 evt_info(eventInd).evt_times=char(event_time);
                 evt_info(eventInd).evt_times_micros_rel = double(event_time_epoch_rel_in_micros);
                 evt_info(eventInd).evt_times_epoch_rel=double(event_rec_period);
-                evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000)+1;
+                evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+round(file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000))+1;
                 evt_info(eventInd).evt_times_samp_abs = double(event_time_samp_abs)+file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000)+1;
                 evt_info(eventInd).evt_ind=double(eventInd);
                 evt_info(eventInd).evt_duration_samps=time2samples(event.getDuration,file_proc_info_in.src_srate,6,'fix');
@@ -101,9 +101,19 @@ if event_tracks.size() > 0
                     
                     key = all_keys.get(curr_key-1);
                     
-                    % pull out event type (marked by cel #)
-                    if (strcmp((char(key.getCode)),'cel#'))
-                        evt_info(eventInd).evt_cel_type=str2double(char(key.getData));
+                    % if source presentation software is Presentation
+                    if grp_proc_info_in.src_presentation_software == 2
+                         
+                        % pull out event type (marked by CHAN)
+                         if (strcmp((char(key.getCode)),'CHAN'))
+                            evt_info(eventInd).evt_cel_type = str2double(char(key.getData));
+                         end
+                    % if source presentation is EPrime
+                    else %if  grp_proc_info_in.src_presentation_software == 1
+                        % pull out event type (marked by cel#)
+                        if (strcmp((char(key.getCode)),'cel#'))
+                            evt_info(eventInd).evt_cel_type=str2double(char(key.getData));
+                        end
                     end
                     
                     % extract behavioral coding information

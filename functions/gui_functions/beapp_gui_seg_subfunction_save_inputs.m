@@ -1,0 +1,155 @@
+function  grp_proc_info = beapp_gui_seg_subfunction_save_inputs (current_sub_panel,resstruct_seg_settings,grp_proc_info)
+switch current_sub_panel
+    case 'seg_general'
+        % grab seg module indicies
+        seg_mod_inds = find(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'seg'));
+        
+        % save module on settings
+        grp_proc_info.beapp_toggle_mods.Module_On(seg_mod_inds) = ...
+            logical(cell2mat(resstruct_seg_settings.seg_mod_sel_table.data(:,2)));
+        
+        % save module export on settings
+        grp_proc_info.beapp_toggle_mods.Module_Export_On(seg_mod_inds) = ...
+            logical(cell2mat(resstruct_seg_settings.seg_mod_sel_table.data(:,3)));
+        
+        % save post segmentation segment rejection settings
+        grp_proc_info.beapp_reject_segs_by_amplitude = resstruct_seg_settings.post_seg_amp_rej;
+        grp_proc_info.beapp_happe_segment_rejection = resstruct_seg_settings.post_seg_happe_rej;
+        grp_proc_info.src_data_type = resstruct_seg_settings.segment_type_resp;
+        
+        % save amplitude artifact threshold (uV)
+        grp_proc_info.art_thresh = str2num(resstruct_seg_settings.seg_amp_art_threshold_resp);
+        
+        % detrend segments. 0 off, 1 = linear, 2 = mean detrend
+        grp_proc_info.segment_linear_detrend = resstruct_seg_settings.segment_detrend_resp-1;
+        
+        if strcmp(resstruct_seg_settings.beapp_win_select_n_trials,'all')
+            grp_proc_info.win_select_n_trials = [];
+        else
+            grp_proc_info.win_select_n_trials = str2num(resstruct_seg_settings.beapp_win_select_n_trials);
+        end
+    case 'seg_evt_condition_codes'
+        % delete empty rows in table and empty conditions and condition headers
+        tmp_evt_seg_table_out = resstruct_seg_settings.seg_evt_tag_table.data;
+        idx=all(cellfun(@ (x) (isempty(x) || isnan(x)) ,tmp_evt_seg_table_out(:,:)),2);
+        idx_col=all(cellfun(@ (x) (isempty(x) || isnan(x)),tmp_evt_seg_table_out(:,:)),1);
+        tmp_evt_seg_table_out(idx,:)=[];
+        tmp_evt_seg_table_out(:,idx_col)=[];
+        resstruct_seg_settings.seg_evt_tag_table.header(idx_col) =[];
+        
+        % save in beapp format
+        if ~isempty(tmp_evt_seg_table_out)
+            if ~any(any(cellfun(@ (x) isempty(x),tmp_evt_seg_table_out(:,:))))
+                grp_proc_info.beapp_event_eprime_values.event_codes = cell2mat(tmp_evt_seg_table_out(:,:)');
+                grp_proc_info.beapp_event_eprime_values.condition_names =resstruct_seg_settings.seg_evt_tag_table.header';
+            else
+                waitfor(warndlg('All condition sets (rows) entered must contain information for all conditions (columns). Repeated values are permitted. Please adjust before running BEAPP'));
+            end
+        else
+            waitfor(warndlg('No condition information entered into event segmentation table. Please adjust before running BEAPP'));
+        end
+    case 'seg_baseline'
+        grp_proc_info.beapp_baseline_msk_artifact = resstruct_seg_settings.bsl_seg_rej_type-1;
+        
+        seg_evt_win_start = str2double(resstruct_seg_settings.bsl_seg_win_size);
+        if isnan(seg_evt_win_start) || (seg_evt_win_start <=0)
+            warndlg( ['Baseline window size in seconds must be a number greater than 0.'...
+                'BEAPP will use previously set window length: '  num2str(grp_proc_info.win_size_in_secs)]);
+        else
+            grp_proc_info.win_size_in_secs = seg_evt_win_start;
+        end
+        
+        if resstruct_seg_settings.bsl_seg_rej_type ==2 % reject using perc
+            perc_rej_input= str2double(resstruct_seg_settings.perc_rej_setting);
+            if isnan( perc_rej_input) || (perc_rej_input <=0) || (perc_rej_input > 100)
+                warndlg( ['Rejection percentage must be given as a number 1 to 100'...
+                    'BEAPP will use previously set rejection percentage: '  num2str(grp_proc_info.beapp_baseline_rej_perc_above_threshold*100)]);
+            else
+                grp_proc_info.beapp_baseline_rej_perc_above_threshold = perc_rej_input/100;
+            end
+        end
+        
+    case 'seg_evt_stm_on_off_info'
+        % pull filled in rows from gui
+        onset_strs= resstruct_seg_settings.evt_code_on_off_strs.data(:,1);
+        good_inds_onset = cellfun(@ (x) ~isempty(x), onset_strs, 'UniformOutput',1);
+        
+        if isempty(onset_strs(good_inds_onset))
+            waitfor(warndlg('At least one onset tag must be entered for non-baseline runs. Please adjust before running BEAPP'));
+        else
+            grp_proc_info.beapp_event_code_onset_strs = onset_strs(good_inds_onset);
+        end
+
+        if grp_proc_info.src_data_type ==2
+            
+            seg_evt_win_start = str2double(resstruct_seg_settings.evt_seg_win_start);
+            if isnan(seg_evt_win_start)
+                warndlg(['Segment start time relative to event marker (in seconds) must be a number.'...
+                    'BEAPP will use previously set segment start time: '  num2str(grp_proc_info.evt_seg_win_start)]);
+            else
+                grp_proc_info.evt_seg_win_start = seg_evt_win_start;
+            end
+            
+            seg_evt_win_end = str2double(resstruct_seg_settings.evt_seg_win_end);
+            if isnan(seg_evt_win_end)
+                warndlg(['Segment end time relative to event marker (in seconds) must be a number.'...
+                    'BEAPP will use previously set segment end time: '  num2str(grp_proc_info.evt_seg_win_end)]);
+            else
+                grp_proc_info.evt_seg_win_end = seg_evt_win_end;
+            end
+            
+            grp_proc_info.evt_trial_baseline_removal =resstruct_seg_settings.use_bsl_corr;
+            
+            bsl_win_start = str2double(resstruct_seg_settings.bsl_startr);
+            if isnan(bsl_win_start)
+                warndlg(['Baseline correction start time relative to event marker (in seconds) must be a number.'...
+                    'BEAPP will use previously set baseline correction start time: '  num2str(grp_proc_info.evt_trial_baseline_win_start)]);
+            else
+                grp_proc_info.evt_trial_baseline_win_start =  bsl_win_start;
+            end
+            
+            bsl_win_end = str2double(resstruct_seg_settings.bsl_endr);
+            if isnan(bsl_win_end)
+                warndlg(['Baseline correction end time relative to event marker (in seconds) must be a number.'...
+                    'BEAPP will use previously set Baseline correction end time: '  num2str(grp_proc_info.evt_trial_baseline_win_end)]);
+            else
+                grp_proc_info.evt_trial_baseline_win_end = bsl_win_end;
+            end
+            
+            % if conditioned baseline, pull offset strings as well and baseline
+            % seg settings
+        elseif grp_proc_info.src_data_type ==3
+            offset_strs = resstruct_seg_settings.evt_code_on_off_strs.data(:,2);
+            good_inds_offset = cellfun(@ (x) ~isempty(x), offset_strs, 'UniformOutput',1);
+            
+            % check that filled in rows have offset and onset
+            if ~isequal(good_inds_offset,good_inds_onset)
+                waitfor(warndlg('At least one pair of conditioned baseline tags is missing either onset or offset information. Please adjust before running BEAPP'));
+            end
+            
+            % either way use the rows where onset string added
+            grp_proc_info.beapp_event_code_offset_strs= offset_strs (good_inds_onset);
+            
+            grp_proc_info.beapp_baseline_msk_artifact = resstruct_seg_settings.bsl_seg_rej_type-1;
+            
+            seg_evt_win_start = str2double(resstruct_seg_settings.bsl_seg_win_size);
+            if isnan(seg_evt_win_start) || (seg_evt_win_start <=0)
+                warndlg( ['Baseline window size in seconds must be a number greater than 0.'...
+                    'BEAPP will use previously set window length: '  num2str(grp_proc_info.win_size_in_secs)]);
+            else
+                grp_proc_info.win_size_in_secs = seg_evt_win_start;
+            end
+            
+            if resstruct_seg_settings.bsl_seg_rej_type ==2 % reject using perc
+                perc_rej_input= str2double(resstruct_seg_settings.perc_rej_setting);
+                if isnan( perc_rej_input) || (perc_rej_input <=0) || (perc_rej_input > 100)
+                    warndlg( ['Rejection percentage must be given as a number 1 to 100'...
+                        'BEAPP will use previously set rejection percentage: '  num2str(grp_proc_info.beapp_baseline_rej_perc_above_threshold)]);
+                else
+                    grp_proc_info.beapp_baseline_rej_perc_above_threshold = perc_rej_input;
+                end
+            end
+            
+        end
+end
+end

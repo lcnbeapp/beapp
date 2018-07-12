@@ -5,7 +5,7 @@ template_handle = findobj('tag','beapp_edit_template_figure');
 if ~isempty(template_handle)
     warning('BEAPP GUI: only one template window can be edited at a time. Closing existing template window.');
     close(template_handle);
-end;
+end
 
 % if new run, fill in template with defaults, otherwise load previous
 % template
@@ -16,10 +16,14 @@ if strcmp(new_or_existing_run,'new')
 elseif strcmp(new_or_existing_run,'existing')
     
     [load_template_file,load_template_path] = uigetfile(['~'   [fileparts(which('set_beapp_def.m')) filesep, 'run_templates']  filesep '*.mat'],'Select Existing BEAPP Template to Use');
-    load([load_template_path,filesep,load_template_file],'grp_proc_info');
-    grp_proc_info = reset_beapp_path_defaults (grp_proc_info); % update paths for current computer
-    grp_proc_info = set_beapp_path(grp_proc_info);
     
+    if ~(load_template_path==0)
+    load([load_template_path,filesep,load_template_file],'grp_proc_info');
+    grp_proc_info = reset_beapp_path_defaults(grp_proc_info); % update paths for current computer
+    grp_proc_info = set_beapp_path(grp_proc_info);
+    else 
+        warndlg('No template was selected, please select a template to load or create a new template');
+    end
 end
 
 % create and name figure

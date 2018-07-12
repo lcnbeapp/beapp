@@ -61,7 +61,7 @@ if (length(file_proc_info.net_happe_additional_chans_lbls) == 1) && isempty(file
 else
     chan_IDs_all = unique([name_10_20_elecs  file_proc_info.net_happe_additional_chans_lbls]);
     % select desired channels listed in this net
-    chan_IDs = intersect(chan_IDs_all,{file_proc_info.net_vstruct.labels});
+    chan_IDs = intersect(chan_IDs_all,{file_proc_info.net_vstruct.labels},'stable');
     if length(chan_IDs) < length(chan_IDs_all)
         extra_elecs = setdiff(chan_IDs_all,chan_IDs,'stable');
         warning (['Electrode(s) ' sprintf('%s ,',extra_elecs{1:end-1}) extra_elecs{end} ' are not found in file chanlocs ']);

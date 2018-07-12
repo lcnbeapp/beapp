@@ -9,6 +9,10 @@ end
 
 src_dir = {uigetdir(open_dialog_at_dir)};
 
+if isequal({[0]},src_dir)
+    warndlg('No source directory selected. Please choose the directory where source files are located');
+    src_dir = {''};
+end
 set(findobj('Tag',show_field_tag),'string',...
     sprintf(['Currently selected directory: ' '\n' strrep(src_dir{1},'\','\\')]));
 

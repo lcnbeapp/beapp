@@ -39,20 +39,22 @@
 function tmp_eeg_w = beapp_extract_segments(eeg_msk_curr_cond_curr_epoch,file_proc_info,grp_proc_info_in,eeg_curr_epoch)
 
             % find indices where data hasn't been flagged bad
-            good_data=find(eeg_msk_curr_cond_curr_epoch==0);
-            grouped_good_data=group(good_data); 
+            good_data_inds=find(eeg_msk_curr_cond_curr_epoch==0);
+            grouped_good_data=group(good_data_inds); 
             clear tmpf1;
             
             %check if there is a long enough period of good data to use for
             %analysis
             segment_num=1;
             tmp_eeg_w = [];
-            for jnum=1:length(grouped_good_data)
-                good_data=grouped_good_data{jnum};
-                if length(good_data)>=file_proc_info.beapp_win_size_in_samps
+            for curr_contig_good_per=1:length(grouped_good_data)
+                local_good_data_inds=grouped_good_data{curr_contig_good_per};
+                
+                 %confirm that there are at least nsecs of data available
+                if length(local_good_data_inds)>=file_proc_info.beapp_win_size_in_samps
                     
-                    %confirm that there are at least nsecs of data available
-                    pot_good_windows=floor(length(good_data)/(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs));
+                   
+                    pot_good_windows=floor(length(local_good_data_inds)/(file_proc_info.beapp_win_size_in_samps));
                     
                     if pot_good_windows>0
                         
@@ -60,9 +62,13 @@ function tmp_eeg_w = beapp_extract_segments(eeg_msk_curr_cond_curr_epoch,file_pr
                         %them to eeg_w a three dimensional EEG
                         for curr_window=1:pot_good_windows
                             window_idxs=(1:floor(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs))+floor(file_proc_info.beapp_srate*grp_proc_info_in.win_size_in_secs)*(curr_window-1);
-                            tmp_wind_out=eeg_curr_epoch(:,good_data(window_idxs))';
-                            wind_out=detrend(tmp_wind_out,'constant');
-                            tmp_eeg_w(:,:,segment_num)=wind_out';
+%                             
+%                             tmp_wind_out=eeg_curr_epoch(:,local_good_data_inds(window_idxs))';
+%                             wind_out=detrend(tmp_wind_out,'constant');
+%                             tmp_eeg_w(:,:,segment_num)=wind_out';
+                            
+                             tmp_eeg_w(:,:,segment_num)=eeg_curr_epoch(:,local_good_data_inds(window_idxs));
+                          
                             segment_num=segment_num+1;
                             
                             clear tmp_wind_out window_idxs wind_out

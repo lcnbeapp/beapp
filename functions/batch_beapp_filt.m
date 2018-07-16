@@ -58,7 +58,7 @@ if exist('cleanline', 'file') && grp_proc_info_in.beapp_filters{'Cleanline','Fil
     cleanline_path = which('eegplugin_cleanline.m');
     cleanline_path = cleanline_path(1:findstr(cleanline_path,'eegplugin_cleanline.m')-1);
     addpath(genpath(cleanline_path));
-end;
+end
 
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     

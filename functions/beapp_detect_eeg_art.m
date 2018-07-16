@@ -38,14 +38,14 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % removes artifact above threshold, assumes detrending or highpass
-function eeg_msk=beapp_detect_eeg_art(eeg_in,srate,thr,win_size_in_samps)
+function eeg_msk = beapp_detect_eeg_art(eeg_in,srate,thr,win_size_in_samps)
 
 %% new mask function
 % mark any data above threshold
 eeg_above_thr=abs(eeg_in)>=thr;
 
 % grab the channels and sample numbers for all zero crossing in the data
-[channel_zero_crossing,sample_num_zero_crossing]= find(diff(sign(eeg_in(1:end-1,:))')' ~=0);
+[channel_zero_crossing,sample_num_zero_crossing]= find(diff(sign(eeg_in)')' ~=0);
 
 % initialize artifact mask as all good data
 eeg_msk = zeros(size(eeg_in));
@@ -91,5 +91,6 @@ for curr_channel = 1:length(chans_w_zeros)
             end
         end
 end
-
+curr_chan = randi(size(eeg_in,1));
+plot_msk_art_tester (eeg_in,eeg_msk,curr_chan,thr);
 clearvars -except eeg_in srate thr win_size_in_samps eeg_msk

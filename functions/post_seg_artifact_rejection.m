@@ -2,10 +2,11 @@ function EEG_tmp = post_seg_artifact_rejection(EEG_tmp, grp_proc_info_in, beapp_
 % post segmentation amplitude artifact rejection, with stopgap fix during beta testing
 if size(beapp_indx{curr_epoch},1) > size(beapp_indx{curr_epoch},2)
     % add ROI option
-    EEG_tmp = pop_eegthresh(EEG_tmp,1, beapp_indx{curr_epoch}',-1* grp_proc_info_in.art_thresh,grp_proc_info_in.art_thresh,[EEG_tmp.xmin],[EEG_tmp.xmax],2,0);
+    [EEG_tmp,bad_inds] = pop_eegthresh(EEG_tmp,1, beapp_indx{curr_epoch}',-1* grp_proc_info_in.art_thresh,grp_proc_info_in.art_thresh,[EEG_tmp.xmin],[EEG_tmp.xmax],2,0);
 else
-    EEG_tmp = pop_eegthresh(EEG_tmp,1, beapp_indx{curr_epoch},-1* grp_proc_info_in.art_thresh,grp_proc_info_in.art_thresh,[EEG_tmp.xmin],[EEG_tmp.xmax],2,0);
+    [EEG_tmp,bad_inds] = pop_eegthresh(EEG_tmp,1, beapp_indx{curr_epoch},-1* grp_proc_info_in.art_thresh,grp_proc_info_in.art_thresh,[EEG_tmp.xmin],[EEG_tmp.xmax],2,0);
 end
+
 
 if grp_proc_info_in.beapp_happe_segment_rejection
     tmp_chk = EEG_tmp.data;

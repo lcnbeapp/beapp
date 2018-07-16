@@ -1,2 +1,0 @@
-function EEG=pop_FASTER(EEG)
-EEG=FASTER_GUI(1);

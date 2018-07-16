@@ -70,7 +70,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             
             % generate mask for pre-segmentation artifact rejection if needed
             if grp_proc_info_in.beapp_baseline_msk_artifact ~= 0
-                [eeg_msk{curr_epoch},file_proc_info] = beapp_msk_art(eeg{curr_epoch}, grp_proc_info_in,file_proc_info,curr_epoch);
+               % [eeg_msk{curr_epoch},file_proc_info] = beapp_msk_art(eeg{curr_epoch}, grp_proc_info_in,file_proc_info,curr_epoch);
+                [eeg_msk{curr_epoch},file_proc_info] = beapp_msk_art(eeg{curr_epoch}, grp_proc_info_in,file_proc_info);
             else
                 eeg_msk{curr_epoch}=zeros(1,size(eeg{curr_epoch},2));
             end

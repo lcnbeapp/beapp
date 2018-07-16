@@ -34,31 +34,47 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [eeg_msk_curr_epoch_out,file_proc_info_in] = beapp_msk_art (eeg_curr_epoch, grp_proc_info_in,file_proc_info_in,curr_epoch)
 
-%create a mask that tags the artifact
-eeg_msk_curr_epoch = beapp_detect_eeg_art(eeg_curr_epoch,file_proc_info_in.beapp_srate,grp_proc_info_in.art_thresh, file_proc_info_in.beapp_win_size_in_samps);
+% %create a mask that tags the artifact
+% eeg_msk_curr_epoch_aug = beapp_detect_eeg_art(eeg_curr_epoch,file_proc_info_in.beapp_srate,grp_proc_info_in.art_thresh, file_proc_info_in.beapp_win_size_in_samps);
+% 
+% % tag buffer sections of data for removal
+% if grp_proc_info_in.src_buff_start_nsec>0
+%     eeg_msk_curr_epoch_aug(:,1:ceil(grp_proc_info_in.src_buff_start_nsec*file_proc_info_in.beapp_srate))=1;
+% end
+% 
+% if grp_proc_info_in.src_buff_end_nsec>0
+%     length_data_aug=size(eeg_msk_curr_epoch_aug,2);
+%     end_buffer_start_samp_aug=(length_data_aug-ceil(file_proc_info_in.beapp_srate*grp_proc_info_in.src_buff_end_nsec)+1);
+%     eeg_msk_curr_epoch_aug(:,end_buffer_start_samp_aug:length_data_aug)=1;
+% end
+% 
+% % find periods with artifact in any channel
+% eeg_msk_curr_epoch_aug=sum(eeg_msk_curr_epoch_aug);
+% tmpf1=find(eeg_msk_curr_epoch_aug>0);
+% eeg_msk_curr_epoch_aug(tmpf1)=1; clear tmpf1;
 
-% find number of channels at each sample with artifact above threshold
-%eeg_msk_curr_epoch=sum(eeg_msk_curr_epoch);
+%create a mask that tags the artifact
+eeg_msk_curr_epoch = beapp_detect_eeg_art(eeg_curr_epoch,file_proc_info_in.beapp_srate,...
+    grp_proc_info_in.art_thresh, file_proc_info_in.beapp_win_size_in_samps);
+
+% find periods with artifact in any channel
+eeg_msk_curr_epoch=sum(eeg_msk_curr_epoch);
 
 % if percentage thresholding
 if grp_proc_info_in.beapp_baseline_msk_artifact ==2
     % percent of channels being analyzed that are bad
-    %eeg_msk_percent_bad_curr_epoch = (eeg_msk_curr_epoch/length(file_proc_info_in.beapp_indx{curr_epoch}))*100;
+    eeg_msk_percent_bad_curr_epoch = (eeg_msk_curr_epoch/length(file_proc_info_in.beapp_indx{curr_epoch}))*100;
     
     % mark samples with more than percent threshold of channels above amplitude threshold
-    %idxs_above_thr=find(eeg_msk_percent_bad_curr_epoch >grp_proc_info_in.beapp_baseline_rej_perc_above_threshold);
-    error('test')
+    idxs_above_thr=find(eeg_msk_percent_bad_curr_epoch >grp_proc_info_in.beapp_baseline_rej_perc_above_threshold);
+    
 % if one bad channel threshold    
-elseif grp_proc_info_in.beapp_baseline_msk_artifact ==1
-    % find periods with artifact in any channel
-eeg_msk_curr_epoch=sum(eeg_msk_curr_epoch);
-tmpf1=find(eeg_msk_curr_epoch>0);
-eeg_msk_curr_epoch_out(tmpf1)=1; clear tmpf1;
-   % idxs_above_thr=find(eeg_msk_curr_epoch >1);
+elseif grp_proc_info_in.beapp_baseline_msk_artifact ==1    
+    idxs_above_thr=find(eeg_msk_curr_epoch>0);
 end
 
-% eeg_msk_curr_epoch_out = zeros(1,length(eeg_msk_curr_epoch));
-% eeg_msk_curr_epoch_out(idxs_above_thr)=1; clear tmpf1;
+eeg_msk_curr_epoch_out = zeros(1,size(eeg_msk_curr_epoch,2));
+eeg_msk_curr_epoch_out(1,idxs_above_thr)=1; clear tmpf1;
 
 % tag buffer sections of data for removal
 if grp_proc_info_in.src_buff_start_nsec>0
@@ -70,3 +86,6 @@ if grp_proc_info_in.src_buff_end_nsec>0
     end_buffer_start_samp=(length_data-ceil(file_proc_info_in.beapp_srate*grp_proc_info_in.src_buff_end_nsec)+1);
     eeg_msk_curr_epoch_out(:,end_buffer_start_samp:length_data)=1;
 end
+
+% isequal(eeg_msk_curr_epoch_out,eeg_msk_curr_epoch_aug)
+% hi = 0;

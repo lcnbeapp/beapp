@@ -99,7 +99,7 @@
 function grp_proc_info = set_beapp_def 
 %% version numbers for BEAPP and packages
 grp_proc_info.beapp_ver={'BEAPP_v4_1'};
-grp_proc_info.eeglab_ver = {'eeglab14_0_0b'};
+grp_proc_info.eeglab_ver = {'eeglab14_1_2b'};
 grp_proc_info.fieldtrip_ver = {'fieldtrip-20160917'};
 grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
 

@@ -49,6 +49,20 @@
 </ol>
 <p>BEAPP aims to strike a balance between assuming only a basic level of MATLAB and EEG signal processing experience, while also offering a flexible menu of opportunities for more advanced users.&nbsp; At a minimum, no programming experience is required to use BEAPP, but basic familiarity with troubleshooting in Matlab will likely come in handy.</p>
 <p>User guides for running BEAPP programmatically and using a GUI can be found in the documentation folder.</p>
+<p><strong>Next Steps:</strong></p>
+<p>BEAPP is intended to be a dynamic, rather than static, platform for EEG processing.&nbsp; This means that we plan to continue adding additional functionality over time, and we encourage other users to add functionality as well.&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>What&rsquo;s on Our Wishlist (coming soon):</strong></p>
+<ol>
+<li>Improved GUI for user inputs</li>
+<li>Formatted dataset-wide run reporting (general dataset statistics, formatted warnings in a report)</li>
+<li>Reading files in directly from .bdf/.edf and .set files</li>
+<li>Coherence</li>
+<li>Phase lag index</li>
+<li>Topoplotting outputs with mixed source acquisition layouts/ number of channels</li>
+<li>Phase amplitude coupling</li>
+<li>Ability to change the order of modules</li>
+</ol>
 <p>&nbsp;In publications, please reference: Levin AR, M&eacute;ndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. BEAPP: The Batch Electroencephalography Automated Processing Platform. Frontiers in Neuroscience (2018).</p>
 <p>Correspondence: April R. Levin, MD&nbsp;<a href="mailto:april.levin@childrens.harvard.edu">april.levin@childrens.harvard.edu</a></p>
 <p><strong>The Batch Electroencephalography Automated Processing Platform (BEAPP)</strong> Copyright (C) 2015, 2016, 2017, 2018</p>

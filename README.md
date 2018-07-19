@@ -62,7 +62,10 @@
 <li>Phase amplitude coupling</li>
 <li>Ability to change the order of modules</li>
 </ol>
-<p>&nbsp;In publications, please reference: Levin AR, M&eacute;ndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. BEAPP: The Batch Electroencephalography Automated Processing Platform. Frontiers in Neuroscience (2018).</p>
+<p>&nbsp; In publications, please reference: 
+ Levin AR, Méndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. 
+<a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00513/full"> BEAPP: The Batch Electroencephalography Automated Processing Platform</a>. Frontiers in Neuroscience (2018).
+
 <p>Correspondence: April R. Levin, MD&nbsp;<a href="mailto:april.levin@childrens.harvard.edu">april.levin@childrens.harvard.edu</a></p>
 <p><strong>Additional Credits: </strong></p>
 <p>BEAPP utilizes functionality from the software listed below. Users who choose to run any of this software through BEAPP should cite the appropriate papers in any publications.</p>

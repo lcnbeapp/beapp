@@ -51,7 +51,6 @@
 <p>User guides for running BEAPP programmatically and using a GUI can be found in the documentation folder.</p>
 <p><strong>Next Steps:</strong></p>
 <p>BEAPP is intended to be a dynamic, rather than static, platform for EEG processing.&nbsp; This means that we plan to continue adding additional functionality over time, and we encourage other users to add functionality as well.&nbsp;</p>
-<p>&nbsp;</p>
 <p><strong>What&rsquo;s on Our Wishlist (coming soon):</strong></p>
 <ol>
 <li>Improved GUI for user inputs</li>

@@ -38,7 +38,7 @@
 <li>Linear</li>
 <li>Kalman</li>
 </ol>
-<li>Amplitude-based artifact detection</li>
+<li>Amplitude-based artifact detection for segment removal</li>
 <li>Segmentation</li>
 <ol>
 <li>Stimulus-locked (for task-related data)</li>

@@ -64,13 +64,6 @@
 </ol>
 <p>&nbsp;In publications, please reference: Levin AR, M&eacute;ndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. BEAPP: The Batch Electroencephalography Automated Processing Platform. Frontiers in Neuroscience (2018).</p>
 <p>Correspondence: April R. Levin, MD&nbsp;<a href="mailto:april.levin@childrens.harvard.edu">april.levin@childrens.harvard.edu</a></p>
-<p><strong>The Batch Electroencephalography Automated Processing Platform (BEAPP)</strong> Copyright (C) 2015, 2016, 2017, 2018</p>
-<p>Developed at Boston Children's Hospital Department of Neurology and the Laboratories of Cognitive Neuroscience</p>
-<p>All rights reserved.</p>
-<p>This software is being distributed with the hope that it will be useful, but WITHOUT ANY WARRANTY; without even implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General Public License for more details.</p>
-<p>In no event shall Boston Children&rsquo;s Hospital (BCH), the BCH Department of Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software contributors to BEAPP be liable to any party for direct, indirect, special, incidental, or consequential damages, including lost profits, arising out of the use of this software and its documentation, even if Boston Children&rsquo;s Hospital, the Laboratories of Cognitive Neuroscience, and software contributors have been advised of the possibility of such damage. Software and documentation is provided &ldquo;as is.&rdquo; Boston Children&rsquo;s Hospital, the Laboratories of Cognitive Neuroscience, and software contributors are under no obligation to provide maintenance, support, updates, enhancements, or modifications.</p>
-<p>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License (version 3) as published by the Free Software Foundation.</p>
-<p>You should receive a copy of the GNU General Public License along with this program. If not, see&nbsp;<a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
 <p><strong>Additional Credits: </strong></p>
 <p>BEAPP utilizes functionality from the software listed below. Users who choose to run any of this software through BEAPP should cite the appropriate papers in any publications.</p>
 <p><a href="http://sccn.ucsd.edu/wiki/EEGLAB_revision_history_version_14">EEGLAB Version 14.1.2b</a>:</p>

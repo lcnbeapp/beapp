@@ -63,6 +63,7 @@
 <li>Ability to change the order of modules</li>
 </ol>
 <p>&nbsp; In publications, please reference: 
+ 
  Levin AR, Méndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. 
 <a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00513/full"> BEAPP: The Batch Electroencephalography Automated Processing Platform</a>. Frontiers in Neuroscience (2018).
 

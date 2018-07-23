@@ -156,7 +156,12 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             ICA_report_table.File_Rec_Period_Lengths_In_Secs(curr_file) = {ica_report_struct.rec_period_lengths_in_secs};
             ICA_report_table.Number_Channels_UserSelected(curr_file) = {length(chan_IDs)};
             ICA_report_table.Number_Good_Channels_Selected_Per_Rec_Period(curr_file) = {ica_report_struct.good_chans_per_rec_period};
-            ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) = {ica_report_struct.num_interp_per_rec_period};
+            if ~all(cellfun(@isempty,file_proc_info.beapp_bad_chans))
+                tmp = cellfun(@mat2str,file_proc_info.beapp_bad_chans, 'UniformOutput',0);
+                ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) =tmp;
+            else
+                ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) ={''};
+            end
             if ~(grp_proc_info_in.beapp_ica_type ==3)
                 ICA_report_table.Percent_ICs_Rejected_Per_Rec_Period(curr_file) = {ica_report_struct.percent_ICs_rej_per_rec_period};
                 ICA_report_table.Percent_Variance_Kept_of_Data_Input_to_MARA_Per_Rec_Period(curr_file) = {ica_report_struct.perc_var_post_wave_per_rec_period};

@@ -196,7 +196,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                             if length(EEG_epoch_structs{curr_epoch}.chanlocs) == size(eeg{curr_epoch},1)
                                 curr_epoch_curr_cond_eeg_w{curr_condition,1} = EEG_epoch_structs{curr_epoch}.data(:,:,segs_to_keep);
                             else
-                                tmp_eeg_arr = NaN(num_chans_input_eeg,size(EEG_epoch_structs{curr_epoch}.data,2),sum(segs_to_keep));
+                                tmp_eeg_arr = NaN(size(eeg{curr_epoch},1),size(EEG_epoch_structs{curr_epoch}.data,2),sum(segs_to_keep));
                                 tmp_eeg_arr(file_proc_info.beapp_indx{curr_epoch},:,:) = EEG_epoch_structs{curr_epoch}.data(:,:,segs_to_keep);
                                 curr_epoch_curr_cond_eeg_w{curr_condition,1} = tmp_eeg_arr;
                             end

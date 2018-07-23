@@ -1,6 +1,6 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
-% Copyright (C) 2015, 2016, 2017
+% Copyright (C) 2015, 2016, 2017, 2018
 % 
 % Developed at Boston Children's Hospital Department of Neurology and the
 % Laboratories of Cognitive Neuroscience
@@ -93,11 +93,10 @@
 % support certain functions used in BEAPP. 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % GENERAL USER INPUTS for BEAPP: Set these for any data runs
-grp_proc_info.src_dir={'C:\BEAPP_src_directory'}; %the directory containing your source files
+grp_proc_info.src_dir={'C:\BEAPP_manuscript_auditory'}; %the directory containing your source files
 grp_proc_info.beapp_curr_run_tag ='ITPC'; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
 grp_proc_info.beapp_prev_run_tag = ''; % def = ''.  run tag for previous run that you would like to use as source data for rerun. can be timestamp, but must be exact.
 grp_proc_info.beapp_advinputs_on= 0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
-
 
 % MODULE SELECTION
 % pipeline flags:0=off, 1=on
@@ -110,7 +109,7 @@ grp_proc_info.beapp_toggle_mods{'rereference',{'Module_On','Module_Export_On'}}=
 grp_proc_info.beapp_toggle_mods{'detrend',{'Module_On','Module_Export_On'}}=[1,1]; % Turn on detrending 
 grp_proc_info.beapp_toggle_mods{'segment',{'Module_On','Module_Export_On'}}=[1,1]; % Turn on segmentation
 grp_proc_info.beapp_toggle_mods{'psd',{'Module_On','Module_Export_On'}}=[0,0]; %flag that toggles the PSD calculations
-grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[0,0]; %turns ITPC analysis on, use with event data only
+grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[1,1]; %turns ITPC analysis on, use with event data only
 
 % FORMATTING SPECIFICATIONS
 %Formatting specifications: Required

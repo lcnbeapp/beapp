@@ -7,6 +7,10 @@
 % srate = file_proc_info.beapp_srate
 % thr = user set threshold 
 % win_size_in_samps  = window size in samples (seconds*srate)
+%
+% Outputs:
+% eeg_msk : chan x samples mask indicating which samples are in a  bad (marked 1) or good
+% (marked 0) period between zero crossings in each channel.
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
@@ -91,6 +95,5 @@ for curr_channel = 1:length(chans_w_zeros)
             end
         end
 end
-curr_chan = randi(size(eeg_in,1));
-plot_msk_art_tester (eeg_in,eeg_msk,curr_chan,thr);
+
 clearvars -except eeg_in srate thr win_size_in_samps eeg_msk

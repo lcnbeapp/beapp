@@ -1,3 +1,7 @@
+% create HAPPE report table for all files in directory if there is a crash
+% during the ICA module
+% function takes grp_proc_info from previous run
+
 function gen_HAPPE_output_table_after_crash(grp_proc_info_in)
 
 cd(grp_proc_info_in.beapp_toggle_mods{'ica','Module_Dir'}{1});

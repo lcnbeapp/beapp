@@ -1,5 +1,12 @@
-function beapp_gui_hide_unneeded_inputs(checkbox_tag, other_input_tags,checkbox_on_val,comp_val)
+% turn corresponding inputs invisible in GUI if checkbox is selected/field
+% is set to a specific value
+% checkbox_tag is the tag for the primary field
+% other_input_tags are corresponding tags to mark visible or invisible
+% checkbox_on_val ('On' or 'Off')-- turn inputs visible or invisible if
+% checkbox/field is expected value
+% comp_val is comparison value for field
 
+function beapp_gui_hide_unneeded_inputs(checkbox_tag, other_input_tags,checkbox_on_val,comp_val)
 
 % confirm checkbox is on or off
 if isequal(comp_val,'NoCompVal')

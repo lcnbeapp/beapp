@@ -7,7 +7,6 @@ else
     [EEG_tmp,bad_inds] = pop_eegthresh(EEG_tmp,1, beapp_indx{curr_epoch},-1* grp_proc_info_in.art_thresh,grp_proc_info_in.art_thresh,[EEG_tmp.xmin],[EEG_tmp.xmax],2,0);
 end
 
-
 if grp_proc_info_in.beapp_happe_segment_rejection
     tmp_chk = EEG_tmp.data;
     tmp_chk(isnan(tmp_chk)) = 1000;

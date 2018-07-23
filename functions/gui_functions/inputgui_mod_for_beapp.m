@@ -26,6 +26,10 @@
 %                  { { ui1 }, { ui2 }... }, { 'uiX' } being GUI matlab
 %                  uicontrol arguments such as { 'style', 'radiobutton',
 %                  'String', 'hello' }. See Matlab function uicontrol() for details.
+%                   Uitables can also be created using this function with the following format: 
+%                     {{'style','uitable','data', data,...
+%                 'ColumnEditable',[false, true],'ColumnName',{'Headers','Headers2'},...
+%                 'ColumnFormat',{'char','logical'},'tag','table_name'}}
 %   'helpcom'    - optional help command
 %   'helpbut'    - text for help button
 %   'title'      - optional figure title
@@ -40,9 +44,20 @@
 %   'screenpos'  - see supergui.m help message.
 %   'skipline'   - ['on'|'off'] skip a row before the "OK" and "Cancel"
 %                  button. Default is 'on'.
-% 'nextbutton'
-% 'backbutton'
-% 'tag'
+% 'tag' --  figure tag. default is 'subsection_template_fig';...
+% 'buttoncolor'  - figure button color (def   [0.6000    0.8000    1.0000])
+%     'backcolor' - figure background color (def  [0.8590, 1.0000, 1.0000];)...
+%     'nextbutton' -  {'on','off'} def 'off' -- add a next button to figure;...
+%     'backbutton' -  {'on','off'} def 'off' -- add a back button to figure;...
+%     'nextbuttoncall' - button call for next button
+%     'backbuttoncall' - button call for back button
+%     'mutetagwarn' -- mute warnings for generating a figure with the same
+%     tag as another figure    def = 0
+% 'adv_geometry' -- geometry for associated advanced settings
+%   'adv_uilist'   -- uilist for associated advanced settings 
+%   'adv_geomvert' 'real' -- vertical geometry for associated advanced
+%   settings
+    
 %
 % Output:
 %   outparam   - list of outputs. The function scans all lines and
@@ -50,13 +65,19 @@
 %                edit box, radio button, checkbox and listbox.
 %   userdat    - 'userdata' value of the figure.
 %   strhalt    - the function returns when the 'userdata' field of the
-%                button with the tag 'ok' is modified. This returns the
+%                button with the tag 'ok_adv'  or is modified. This returns the
 %                new value of this field.
+%                 Possible values are:
+%                 'retuninginputui' if user selects Save button
+%                 'retuninginputui_next' if user selects next button
+%                 'retuninginputui_back' if user selects back button
+%                 '' if user selects Cancel        
 %   outstruct  - returns outputs as a structure (only tagged ui controls
 %                are considered). The field name of the structure is
 %                the tag of the ui and contain the ui value or string.
 %   instruct   - resturn inputs provided in the same format as 'outstruct'
 %                This allow to compare in/outputs more easy.
+%
 %
 % Note: the function also adds three buttons at the bottom of each
 %       interactive windows: 'CANCEL', 'HELP' (if callback command

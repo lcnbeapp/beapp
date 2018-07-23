@@ -2,6 +2,7 @@
 %
 % create binary mask for current recording period/epoch based on percent of
 % channels for a given sample that are marked bad (above user amplitude threshold)
+% default is to mark a sample bad if any channel is bad at that period
 %
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
@@ -33,25 +34,6 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [eeg_msk_curr_epoch_out,file_proc_info_in] = beapp_msk_art (eeg_curr_epoch, grp_proc_info_in,file_proc_info_in,curr_epoch)
-
-% %create a mask that tags the artifact
-% eeg_msk_curr_epoch_aug = beapp_detect_eeg_art(eeg_curr_epoch,file_proc_info_in.beapp_srate,grp_proc_info_in.art_thresh, file_proc_info_in.beapp_win_size_in_samps);
-% 
-% % tag buffer sections of data for removal
-% if grp_proc_info_in.src_buff_start_nsec>0
-%     eeg_msk_curr_epoch_aug(:,1:ceil(grp_proc_info_in.src_buff_start_nsec*file_proc_info_in.beapp_srate))=1;
-% end
-% 
-% if grp_proc_info_in.src_buff_end_nsec>0
-%     length_data_aug=size(eeg_msk_curr_epoch_aug,2);
-%     end_buffer_start_samp_aug=(length_data_aug-ceil(file_proc_info_in.beapp_srate*grp_proc_info_in.src_buff_end_nsec)+1);
-%     eeg_msk_curr_epoch_aug(:,end_buffer_start_samp_aug:length_data_aug)=1;
-% end
-% 
-% % find periods with artifact in any channel
-% eeg_msk_curr_epoch_aug=sum(eeg_msk_curr_epoch_aug);
-% tmpf1=find(eeg_msk_curr_epoch_aug>0);
-% eeg_msk_curr_epoch_aug(tmpf1)=1; clear tmpf1;
 
 %create a mask that tags the artifact
 eeg_msk_curr_epoch = beapp_detect_eeg_art(eeg_curr_epoch,file_proc_info_in.beapp_srate,...
@@ -86,6 +68,3 @@ if grp_proc_info_in.src_buff_end_nsec>0
     end_buffer_start_samp=(length_data-ceil(file_proc_info_in.beapp_srate*grp_proc_info_in.src_buff_end_nsec)+1);
     eeg_msk_curr_epoch_out(:,end_buffer_start_samp:length_data)=1;
 end
-
-% isequal(eeg_msk_curr_epoch_out,eeg_msk_curr_epoch_aug)
-% hi = 0;

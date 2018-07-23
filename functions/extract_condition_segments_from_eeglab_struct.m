@@ -1,5 +1,6 @@
 function [curr_epoch_curr_cond_eeg_w,segs_to_keep] = extract_condition_segments_from_eeglab_struct (EEG_tmp, cond_types_all_segs,curr_cond_id, num_chans_input_eeg,beapp_indx_curr_epoch)
 
+% mark segments that are from this condition
 targ_cond_logical = ismember(cond_types_all_segs, curr_cond_id);
 
 if isempty(EEG_tmp.reject.rejglobal)

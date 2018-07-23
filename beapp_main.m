@@ -2,7 +2,7 @@ function beapp_main(grp_proc_info_main)
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
-% Copyright (C) 2015, 2016, 2017
+% Copyright (C)  2015, 2016, 2017, 2018
 % 
 % 
 % Developed at Boston Children's Hospital Department of Neurology and the
@@ -53,8 +53,8 @@ function beapp_main(grp_proc_info_main)
 % april.levin@childrens.harvard.edu
 %
 % In publications, please reference:
-% Levin AR., Méndez Leal A., Gabard-Durnam L., O'Leary, HM (2017) BEAPP: The Batch Electroencephalography Automated Processing Platform
-% Manuscript in preparation
+% Levin AR, Méndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. 
+% BEAPP: The Batch Electroencephalography Automated Processing Platform.  Frontiers in Neuroscience (2018).
 % 
 % Additional Credits:
 % BEAPP utilizes functionality from the software listed below. Users who choose to run any of this

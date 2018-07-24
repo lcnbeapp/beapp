@@ -48,6 +48,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [EEG_out,ica_report_struct,skip_file] = beapp_ica_run_mara (EEG_after_ICA,fname,happe_plotting_on,ica_report_struct,curr_rec_period)
 skip_file = 0;
+
 %use MARA to flag artifactual IComponents automatically if
 %artifact probability > .5
 [~,EEG_pst_mara,~] = processMARA (EEG_after_ICA,EEG_after_ICA,EEG_after_ICA, [0, 0, happe_plotting_on, happe_plotting_on, happe_plotting_on]);

@@ -10,7 +10,7 @@
 file_ext = '.mat';
 
 % source directory for your files (full path)
-table_files_src_dir = 'C:\BEAPP_manuscript_baseline';
+table_files_src_dir = 'C:\BEAPP_manuscript_auditory';
 
 % where would you like to save your table (typically the user inputs
 % folder)

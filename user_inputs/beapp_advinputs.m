@@ -17,9 +17,10 @@
 % april.levin@childrens.harvard.edu
 %
 % In publications, please reference:
-% Levin AR, Méndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. 
-% BEAPP: The Batch Electroencephalography Automated Processing Platform.  Frontiers in Neuroscience (2018).
-% 
+% Levin AR, Méndez Leal AS, Gabard-Durnam LJ and O’Leary HM (2018) 
+% BEAPP: The Batch Electroencephalography Automated Processing Platform.
+%  Front. Neurosci. 12:513. doi: 10.3389/fnins.2018.00513
+%
 % Additional Credits:
 % BEAPP utilizes functionality from the software listed below. Users who choose to run any of this
 % software through BEAPP should cite the appropriate papers in any publications. 

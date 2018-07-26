@@ -11,9 +11,9 @@ table_files_src_dir = 'B:\ISP_BEAPRun11.03.2016\MatLab Files';
 table_save_directory = 'C:\beapp_beta_ISP\user_inputs';
 
 linenoise_freq = 60; % if yours changes, will need to adapt script accordingly
+
 % possible names for EEG variables
 src_eeg_vname_pos={'Category_1_Segment1','EEG_Segment1', 'Category_1','Category1'};  
-
 
 %%
 cd (table_files_src_dir);
@@ -27,7 +27,7 @@ Line_Noise_Freq = ones(length(flist),1)*linenoise_freq;
 Offset = NaN(length(flist),1);
 
 beapp_file_info_table = table(FileName, SamplingRate, NetType,Line_Noise_Freq, Offset);
-beapp_file_info_table.Properties.VariableNames = {'FileName','SamplingRate','NetType','Line_Noise_Freq', 'Offset'};
+beapp_file_info_table.Properties.VariableNames = {'FileName','SamplingRate','NetType','Line_Noise_Freq', 'FileOffset'};
 beapp_file_info_table.FileName = flist;
 
 for curr_file = 1: length(flist)

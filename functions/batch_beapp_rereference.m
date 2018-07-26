@@ -2,8 +2,9 @@
 % 
 % rereference the data using an average, Laplacian, or single electrode
 % reference. Takes the BEAPP grp_proc_info structure. 
-% Uses the eeglab function pop_reref and the CSD Laplacian Toolbox
-% developed by Kayser and Tenke (2006) 
+% Uses the eeglab function pop_reref, the CSD Laplacian Toolbox
+% developed by Kayser and Tenke (2006), and the REST Toolbox developed by
+% Dong et al. (2017)
 % 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
@@ -52,7 +53,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         tic;
-        for curr_epoch = 1:size(eeg,2)
+        for curr_rec_per = 1:size(eeg,2)
             
             % average rereferencing
             switch  grp_proc_info_in.reref_typ
@@ -62,12 +63,13 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     diary off;
                     
                     % temporary fix -- ignore channels not in beapp_indx
-                    EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_epoch},curr_epoch);
-                    chans_exclude = setdiff([1:file_proc_info.src_nchan],file_proc_info.beapp_indx{curr_epoch});
+                    % (bad chans)
+                    EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_rec_per},curr_rec_per);
+                    chans_exclude = setdiff([1:file_proc_info.src_nchan],file_proc_info.beapp_indx{curr_rec_per});
                     
                     EEG_tmp = pop_reref(EEG_tmp, [],'exclude',chans_exclude);
                     diary on;
-                    eeg{curr_epoch} = EEG_tmp.data;
+                    eeg{curr_rec_per} = EEG_tmp.data;
                     
                     clear EEG_tmp chans_exclude
                 
@@ -75,27 +77,26 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 case 2
                     % switch coords into "EGI" space to be compatible with CSD toolbox
                     % done repeatedly to allow channel selection to vary by epoch
-                    csdlp_formatted_montage = calc_CSDLP_toolbox_coordinates (file_proc_info,curr_epoch);
+                    csdlp_formatted_montage = calc_CSDLP_toolbox_coordinates (file_proc_info,curr_rec_per);
                     
                     % get G and H matrices, apply CSDLP
                     [G,H]=GetGH(csdlp_formatted_montage,grp_proc_info_in.beapp_csdlp_interp_flex);
-                    eeg{curr_epoch}(file_proc_info.beapp_indx{curr_epoch},:)= CSD(eeg{curr_epoch}(file_proc_info.beapp_indx{curr_epoch},:),G,H,grp_proc_info_in.beapp_csdlp_lambda);
+                    eeg{curr_rec_per}(file_proc_info.beapp_indx{curr_rec_per},:)= CSD(eeg{curr_rec_per}(file_proc_info.beapp_indx{curr_rec_per},:),G,H,grp_proc_info_in.beapp_csdlp_lambda);
                 
-                case 3
+                case 3 % specific electrodes
                     % temporary fix -- ignore channels not in beapp_indx
                     diary off;
                     uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
                     file_proc_info.net_reref_chan_inds = grp_proc_info_in.beapp_reref_chan_inds{uniq_net_ind};
                     
-                    EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_epoch},curr_epoch);
-                    chans_exclude = setdiff([1:file_proc_info.src_nchan],file_proc_info.beapp_indx{curr_epoch});
+                    EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_rec_per},curr_rec_per);
                     EEG_tmp = pop_reref (EEG_tmp, [file_proc_info.net_reref_chan_inds], 'keepref', 'on'); 
                     diary on;
-                    eeg{curr_epoch} = EEG_tmp.data;
+                    eeg{curr_rec_per} = EEG_tmp.data;
                     clear EEG_tmp chans_exclude
                 case 4 % REST
                      uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
-                     eeg{curr_epoch} = compute_REST_reref(eeg{curr_epoch},rest_leads{uniq_net_ind});
+                     eeg{curr_rec_per} = compute_REST_reref(eeg{curr_rec_per},rest_leads{uniq_net_ind});
             end
         end
         

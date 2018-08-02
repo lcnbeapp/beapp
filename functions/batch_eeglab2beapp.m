@@ -16,7 +16,7 @@ if ~isempty(grp_proc_info_in.src_unique_nets{1})
 end
 
 % if user wants to ignore specific channels, store which channels for which
-% nets (otherwise get all net information from mat_file_info_table)
+% nets (otherwise get all net information from beapp_file_info_table)
 if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
     if ~(isequal(length(grp_proc_info_in.src_unique_nets),length(grp_proc_info_in.beapp_indx_chans_to_exclude))&& ~isempty(grp_proc_info_in.src_unique_nets))
         if isempty(grp_proc_info_in.src_unique_nets)
@@ -58,6 +58,7 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
     file_proc_info.beapp_bad_chans= cell(file_proc_info.src_num_epochs,1);
     file_proc_info.beapp_bad_chans(:) = {[]};
     file_proc_info.beapp_nchans_used=length(beapp_indx_init)*ones(1,file_proc_info.src_num_epochs);
+    file_proc_info.beapp_filt_max_freq = NaN;
     clear beapp_indx_init
     
     %% read in eeglab events

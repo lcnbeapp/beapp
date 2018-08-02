@@ -11,7 +11,9 @@
 % event_tag_offsets = grp_proc_info.event_tag_offsets
 % src_linenoise = grp_proc_info.src_linenoise
 % event_file_info_table_loc = grp_proc_info.beapp_file_info_table
-%
+% net_type_in_file = 1 if net type is embedded in file, 0 if net type needs to be read from table
+% srate_in_file = 1 if srate is embedded in file, 0 if srate needs to be read from the table
+%                 
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017

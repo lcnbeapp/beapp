@@ -75,8 +75,19 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             
             % highpass/lowpass/bandpass
             if grp_proc_info_in.beapp_filters{'Highpass','Filt_On'} || grp_proc_info_in.beapp_filters{'Lowpass','Filt_On'}
-                if strcmp(grp_proc_info_in.beapp_filters{'Highpass','Filt_Name'}{1},'eegfilt') || strcmp(grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1},'eegfilt')
-                    EEG_curr_rec_period = pop_eegfiltnew(EEG_curr_rec_period,low_freq_cutoff, high_freq_cutoff, [],0,[],0);
+                if grp_proc_info_in.beapp_filters{'Lowpass','Filt_On'} 
+                    if file_proc_info.beapp_srate <= 2*high_freq_cutoff
+                        warning(['BEAPP File ' file_proc_info.beapp_fname{1} ': current sampling rate (' num2str(file_proc_info.beapp_srate) ...
+                            ') is less or equal to twice the maximum good frequency selected for the lowpass filter (' num2str(high_freq_cutoff) ...
+                            '). Skipping filtering for this file, please adjust parameters']); 
+                    
+                    else
+                        if strcmp(grp_proc_info_in.beapp_filters{'Highpass','Filt_Name'}{1},'eegfilt') || strcmp(grp_proc_info_in.beapp_filters{'Lowpass','Filt_Name'}{1},'eegfilt')
+                            EEG_curr_rec_period = pop_eegfiltnew(EEG_curr_rec_period,low_freq_cutoff, high_freq_cutoff, [],0,[],0);
+                            file_proc_info.beapp_filt_max_freq = high_freq_cutoff;
+                        end
+                   
+                    end
                 end
             end
                                    

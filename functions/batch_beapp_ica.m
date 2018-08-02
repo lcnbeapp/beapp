@@ -88,7 +88,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             % if HAPPE, run 1-250 bandpass filter, cleanline, and reject channels
             % either way, select EEG channels of interest for analyses
             if grp_proc_info_in.beapp_ica_type == 2
-                [EEG_tmp, full_selected_channels] = happe_bandpass_cleanline_rejchan (EEG_orig,chan_IDs, file_proc_info.beapp_srate, file_proc_info.src_linenoise);
+                [EEG_tmp, full_selected_channels,file_proc_info.beapp_filt_max_freq] = happe_bandpass_cleanline_rejchan (EEG_orig,chan_IDs,...
+                    file_proc_info.beapp_srate, file_proc_info.src_linenoise,file_proc_info.beapp_filt_max_freq);
             else
                 EEG_tmp = pop_select(EEG_orig,'channel', chan_IDs);
                 full_selected_channels = EEG_tmp.chanlocs;

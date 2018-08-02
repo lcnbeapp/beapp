@@ -123,6 +123,7 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
         file_proc_info.beapp_nchans_used=[file_proc_info.src_nchan];
         file_proc_info.beapp_indx={1:size(eeg{1},1)}; % indices for electrodes being used for analysis at current time
         file_proc_info.beapp_num_epochs = 1; % assumes mat files only have one recording period
+        file_proc_info.beapp_filt_max_freq = NaN;
         
         % save file net information
         file_proc_info.net_typ=grp_proc_info_in.src_net_typ_all(curr_file);

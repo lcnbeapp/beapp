@@ -47,6 +47,22 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         % resample each epoch if necessary
         if ~(file_proc_info.src_srate==grp_proc_info_in.beapp_rsamp_srate)
+             
+            if isfield(file_proc_info,'beapp_filt_max_freq')
+                if ~isnan(file_proc_info.beapp_filt_max_freq)
+                    if grp_proc_info_in.beapp_rsamp_srate < (file_proc_info.beapp_filt_max_freq*2)
+                        warning(['BEAPP File ' file_proc_info.beapp_fname{1} ': the desired sampling rate ' ...
+                            num2str(grp_proc_info_in.beapp_rsamp_srate) ' is not more than twice the maximum frequency of the '...
+                            'low pass filter applied to this file (' num2str(file_proc_info.beapp_filt_max_freq) '). Please adjust settings to avoid aliasing during resampling']);
+                    elseif grp_proc_info_in.beapp_rsamp_srate == (file_proc_info.beapp_filt_max_freq*2)
+                        warning(['BEAPP File ' file_proc_info.beapp_fname{1} ': the desired sampling rate ' ...
+                            num2str(grp_proc_info_in.beapp_rsamp_srate) '  is exactly equal to twice the maximum frequency of the '...
+                            'low pass filter applied to this file (' num2str(file_proc_info.beapp_filt_max_freq) '). We recommend setting the low pass filter cutoff below the Nyquist frequency']);
+                   
+                    end
+                end
+            end
+            
             for curr_epoch = 1:size(eeg,2)
                 eeg{curr_epoch}=resamp_eeg(eeg{curr_epoch},file_proc_info.src_srate,grp_proc_info_in.beapp_rsamp_srate,grp_proc_info_in.beapp_rsamp_typ);
                 

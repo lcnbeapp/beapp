@@ -70,8 +70,15 @@ else
     end
 end
 
+try
 dir_prev_exist = rowfun(@beapp_create_outdirs,grp_proc_info_in.beapp_toggle_mods,'NumOutputs',1);
-
+catch err
+    if strcmp(err.identifier,'MATLAB:table:rowfun:FunFailed')
+        errordlg('Please confirm source directory selected exists');
+    else
+        rethrow(err);
+    end
+end
 if any(dir_prev_exist.Var1)
     if grp_proc_info_in.beapp_dir_warn_off ~= 1
                
@@ -83,7 +90,7 @@ if any(dir_prev_exist.Var1)
             disp(sprintf(' \n Continuing with pipeline. \n Could not create directories:'));
             disp([grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))])
         elseif  strcmp('No',usr_cont)
-            error('Exiting BEAPP'); 
+            error('User did not proceed with run, exiting BEAPP'); 
         end
     else
         disp(['The following directories already exist and were not recreated, data may be overwritten'; '';...

@@ -67,6 +67,7 @@ file_proc_info.src_record_start_time = tmp_rec_time{2};
 file_proc_info.src_file_offset_in_ms = grp_proc_info_in.src_offsets_in_ms_all(curr_file);
 file_proc_info.src_linenoise =  grp_proc_info_in.src_linenoise_all(curr_file);
 file_proc_info.net_typ = {char(sensor_layout_obj.getName)};
+file_proc_info.src_format_typ = grp_proc_info_in.src_format_typ;
 grp_proc_info_in.src_net_typ_all{curr_file}= file_proc_info.net_typ{1};
 grp_proc_info_in.src_srate_all(curr_file)=file_proc_info.src_srate;
 

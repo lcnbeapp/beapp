@@ -29,6 +29,8 @@ switch current_sub_panel
             grp_proc_info.win_select_n_trials = str2num(resstruct_seg_settings.beapp_win_select_n_trials);
         end
     case 'seg_evt_condition_codes'
+        
+        if grp_proc_info.beapp_event_use_tags_only ==0
         % delete empty rows in table and empty conditions and condition headers
         tmp_evt_seg_table_out = resstruct_seg_settings.seg_evt_tag_table.data;
         idx=all(cellfun(@ (x) (isempty(x) || isnan(x)) ,tmp_evt_seg_table_out(:,:)),2);
@@ -47,6 +49,13 @@ switch current_sub_panel
             end
         else
             waitfor(warndlg('No condition information entered into event segmentation table. Please adjust before running BEAPP'));
+        end
+        elseif grp_proc_info.beapp_event_use_tags_only ==1
+             if ~all(cellfun(@ (x) isequal('',x) ,resstruct_seg_settings.seg_evt_tag_cond_table.data(:,2)))
+                grp_proc_info.beapp_event_eprime_values.condition_names = resstruct_seg_settings.seg_evt_tag_cond_table.data(:,2)';
+             else
+                 waitfor(warndlg('No condition information entered into event segmentation table. Please adjust before running BEAPP'));
+             end
         end
     case 'seg_baseline'
         grp_proc_info.beapp_baseline_msk_artifact = resstruct_seg_settings.bsl_seg_rej_type-1;
@@ -99,6 +108,7 @@ switch current_sub_panel
             end
             
             grp_proc_info.evt_trial_baseline_removal =resstruct_seg_settings.use_bsl_corr;
+            grp_proc_info.beapp_event_use_tags_only = resstruct_seg_settings.event_use_tags_only -1;
             
             bsl_win_start = str2double(resstruct_seg_settings.bsl_startr);
             if isnan(bsl_win_start)
@@ -127,6 +137,7 @@ switch current_sub_panel
                 waitfor(warndlg('At least one pair of conditioned baseline tags is missing either onset or offset information. Please adjust before running BEAPP'));
             end
             
+             grp_proc_info.beapp_event_use_tags_only = resstruct_seg_settings.event_use_tags_only -1;
             % either way use the rows where onset string added
             grp_proc_info.beapp_event_code_offset_strs= offset_strs (good_inds_onset);
             

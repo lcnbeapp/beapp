@@ -2,18 +2,13 @@ function grp_proc_info_in =  batch_eeglab2beapp (grp_proc_info_in)
 
 % get file list and extract file specific information from input tables
 [grp_proc_info_in.src_fname_all,grp_proc_info_in.src_linenoise_all,...
-    grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all] = ...
+    grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,grp_proc_info_in.src_net_typ_all] = ...
     beapp_load_nonmat_flist_and_evt_table(grp_proc_info_in.src_dir,'.set',...
-    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table);
-
-% load nets the user has input, for speed
-if ~isempty(grp_proc_info_in.src_unique_nets{1})
-    
-    % add new nets if not in library, load nets used into grp_proc_info_in
-    add_nets_to_library(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,grp_proc_info_in.ref_eeglab_loc_dir,grp_proc_info_in.name_10_20_elecs);
-    [grp_proc_info_in.src_unique_net_vstructs,grp_proc_info_in.src_unique_net_ref_rows, grp_proc_info_in.src_net_10_20_elecs,grp_proc_info_in.largest_nchan] = load_nets_in_dataset(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options, grp_proc_info_in.ref_net_library_dir);
-    cd(grp_proc_info_in.src_dir{1})
+    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table,grp_proc_info_in.src_format_typ);
+if isempty(grp_proc_info_in.src_net_typ_all)
+    error('Please include sensor layout information in beapp_file_info_table');
 end
+grp_proc_info_in.src_unique_nets = unique(grp_proc_info_in.src_net_typ_all);
 
 % if user wants to ignore specific channels, store which channels for which
 % nets (otherwise get all net information from beapp_file_info_table)
@@ -27,6 +22,16 @@ if ~isempty(grp_proc_info_in.beapp_indx_chans_to_exclude)
         end
     end
 end
+
+% load nets the user has input, for speed
+if ~isempty(grp_proc_info_in.src_unique_nets{1})
+    
+    % add new nets if not in library, load nets used into grp_proc_info_in
+    add_nets_to_library(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,grp_proc_info_in.ref_eeglab_loc_dir,grp_proc_info_in.name_10_20_elecs);
+    [grp_proc_info_in.src_unique_net_vstructs,grp_proc_info_in.src_unique_net_ref_rows, grp_proc_info_in.src_net_10_20_elecs,grp_proc_info_in.largest_nchan] = load_nets_in_dataset(grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options, grp_proc_info_in.ref_net_library_dir);
+    cd(grp_proc_info_in.src_dir{1});
+end
+
 
 %% convert each file to BEAPP structure
 
@@ -67,7 +72,7 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
     % add event label, time latency, and sample number to EEGLAB structure
     if ~ isempty(EEG_struct.event)
         [file_proc_info.evt_info{1}] = beapp_read_eeglab_events(EEG_struct.event,grp_proc_info_in.behavioral_coding.bad_value,...
-            grp_proc_info_in.src_eeglab_cond_info_field);
+            grp_proc_info_in.src_eeglab_cond_info_field,grp_proc_info_in.src_eeglab_latency_units,file_proc_info);
     end
     
 %     if grp_proc_info_in.src_eeglab_cond_info_loc ==1 % condition information already embedded in .type tags

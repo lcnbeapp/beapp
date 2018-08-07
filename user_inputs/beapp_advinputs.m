@@ -110,6 +110,7 @@ grp_proc_info.beapp_rmv_bad_chan_on=0; % def = 0; 1 if you'd like to remove chan
 
 % FORMATTING SPECIFICATIONS
 grp_proc_info.mff_seg_throw_out_bad_segments = 1; % throw out segments marked bad when importing pre-segmented MFF files. def = 1; 
+grp_proc_info.src_eeglab_cond_info_field = 'condition'; % name of field with condition information for EEGLAB .set files (ex .cel_type or .condition)
 
 % FILTER SPECIFICATIONS
 %Sets the buffer at the begining and end of the source files when making segments

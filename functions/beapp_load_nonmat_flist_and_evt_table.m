@@ -44,8 +44,8 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function [src_fname_all,src_linenoise_all,src_offsets_in_ms_all,beapp_fname_all]  = beapp_load_nonmat_flist_and_evt_table ...
-(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc)
+function [src_fname_all,src_linenoise_all,src_offsets_in_ms_all,beapp_fname_all,src_net_typ_all]  = beapp_load_nonmat_flist_and_evt_table ...
+(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc, src_format_typ)
 
 % get list of files of source type in source directory
 cd(src_dir{1});
@@ -56,8 +56,8 @@ if isempty(src_file_list)
     error (['BEAPP: No ' file_extension ' files were found in source directory' src_dir{1}]);
 end
 
-% pull in event offsets or individual linenoise freqs from table if needed
-if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise)
+% pull in event offsets or individual linenoise freqs from table if needed 
+if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ == 4
     load(event_file_info_table_loc);
     
     % find files listed both in source directory and offset info table
@@ -65,7 +65,7 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise)
     src_fname_all = src_fname_all';
     
     if isempty(src_fname_all)
-        error (['BEAPP: User chose to use an offset or linenoise table, but no mff files listed in table were found in source directory' src_dir{1}]);
+        error (['BEAPP: User chose to use an offset or linenoise table, but no files listed in table were found in source directory' src_dir{1}]);
     end 
     
     % load offset info if file specific,otherwise use group value for all
@@ -81,12 +81,23 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise)
     else
        src_linenoise_all = src_linenoise *ones(1,length(src_fname_all));
     end 
+    
+    % EEGLAB, often will need to pull net name
+    if src_format_typ == 4
+        % store group net types and sampling rates (from table)
+        src_net_typ_all = beapp_file_info_table.NetType(ind_table);
+    else
+         src_net_typ_all = 'pulled directly from files';
+    end
+        
+    
 else
     % if no event/linenoise information table needed, use group value for
     % all files
     src_fname_all = src_file_list;
     src_offsets_in_ms_all = event_tag_offsets * ones(1,length(src_fname_all));
     src_linenoise_all = src_linenoise * ones(1,length(src_fname_all));
+    src_net_typ_all = 'pulled directly from files';
 end
 
 beapp_fname_all=strrep(src_fname_all, file_extension, '.mat');

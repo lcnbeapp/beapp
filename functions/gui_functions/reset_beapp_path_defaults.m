@@ -14,3 +14,4 @@ grp_proc_info.ref_net_library_dir=[grp_proc_info.beapp_root_dir{1},filesep,'refe
 grp_proc_info.ref_net_library_options = ([grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library_options.mat']);
 grp_proc_info.ref_eeglab_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep, 'sample_locs'];
 grp_proc_info.ref_def_template_folder = [fileparts(mfilename('fullpath')) filesep, 'run_templates'];
+grp_proc_info.rerun_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'rerun_fselect_table.mat'];

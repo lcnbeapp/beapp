@@ -43,7 +43,7 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [evt_info, conditions_being_analyzed,skip_file] = beapp_extract_condition_labels(beapp_fname,src_data_type,...
-    header_tag_info,evt_info,beapp_event_eprime_values,beapp_event_code_onset_strs)
+    header_tag_info,evt_info,beapp_event_eprime_values,beapp_event_code_onset_strs,beapp_event_use_tags_only)
 
 % remove extra rows in header
 header_no_cond = 0;

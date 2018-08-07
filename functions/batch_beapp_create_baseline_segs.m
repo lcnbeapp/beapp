@@ -52,7 +52,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         % pull out event tags of interest + incorporate behavioral coding
         [file_proc_info, skip_file] = beapp_extract_relevant_event_tags_and_behav_info ...
                     (file_proc_info,grp_proc_info_in.src_data_type, ...
-                    grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs);
+                    grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs,...
+                    grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_event_use_tags_only);
 
         % skip file if it doesn't contain user-chosen event tags (unless pure baseline)
         if skip_file, continue; end

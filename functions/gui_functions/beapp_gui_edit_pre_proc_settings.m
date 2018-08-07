@@ -18,8 +18,9 @@ else
     show_next_button = 'on';
 end
 
+
 while ~strcmp(strhalt_pre_proc_out,'returninginputui_done')
-     
+   
 current_sub_panel = pre_proc_sub_panel_list{pre_proc_sub_panel_ctr};
     
     [pre_proc_button_list,pre_proc_button_geometry,pre_proc_ver_geometry,skipline_panel,...

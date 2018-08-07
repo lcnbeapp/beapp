@@ -181,7 +181,8 @@ grp_proc_info.src_buff_end_nsec=2; %number of seconds buffer at the end of the E
 grp_proc_info.mff_seg_throw_out_bad_segments =1; % determines whether to throw out bad segments 
 grp_proc_info.src_presentation_software =1; % presentation software used for paradigm (0 = none, 1 = EPrime, 2 = Presentation, 3 = EEGLAB formatted (see user guide).  def = 1)
 grp_proc_info.beapp_indx_chans_to_exclude = {}; % index of channels to exclude in each net. def  = {};
-grp_proc_info.src_eeglab_cond_info_field= 'condition'; % name of field with condition information (ex .cel_type or .condition)
+grp_proc_info.src_eeglab_cond_info_field = 'condition'; % name of field with condition information (ex .cel_type or .condition)
+grp_proc_info.src_eeglab_latency_units =1; % units on EEGLAB .set file latency field. def=1; 1 = samples, 2 = seconds, 3 = milliseconds, 4 = microseconds
 
 %% event formatting defaults
 grp_proc_info.beapp_event_code_onset_strs={''}; %the event codes assigned during data collection to signifiy the onset of the stimulus
@@ -189,6 +190,7 @@ grp_proc_info.beapp_event_code_offset_strs={''};  %Ex {'TRSP'} the event codes a
 grp_proc_info.beapp_event_eprime_values.condition_names = {''};
 grp_proc_info.beapp_event_eprime_values.event_codes = []; % 2d array -- groups x condition codes
 grp_proc_info.event_tag_offsets = 0; % def = 0 OR 'input_table'. Event offset in ms. If offset is not uniform across dataset, set to input_table and input information as in evt_file_info_table example 
+grp_proc_info.beapp_event_use_tags_only  = 0; % def =0 (use event codes/tags/strings and condition/cel information). 1 = use event codes/tags/strings only for segmenting
 
 %% Formatting specifications: Behavioral Coding
 grp_proc_info.behavioral_coding.events = {''}; % def = {''}. Ex {'TRSP'} Events containing behavioral coding information

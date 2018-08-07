@@ -114,6 +114,7 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
         file_proc_info.src_epoch_nsamps(1)=size(eeg{1},2);
         file_proc_info.src_num_epochs = 1;
         file_proc_info.src_linenoise =  grp_proc_info_in.src_linenoise_all(curr_file); 
+        file_proc_info.src_format_typ = grp_proc_info_in.src_format_typ;
         file_proc_info.epoch_inds_to_process = [1]; % assumes mat files only have one recording period
         
         % save starting beapp file variables from source information

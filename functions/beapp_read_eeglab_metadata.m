@@ -10,15 +10,13 @@ file_proc_info.src_file_offset_in_ms = grp_proc_info_in.src_offsets_in_ms_all(cu
 file_proc_info.src_linenoise =  grp_proc_info_in.src_linenoise_all(curr_file);
 file_proc_info.src_num_epochs = size(EEG_struct.data,3);
 
-% assumes net name is the same as the chanlocs_filename
-if isfield(EEG_struct.chaninfo, 'filename')
-    [~,chan_locs_name,~] =fileparts(EEG_struct.chaninfo.filename);
-else
-    error ('need to update this');
-end 
-file_proc_info.net_typ = {chan_locs_name};
-grp_proc_info_in.src_net_typ_all{curr_file}= file_proc_info.net_typ{1};
-grp_proc_info_in.src_srate_all(curr_file)=file_proc_info.src_srate;
+% % assumes net name is the same as the chanlocs_filename
+% if isfield(EEG_struct.chaninfo, 'filename')
+%     [~,chan_locs_name,~] =fileparts(EEG_struct.chaninfo.filename);
+% else
+%     error ('need to update this');
+% end 
+% file_proc_info.net_typ = {chan_locs_name};
 
 % store general file information for beapp
 file_proc_info.beapp_srate = file_proc_info.src_srate;
@@ -26,6 +24,9 @@ file_proc_info.beapp_nchan = file_proc_info.src_nchan;
 file_proc_info.hist_run_tag = grp_proc_info_in.hist_run_tag;
 file_proc_info.hist_run_table = beapp_init_file_hist_table (grp_proc_info_in.beapp_toggle_mods.Properties.RowNames);
 file_proc_info.epoch_inds_to_process = grp_proc_info_in.epoch_inds_to_process;
+file_proc_info.net_typ{1}=grp_proc_info_in.src_net_typ_all{curr_file}; 
+grp_proc_info_in.src_srate_all(curr_file)=file_proc_info.src_srate;
+file_proc_info.src_format_typ = grp_proc_info_in.src_format_typ;
 
 %% load and store net information locally
 

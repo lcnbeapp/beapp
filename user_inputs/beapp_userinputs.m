@@ -195,8 +195,11 @@ grp_proc_info.beapp_baseline_msk_artifact=1;
 grp_proc_info.beapp_baseline_rej_perc_above_threshold = .01; % def = .01; (.01%, should reject if any channels bad assuming channel # <1000)  
 
 % SEGMENTING SPECIFICATIONS -- EVENT-RELATED/ CONDITIONED BASELINE ONLY
-grp_proc_info.beapp_event_code_onset_strs={'stm+'}; %Ex {'stm+'} the event codes assigned during data collection to signifiy the onset of the stimulus
-grp_proc_info.beapp_event_eprime_values.condition_names = {'Standard','Native','Non-Native'};% desired condition names for cell numbers below
+grp_proc_info.beapp_event_use_tags_only  = 0; % def =0 (use event codes/tags/strings and condition/cel information). 1 = use event codes/tags/strings only for segmenting (usually for .set source files)
+grp_proc_info.beapp_event_code_onset_strs={'stm+'}; %Ex {'stm+'} the event codes assigned during data collection to signifiy the onset of the stimulus. 
+
+% Desired condition names: Order must match cell numbers if cell sets are being used, or event tags if only event tags are being used
+grp_proc_info.beapp_event_eprime_values.condition_names = {'Standard','Native','Non-Native'};
 grp_proc_info.beapp_event_eprime_values.event_codes(:,1) = [1,2,3]; % these MUST line up across all possible cell sets
 grp_proc_info.beapp_event_eprime_values.event_codes(:,2) = [10,12,13]; % these MUST line up across all possible cell sets
 grp_proc_info.beapp_event_eprime_values.event_codes(:,3) = [11,12,13]; % these MUST line up across all possible cell sets

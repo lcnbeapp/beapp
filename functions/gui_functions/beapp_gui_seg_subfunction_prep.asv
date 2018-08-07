@@ -48,6 +48,7 @@ switch current_sub_panel
         
     case 'seg_evt_condition_codes'
         
+        if  grp_proc_info.beapp_event_use_tags_only  == 0
         assumed_max_number_condition_sets = 5; % can let user change if needed
         init_cel_set = {'Event_Cond_Set1','Event_Cond_Set2','Event_Cond_Set3','Event_Cond_Set4','Event_Cond_Set5'};
         
@@ -69,8 +70,7 @@ switch current_sub_panel
         column_format(:) = deal({'numeric'});
         
         seg_button_list = [{{'style','text','string','Segmenting Specifications: Conditioned Baseline/ Event Related Data'}},...
-            {{sprintf(['Enter Condition Names and enter all associated cel codes in the corresponding column \n',...
-            'e.g.
+            {{'style','text','string','Enter Condition Names and enter all associated cel codes in the corresponding column (see guide)'}},...
             {{'style','uitable','data', init_seg_tag_evt_codes,'tag','seg_evt_tag_table',...
             'ColumnFormat',column_format,'ColumnEditable',true(1,length(init_seg_tag_cond_headers)),...
             'ColumnName',init_seg_tag_cond_headers,'RowName',init_cel_set}},...
@@ -84,10 +84,27 @@ switch current_sub_panel
             ['beapp_gui_add_delete_rename_condition_columns(get(findobj(''tag'',''seg_evt_tag_table'')),''delete''); ']}},...
             extra_space_line];
         
-        seg_button_geometry = {1 1 1 [.05 .3 .3 .3 .05]};
-        seg_ver_geometry=  [1 6 1 1];
+        seg_button_geometry = {1 1 1 1 [.05 .3 .3 .3 .05]};
+        seg_ver_geometry=  [1 1 6 1 1];
         skipline_panel ='on';
+        else
+            if length(grp_proc_info.beapp_event_eprime_values.condition_names)<=length(grp_proc_info.beapp_event_code_onset_strs)
+                cond_names_disp = cell(length(grp_proc_info.beapp_event_code_onset_strs),1);
+                cond_names_disp(:) = deal({''});
+                cond_names_disp(1:length((
+                
+                
+                
+             seg_button_list = [{{'style','text','string','Segmenting Specifications: Conditioned Baseline/ Event Related Data'}},...
+            {{'style','text','string','Enter Condition Names Associated With Each Tags (Repeated Condition Names are fine, see guide)'}},...
+            {{'style','uitable','data', [grp_proc_info.beapp_event_code_onset_strs grp_proc_info.beapp_event_code_onset_strs],'tag','seg_evt_tag_table',...
+            'ColumnFormat',column_format,'ColumnEditable',true(1,length(init_seg_tag_cond_headers)),...
+            'ColumnName',init_seg_tag_cond_headers,'RowName',init_cel_set}}];
         
+        seg_button_geometry = {1 1 1};
+        seg_ver_geometry=  [1 1 6];
+        skipline_panel ='on';
+        end
         
     case 'seg_evt_stm_on_off_info'
         
@@ -123,27 +140,29 @@ switch current_sub_panel
                 {{'style','text','string',sprintf(['Baseline Correction: Baseline end time \n relative to event marker in seconds (def: 0)']),...
                 'tag','bsl_endp','Visible',bsl_vis_str}},...
                 {{'style','edit','string',grp_proc_info.evt_trial_baseline_win_start,'tag','bsl_startr','Visible',bsl_vis_str}},...
-                {{'style','edit','string',grp_proc_info.evt_trial_baseline_win_end,'tag','bsl_endr','Visible',bsl_vis_str}}];
+                {{'style','edit','string',grp_proc_info.evt_trial_baseline_win_end,'tag','bsl_endr','Visible',bsl_vis_str}},...
+                {{'style','text', 'string', 'Segment conditions determined by: '}},{{'style','popupmenu','string', {'Event Tags and Condition/Cel Codes','Event Tags Only'},...
+            'tag','event_use_tags_only','Value', grp_proc_info.beapp_event_use_tags_only+1}}];
             
-            seg_button_geometry = {1 1 1 [.5 .5] [.5 .5] 1 [.5 .5] [.5 .5]};
-            seg_ver_geometry=  [1 5 1 1 1 1 1 1];
+            seg_button_geometry = {1 1 1 [.5 .5] [.5 .5] 1 [.5 .5] [.5 .5] [.5 .5]};
+            seg_ver_geometry=  [1 5 1 1 1 1 1 1 1];
             
-            % Segmentiing: Event Related Only
-            %For event-related data only: Set where to create segments, relative to the event marker of interest
-            grp_proc_info.evt_seg_win_start = -0.100; % def = -0.100;  start time in seconds for segments, relative to the event marker of interest (ex -0.100, 0)
-            grp_proc_info.evt_seg_win_end = 0.800;  % def = .800; end time in seconds for segments, relative to the event marker of interest (ex .800, 1)
-            
-            
-            %Set which event data is baseline
-            grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module.
-            grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on.
-            grp_proc_info.evt_trial_baseline_win_end = -.001; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0)
-            
-            
-            % Set which event data to analyze, relative to the event marker of interest (This can be the whole segment, or part of a segment)
-            grp_proc_info.evt_analysis_win_start = 0.000; % def = -0.100;  start time in seconds for analysis segments, relative to the event marker of interest (ex -0.100, 0)
-            grp_proc_info.evt_analysis_win_end = 0.800;  % def = .800; end time in seconds for analysis segments, relative to the event marker of interest (ex .800, 1)
-                    
+%             % Segmentiing: Event Related Only
+%             %For event-related data only: Set where to create segments, relative to the event marker of interest
+%             grp_proc_info.evt_seg_win_start = -0.100; % def = -0.100;  start time in seconds for segments, relative to the event marker of interest (ex -0.100, 0)
+%             grp_proc_info.evt_seg_win_end = 0.800;  % def = .800; end time in seconds for segments, relative to the event marker of interest (ex .800, 1)
+%             
+%             
+%             %Set which event data is baseline
+%             grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module.
+%             grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on.
+%             grp_proc_info.evt_trial_baseline_win_end = -.001; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0)
+%             
+%             
+%             % Set which event data to analyze, relative to the event marker of interest (This can be the whole segment, or part of a segment)
+%             grp_proc_info.evt_analysis_win_start = 0.000; % def = -0.100;  start time in seconds for analysis segments, relative to the event marker of interest (ex -0.100, 0)
+%             grp_proc_info.evt_analysis_win_end = 0.800;  % def = .800; end time in seconds for analysis segments, relative to the event marker of interest (ex .800, 1)
+%                     
         elseif grp_proc_info.src_data_type == 3 % conditioned baseline
             % fill in previous offset settings
             offset_strs_to_disp = empty_10_cel;

@@ -5,6 +5,7 @@ function grp_proc_info_in =  batch_eeglab2beapp (grp_proc_info_in)
     grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,grp_proc_info_in.src_net_typ_all] = ...
     beapp_load_nonmat_flist_and_evt_table(grp_proc_info_in.src_dir,'.set',...
     grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table,grp_proc_info_in.src_format_typ);
+
 if isempty(grp_proc_info_in.src_net_typ_all)
     error('Please include sensor layout information in beapp_file_info_table');
 end

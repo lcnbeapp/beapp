@@ -120,7 +120,7 @@ grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[1,1]; 
 
 % FORMATTING SPECIFICATIONS
 %Formatting specifications: Required
-grp_proc_info.src_format_typ = 2; %type of source file 1=.mat files, 2=mff, 3=PRE-PROCESSED + PRE-SEGMENTED MFF  
+grp_proc_info.src_format_typ = 2; %type of source file 1=.mat files, 2=mff, 3=PRE-PROCESSED + PRE-SEGMENTED MFF  4 = .set (EEGLAB) files
 grp_proc_info.src_data_type = 2; % type of data being processed (for segmenting,see user guide): 1 = baseline, 2 = event related 3= conditioned baseline
 grp_proc_info.src_presentation_software = 1; % presentation software used for paradigm (1 = EPrime, 2 = Presentation. def = 1)
 

@@ -46,8 +46,8 @@
 </ol>
 <li>Power spectral decomposition (PSD)</li>
 <li>Inter-trial phase coherence (ITPC)</li>
-<li>Parameterizing neural power spectra (FOOOF)</li>
-<li>Phase-amplitude coupling (PAC)</li>
+<li>Parameterizing neural power spectra (<a href="https://github.com/voytekresearch/fooof">FOOOF</a>)</li>
+<li>Phase-amplitude coupling (<a href="https://github.com/pactools/pactools">PAC</a>)</li>
 </ol>
 <p>BEAPP aims to strike a balance between assuming only a basic level of MATLAB and EEG signal processing experience, while also offering a flexible menu of opportunities for more advanced users.&nbsp; At a minimum, no programming experience is required to use BEAPP, but basic familiarity with troubleshooting in Matlab will likely come in handy.</p>
 <p>User guides for running BEAPP programmatically and using a GUI can be found in the documentation folder.</p>

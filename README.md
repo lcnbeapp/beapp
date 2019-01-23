@@ -46,9 +46,13 @@
 </ol>
 <li>Power spectral decomposition (PSD)</li>
 <li>Inter-trial phase coherence (ITPC)</li>
+<li>Parameterizing neural power spectra (<a href="https://github.com/voytekresearch/fooof">FOOOF</a>)</li>
+<li>Phase-amplitude coupling (<a href="https://github.com/pactools/pactools">PAC</a>)</li>
 </ol>
 <p>BEAPP aims to strike a balance between assuming only a basic level of MATLAB and EEG signal processing experience, while also offering a flexible menu of opportunities for more advanced users.&nbsp; At a minimum, no programming experience is required to use BEAPP, but basic familiarity with troubleshooting in Matlab will likely come in handy.</p>
 <p>User guides for running BEAPP programmatically and using a GUI can be found in the documentation folder.</p>
+<p><strong>Installing FOOOF and PAC Modules</strong></p>
+<p>The majority of BEAPP requires no installation steps to use. However, the FOOOF and PAC modules are executed by programs written in Python, and as a result, use of the FOOOF or PAC modules requires installation of these programs as well as their dependences. Instructions to do so can be found in the doc "Installing_FOOOF_and_PAC_dependences_readme" found in the documentation folder. Alternatively, the github repos for each toolbox (<a href="https://github.com/voytekresearch/fooof">FOOOF</a>, <a href="https://github.com/pactools/pactools">PAC</a>) will contain installation instructions.
 <p><strong>Next Steps:</strong></p>
 <p>BEAPP is intended to be a dynamic, rather than static, platform for EEG processing.&nbsp; This means that we plan to continue adding additional functionality over time, and we encourage other users to add functionality as well.&nbsp;</p>
 <p><strong>What&rsquo;s on Our Wishlist (coming soon):</strong></p>
@@ -85,6 +89,12 @@
 <p>Winkler et al., Automatic Classification of Artifactual ICA-Components for Artifact Removal in EEG Signals. Behavioral and Brain Functions 7:30 (2011).</p>
 <p><a href="http://www.nitrc.org/projects/cleanline">CleanLine</a>:</p>
 <p>Mullen, T. (2012).&nbsp;<em>NITRC: CleanLine: Tool/Resource Info</em>.</p>
+<p><a href="https://github.com/voytekresearch/fooof">FOOOF</a>:</p>
+<p>Haller M, Donoghue T, Peterson E, Varma P, Sebastian P, Gao R, Noto T, Knight RT, Shestyuk A,
+Voytek B (2018) Parameterizing Neural Power Spectra. bioRxiv, 299859.
+doi: https://doi.org/10.1101/299859 </p>
+<p><a href="https://github.com/pactools/pactools">PAC</a>:</p>
+<p>Tour, Tom Dupré la, Lucille Tallot, Laetitia Grabot, Valérie Doyère, Virginie van Wassenhove, Yves Grenier, and Alexandre Gramfort. “Non-Linear Auto-Regressive Models for Cross-Frequency Coupling in Neural Time Series.” PLOS Computational Biology 13, no. 12 (December 11, 2017): e1005893. https://doi.org/10.1371/journal.pcbi.1005893.</p>
 <p><strong>Requirements:</strong></p>
 <p>&nbsp;BEAPP was written in Matlab 2016a. Older versions of Matlab may not support certain functions used in BEAPP.</p>
 <p>&nbsp;</p>

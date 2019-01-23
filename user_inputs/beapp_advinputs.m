@@ -161,7 +161,7 @@ grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
 grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
 grp_proc_info.pac_set_num_segs = 0; %choose whether a set the number of segments should be used for pac
 grp_proc_info.pac_num_segs = 24; %if set_num_segs is on: set the number of segments to use for pac
-grp_proc_info.pac_calc_zscores = 1; %will take longer for pac to run if on. Requires a larger window size
+grp_proc_info.pac_calc_zscores = 0; %will take longer for pac to run if on. Requires a larger window size
 
 %Bycycle
 grp_proc_info.bycyc_set_num_segs = 1;

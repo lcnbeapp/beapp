@@ -1,3 +1,9 @@
 [submodule "Packages/fooof"]
 	path = Packages/fooof
 	url = https://github.com/fooof-tools/fooof
+[submodule "Packages/pactools"]
+	path = Packages/pactools
+	url = https://github.com/pactools/pactools
+[submodule "Packages/bycycle"]
+	path = Packages/bycycle
+	url = https://github.com/voytekresearch/bycycle

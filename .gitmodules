@@ -1,0 +1,3 @@
+[submodule "Packages/fooof"]
+	path = Packages/fooof
+	url = https://github.com/fooof-tools/fooof

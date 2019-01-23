@@ -15,6 +15,11 @@ function grp_proc_info = beapp_gui_adv_out_mod_settings_save_inputs(current_sub_
             end
             
             if grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}
+                if resstruct_adv_out_mod_settings.psd_output_typ == 1 %if the button is pressed
+                    grp_proc_info.psd_output_typ = 1;
+                else
+                    grp_proc_info.psd_output_typ = 2;
+                end
                 tmp_psd_rep_flags = double(cell2mat(resstruct_adv_out_mod_settings.psd_xls_sel_table.data(:,2)));
                 % save psd xls options, inefficient will eventually turn this into a table
                 grp_proc_info.beapp_xlsout_av_on = tmp_psd_rep_flags(1);

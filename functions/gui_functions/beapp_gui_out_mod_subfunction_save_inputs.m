@@ -77,6 +77,135 @@ switch current_sub_panel
         
         %flags the export data to xls report option on
         grp_proc_info.beapp_toggle_mods{'itpc','Module_Xls_Out_On'} = resstruct_out_mod_settings.itpc_xls_rep_on;  
+     
+    case 'fooof'
+        grp_proc_info.fooof_min_freq = str2double(resstruct_out_mod_settings.fooof_min_freq);
+        grp_proc_info.fooof_max_freq = str2double(resstruct_out_mod_settings.fooof_max_freq);
+        
+        min_width = str2double(resstruct_out_mod_settings.fooof_min_peak_width);
+        max_width = str2double(resstruct_out_mod_settings.fooof_max_peak_width);
+        grp_proc_info.fooof_peak_width_limits = [min_width,max_width];
+        
+        grp_proc_info.fooof_max_n_peaks = str2double(resstruct_out_mod_settings.fooof_max_n_peaks);
+        grp_proc_info.fooof_min_peak_amplitude = str2double(resstruct_out_mod_settings.fooof_min_peak_amplitude);
+        grp_proc_info.fooof_min_peak_threshold = str2double(resstruct_out_mod_settings.fooof_min_peak_threshold);
+        
+        grp_proc_info.fooof_background_mode = resstruct_out_mod_settings.fooof_background_mode; %1 = fixed, 2 = knee
+        
+        grp_proc_info.fooof_xlsout_on = resstruct_out_mod_settings.fooof_xls_rep_on;
+        grp_proc_info.fooof_save_all_reports = resstruct_out_mod_settings.fooof_fig_rep_on;
+        grp_proc_info.fooof_average_chans = resstruct_out_mod_settings.fooof_avg_chans;
+        if ~isempty(resstruct_out_mod_settings.fooof_save_participants)
+            %for some reason it sometimes comes out as a cell, sometimes
+            %doesn't
+            if iscell(resstruct_out_mod_settings.fooof_save_participants)
+                grp_proc_info.fooof_save_participants = strsplit(resstruct_out_mod_settings.fooof_save_participants{1,1}, ' '); 
+            else
+                grp_proc_info.fooof_save_participants = strsplit(resstruct_out_mod_settings.fooof_save_participants, ' '); 
+            end
+        else
+            grp_proc_info.fooof_save_participants = {};
+        end
+        %save channels input
+        if ~isempty(resstruct_out_mod_settings.fooof_save_channels)
+            str_chans2save = strsplit(resstruct_out_mod_settings.fooof_save_channels, ' '); 
+            grp_proc_info.fooof_save_channels = str2double(str_chans2save);
+        else
+            grp_proc_info.fooof_save_channels = [];
+        end
+        %save groups input
+        if ~isempty(resstruct_out_mod_settings.fooof_save_groups)
+            str_groups2save = strsplit(resstruct_out_mod_settings.fooof_save_groups, ' '); 
+            grp_proc_info.fooof_save_groups = str2double(str_groups2save);
+        else
+            grp_proc_info.fooof_save_groups = [];
+        end
+        %save chans to analyze input
+        if ~isempty(resstruct_out_mod_settings.fooof_chans_to_analyze)
+            str_chans2analyze = strsplit(resstruct_out_mod_settings.fooof_chans_to_analyze, ' '); 
+            grp_proc_info.fooof_chans_to_analyze = str2double(str_chans2analyze);
+        else
+            grp_proc_info.fooof_chans_to_analyze = [];
+        end
+        %save groups to analyze
+        if ~isempty(resstruct_out_mod_settings.fooof_channel_groups)
+            %sometimes output is a cell, sometimes isn't, don't know why
+            if iscell(resstruct_out_mod_settings.fooof_channel_groups)
+                str_chan_groups = strsplit(resstruct_out_mod_settings.fooof_channel_groups{1,1});
+            else
+                 str_chan_groups = strsplit(resstruct_out_mod_settings.fooof_channel_groups);
+            end
+            for i=1:size(str_chan_groups,2)
+                if ~isempty(str_chan_groups{1,i})
+                    str_chan_groups{1,i} = strsplit(str_chan_groups{1,i},',');
+                    str_chan_groups{1,i} = str2double(str_chan_groups{1,i});
+                end
+            end
+            grp_proc_info.fooof_channel_groups = str_chan_groups;
+        else
+            grp_proc_info.fooof_channel_groups = {};
+        end
+        
+    case 'pac'
+        grp_proc_info.pac_low_fq_min = str2double(resstruct_out_mod_settings.pac_low_fq_min);
+        grp_proc_info.pac_low_fq_max = str2double(resstruct_out_mod_settings.pac_low_fq_max);
+        grp_proc_info.pac_low_fq_res = str2double(resstruct_out_mod_settings.pac_low_fq_res);
+        grp_proc_info.pac_low_fq_width = str2double(resstruct_out_mod_settings.pac_low_fq_width);
+        
+        grp_proc_info.pac_high_fq_min = str2double(resstruct_out_mod_settings.pac_high_fq_min);
+        grp_proc_info.pac_high_fq_max = str2double(resstruct_out_mod_settings.pac_high_fq_max);
+        grp_proc_info.pac_high_fq_res = str2double(resstruct_out_mod_settings.pac_high_fq_res);
+        grp_proc_info.pac_high_fq_width = str2double(resstruct_out_mod_settings.pac_high_fq_width);
+        
+        switch resstruct_out_mod_settings.pac_method
+            case 1
+                grp_proc_info.pac_method = 'ozkurt';
+            case 2
+                grp_proc_info.pac_method = 'canolty';
+            case 3
+                grp_proc_info.pac_method = 'tort';
+            case 4
+                grp_proc_info.pac_method = 'penny';
+            case 5
+                grp_proc_info.pac_method =  'vanwijk';
+            case 6
+                grp_proc_info.pac_method =  'duprelatour';
+            case 7
+                grp_proc_info.pac_method =  'colgin';
+            case 8
+                grp_proc_info.pac_method =  'sigl';
+            case 9
+                grp_proc_info.pac_method = 'bispectrum';
+        end
+  
+        grp_proc_info.pac_xlsout_on = resstruct_out_mod_settings.pac_xls_rep_on;
+        grp_proc_info.pac_save_all_reports = resstruct_out_mod_settings.pac_fig_rep_on;
+        if ~isempty(resstruct_out_mod_settings.pac_save_participants)
+            %for some reason it sometimes comes out as a cell, sometimes
+            %doesn't
+            if iscell(resstruct_out_mod_settings.pac_save_participants)
+                grp_proc_info.pac_save_participants = strsplit(resstruct_out_mod_settings.pac_save_participants{1,1}, ' '); 
+            else
+                grp_proc_info.pac_save_participants = strsplit(resstruct_out_mod_settings.pac_save_participants, ' '); 
+            end
+        else
+            grp_proc_info.pac_save_participants = {};
+        end
+        %save channels input
+        if ~isempty(resstruct_out_mod_settings.pac_save_channels)
+            str_chans2save = strsplit(resstruct_out_mod_settings.pac_save_channels, ' '); 
+            grp_proc_info.pac_save_channels = str2double(str_chans2save);
+        else
+            grp_proc_info.pac_save_channels = [];
+        end
+        %save chans to analyze input
+        if ~isempty(resstruct_out_mod_settings.pac_chans_to_analyze)
+            str_chans2analyze = strsplit(resstruct_out_mod_settings.pac_chans_to_analyze, ' '); 
+            grp_proc_info.pac_chans_to_analyze = str2double(str_chans2analyze);
+        else
+            grp_proc_info.pac_chans_to_analyze = [];
+        end
+        
         
     otherwise 
         warndlg (['Output module ' current_panel ' is not yet available in BEAPP']);

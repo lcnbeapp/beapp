@@ -33,18 +33,32 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude)
+function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude,use_all_10_20,ica_10_20_chans2use)
 
 % get 10-20 labels and additional user set channels for this net
 uniq_net_ind = find(strcmp(src_unique_nets, file_proc_info.net_typ{1}));
 
-overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels},happe_additional_chans_lbls{uniq_net_ind},'stable');
+if use_all_10_20 == 1
+%overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels},happe_additional_chans_lbls{uniq_net_ind},'stable');
+    overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels},happe_additional_chans_lbls,'stable');
 
-% remove additional channels already included in 10-20s
-if ~isempty(overlap_10_20_and_additional_chans)
-     file_proc_info.net_happe_additional_chans_lbls =setdiff(happe_additional_chans_lbls{uniq_net_ind},{file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels},'stable');
-else
-    file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls{uniq_net_ind};
+    % remove additional channels already included in 10-20s
+    if ~isempty(overlap_10_20_and_additional_chans)
+         file_proc_info.net_happe_additional_chans_lbls =setdiff(happe_additional_chans_lbls,{file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels},'stable');
+    else
+        %file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls{uniq_net_ind};
+        file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls;
+    end
+else 
+    overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(ica_10_20_chans2use).labels},happe_additional_chans_lbls,'stable');
+
+    % remove additional channels already included in 10-20s
+    if ~isempty(overlap_10_20_and_additional_chans)
+         file_proc_info.net_happe_additional_chans_lbls =setdiff(happe_additional_chans_lbls,{file_proc_info.net_vstruct(ica_10_20_chans2use).labels},'stable');
+    else
+        %file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls{uniq_net_ind};
+        file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls;
+    end
 end
 
 [file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels] = name_10_20_elecs{:};
@@ -55,17 +69,21 @@ else
        lbls_chans_to_exclude_this_net ={};
 end
 
-% check if user added optional channels,and only use electrodes that have labels in the dataset
-if (length(file_proc_info.net_happe_additional_chans_lbls) == 1) && isempty(file_proc_info.net_happe_additional_chans_lbls{1})
-    chan_IDs = unique(name_10_20_elecs);
-else
-    chan_IDs_all = unique([name_10_20_elecs  file_proc_info.net_happe_additional_chans_lbls]);
-    % select desired channels listed in this net
-    chan_IDs = intersect(chan_IDs_all,{file_proc_info.net_vstruct.labels},'stable');
-    if length(chan_IDs) < length(chan_IDs_all)
-        extra_elecs = setdiff(chan_IDs_all,chan_IDs,'stable');
-        warning (['Electrode(s) ' sprintf('%s ,',extra_elecs{1:end-1}) extra_elecs{end} ' are not found in file chanlocs ']);
+if use_all_10_20 == 1
+    % check if user added optional channels,and only use electrodes that have labels in the dataset
+    if (length(file_proc_info.net_happe_additional_chans_lbls) == 1) && isempty(file_proc_info.net_happe_additional_chans_lbls{1})
+        chan_IDs = unique(name_10_20_elecs);
+    else
+        chan_IDs_all = unique([name_10_20_elecs  file_proc_info.net_happe_additional_chans_lbls]);
+        % select desired channels listed in this net
+        chan_IDs = intersect(chan_IDs_all,{file_proc_info.net_vstruct.labels},'stable');
+        if length(chan_IDs) < length(chan_IDs_all)
+            extra_elecs = setdiff(chan_IDs_all,chan_IDs,'stable');
+            warning (['Electrode(s) ' sprintf('%s ,',extra_elecs{1:end-1}) extra_elecs{end} ' are not found in file chanlocs ']);
+        end
+        % exclude channels if set by user
+        chan_IDs = setdiff(chan_IDs,lbls_chans_to_exclude_this_net,'stable');
     end
-    % exclude channels if set by user
-    chan_IDs = setdiff(chan_IDs,lbls_chans_to_exclude_this_net,'stable');
+else
+    chan_IDs = ([file_proc_info.net_vstruct(ica_10_20_chans2use).labels file_proc_info.net_happe_additional_chans_lbls]);
 end

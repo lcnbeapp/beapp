@@ -42,7 +42,9 @@ mat_files_in_src_dir = {mat_files_in_src_dir.name};
 
 % load group information for files
 load(grp_proc_info_in.beapp_file_info_table)
-
+if grp_proc_info_in.beapp_run_per_file 
+   beapp_file_info_table =  beapp_file_info_table(grp_proc_info_in.beapp_file_idx,:);
+end
 %% store information for files listed in both the user input table and the source directory 
 [src_fname_all,indexes_in_table] = intersect(beapp_file_info_table.FileName,mat_files_in_src_dir,'stable');
 

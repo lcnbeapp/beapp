@@ -109,9 +109,9 @@ grp_proc_info.src_dir={''}; %source directory containing the EEG data exported f
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc'};
-Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg'}'; 
-Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','out','out'}';
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc','fooof','pac','bycycle'};
+Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','out','seg','seg'}'; 
+Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','out','out','out','out','out'}';
 
 Mod_Names=ModuleNames(:);
 Module_On = true(length(ModuleNames),1); % flag all modules on as default
@@ -161,6 +161,8 @@ grp_proc_info.beapp_prev_run_tag = ''; % run tag for previous run that you would
 grp_proc_info.beapp_use_rerun_table = 0; % use rerun table to select subset of files previously run 
 grp_proc_info.seg_info_mff_src_dir = {''}; % for almost all users should be empty, functionality not supported
 grp_proc_info.beapp_fname_all={''}; %list of beapp file names, set during get_beapp_srcflist
+grp_proc_info.beapp_run_per_file = 1;
+grp_proc_info.beapp_file_idx = 1;
 
 %% general user setting defaults
 grp_proc_info.beapp_rmv_bad_chan_on=0; %flag that removes channels that prepp/HAPPE identifies as bad, replace with NaNs
@@ -218,6 +220,8 @@ grp_proc_info.beapp_rsamp_nsamp=[]; %number of samples after resampling
 %% ICA variables
 grp_proc_info.name_10_20_elecs = {'FP1','FP2','F7','F3','F4','F8','C3','C4','T5','PZ','T6','O1','O2','T3','T4','P3','P4','Fz'}; % does not include CZ
 grp_proc_info.beapp_ica_type  = 1; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
+grp_proc_info.beapp_ica_run_all_10_20 = 1;
+grp_proc_info.beapp_ica_10_20_chans_lbls{1} = []; 
 grp_proc_info.beapp_ica_additional_chans_lbls {1}= []; %additional channels to use in ICA module besides 10-20
 grp_proc_info.happe_plotting_on = 0 ; % if 1, plot visualizations from MARA, require user input
 
@@ -307,6 +311,7 @@ grp_proc_info.psd_interp_typ_name(2)={'linear'}; %linear interpolation, the defa
 grp_proc_info.psd_interp_typ_name(3)={'nearest'}; %nearest neighbor
 grp_proc_info.psd_interp_typ_name(4)={'spline'}; %piecewise cubic spline
 grp_proc_info.psd_nfft=[]; %number of sample points used for the fft, wil be set in the batch_beapp_psd
+grp_proc_info.psd_baseline_normalize = 0;
 %variables needed for the PSD Multitaper option
 grp_proc_info.psd_pmtm_l=3; %number of tapers to use in the multitaper, positive int 3 or greater
 grp_proc_info.psd_pmtm_alpha=[]; %alpha used in multitaper, if alpha=2 and nsec=2 then L=3 tapers and spectral resolution is 2 
@@ -327,4 +332,43 @@ grp_proc_info.beapp_xlsout_elect_indx=1:129; %Channel numbers for the report. If
 grp_proc_info.beapp_itpc_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max itpc
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean itpc
+%% FOOOF default variables 
+grp_proc_info.fooof_min_freq = 1; %The frequency range of the psd fooof will run on
+grp_proc_info.fooof_max_freq = 50;
+grp_proc_info.fooof_peak_width_limits = [0,10]; %Set peak width limit to prevent overfitting. Needs to be > frequency resolution
+grp_proc_info.fooof_max_n_peaks = 6; %Set a max number of peaks for fooof to find to prevent overfitting -- some maximum must be set
+grp_proc_info.fooof_min_peak_amplitude = 0; %Set a min peal amplitude for fooof to find to prevent overfitting
+grp_proc_info.fooof_min_peak_threshold = 0; %Set to a number > 0 to set a min peak threshold -- recommended to set if psd has no peaks. Otherwise keep 0
+grp_proc_info.fooof_background_mode = 2; %1 = fixed, 2 = knee; If freq range is ~40Hz or below, recommended to use 'fixed'; otherwise, use 'knee'
+grp_proc_info.fooof_save_all_reports = 1; %0 to not save reports; 1 if all reports should be saved
+grp_proc_info.fooof_save_participants = {}; %Specify for which participants reports should be saved. Ex: {'baselineEEG01.mat'}
+grp_proc_info.fooof_save_channels = []; %Specify to only save reports for some channel #'s. Ex: [1,2] save reports from channels 1 and 2; [] to not specify channels
+grp_proc_info.fooof_save_groups = []; %Specify to only save reports for group #'s specified. Ex: [1,3]
+grp_proc_info.fooof_xlsout_on = 0; %1 if excel reports should be saved, 0 if not
+grp_proc_info.fooof_average_chans = 0; %1 if channels should be averaged; 0 if they should be run seperately
+grp_proc_info.fooof_channel_groups = {}; %Ex: {[8,9,10],[15,16,17,18,19,20]}; if averaging is on, but channels should be averaged in seperate groups; leave as {} if channels should be averaged together
+grp_proc_info.fooof_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
+%% PAC default variables
+grp_proc_info.pac_low_fq_min = 1; %Minimum frequency of the low frequency to calculate
+grp_proc_info.pac_low_fq_max = 10; %Maximum frequency of the low frequency to calculate
+grp_proc_info.pac_low_fq_res = 50; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
+grp_proc_info.pac_high_fq_min = 10; %Minimum frequency of the low frequency to calculate
+grp_proc_info.pac_high_fq_max = 125; %Maximum frequency of the low frequency to calculate
+grp_proc_info.pac_high_fq_res = 50; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
+grp_proc_info.pac_method = 'canolty'; %Can be: 'ozkurt', 'canolty', 'tort', 'penny', 'vanwijk', 'duprelatour', 'colgin', 'sigl', 'bispectrum'
+grp_proc_info.pac_low_fq_width = 2.0; %Bandwidth of the bandpass filter for the lower frequency
+grp_proc_info.pac_high_fq_width = 20; %Bandwidth of the bandpass filter for the higher frequency
+grp_proc_info.pac_save_all_reports = 1; 
+grp_proc_info.pac_save_participants = {}; %Specify for which participants reports should be saved; {} to not specify participants. Ex: {'baselineEEG01.mat'}
+grp_proc_info.pac_save_channels = []; %Specify to only save reports for some channel #'s. Ex: [1,2] save reports from channels 1 and 2; [] to not specify channels
+grp_proc_info.pac_xlsout_on = 1; %1 if excel reports should be saved, 0 if not. 
+grp_proc_info.pac_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
+grp_proc_info_in.slid_win_sz = 1; 
+grp_proc_info.slid_win_on = 1; %turn on to measure pac across time
+grp_proc_info.pac_set_num_segs = 1; %choose whether a set the number of segments should be used for pac
+grp_proc_info.pac_num_segs = 6; %if set_num_segs is on: set the number of segments to use for pac
+grp_proc_info.pac_calc_zscores = 0;
+%%Bycycle default methods 
+grp_proc_info.bycyc_set_num_segs = 0;
+grp_proc_info.bycyc_num_segs = 0;
 end

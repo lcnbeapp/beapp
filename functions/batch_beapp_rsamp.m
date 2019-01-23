@@ -46,8 +46,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         tic;
         
         % resample each epoch if necessary
-        if ~(file_proc_info.src_srate==grp_proc_info_in.beapp_rsamp_srate)
-             
+        if ~(file_proc_info.src_srate==grp_proc_info_in.beapp_rsamp_srate)    
             if isfield(file_proc_info,'beapp_filt_max_freq')
                 if ~isnan(file_proc_info.beapp_filt_max_freq)
                     if grp_proc_info_in.beapp_rsamp_srate < (file_proc_info.beapp_filt_max_freq*2)

@@ -4,7 +4,8 @@ function grp_proc_info_in =  batch_eeglab2beapp (grp_proc_info_in)
 [grp_proc_info_in.src_fname_all,grp_proc_info_in.src_linenoise_all,...
     grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,grp_proc_info_in.src_net_typ_all] = ...
     beapp_load_nonmat_flist_and_evt_table(grp_proc_info_in.src_dir,'.set',...
-    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table,grp_proc_info_in.src_format_typ);
+    grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table,...
+    grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx);
 
 if isempty(grp_proc_info_in.src_net_typ_all)
     error('Please include sensor layout information in beapp_file_info_table');
@@ -73,7 +74,7 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
     % add event label, time latency, and sample number to EEGLAB structure
     if ~ isempty(EEG_struct.event)
         [file_proc_info.evt_info{1}] = beapp_read_eeglab_events(EEG_struct.event,grp_proc_info_in.behavioral_coding.bad_value,...
-            grp_proc_info_in.src_eeglab_cond_info_field,grp_proc_info_in.src_eeglab_latency_units,file_proc_info);
+            grp_proc_info_in.src_eeglab_cond_info_field,grp_proc_info_in.src_eeglab_latency_units,file_proc_info,grp_proc_info_in.src_format_typ);
     end
     
 %     if grp_proc_info_in.src_eeglab_cond_info_loc ==1 % condition information already embedded in .type tags
@@ -92,10 +93,13 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
 %     % if file has been pre-segmented (should this be assumed if 3-D data in
 %     % eeglab?)
 %     if grp_proc_info_in.src_format_typ ==3
-%         seg_cond_names = unique({file_proc_info.seg_info.condition_name});
+%         seg_cond_names =
+%         unique({file_proc_info.seg_info.condition_name});
 %         file_proc_info.evt_conditions_being_analyzed= table();
-%         file_proc_info.evt_conditions_being_analyzed.Condition_Name (1:length(seg_cond_names),1)= seg_cond_names';
-%         file_proc_info.evt_conditions_being_analyzed((length(seg_cond_names)+1):end,:) =[];
+%         file_proc_info.evt_conditions_being_analyzed.Condition_Name
+%         (1:length(seg_cond_names),1)= seg_cond_names';
+%         file_proc_info.evt_conditions_being_analyzed((length(seg_cond_names)+1):end,:)
+%         =[];
 %     end
     clear curr_file_obj record_time
     

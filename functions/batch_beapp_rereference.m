@@ -88,7 +88,6 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     diary off;
                     uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
                     file_proc_info.net_reref_chan_inds = grp_proc_info_in.beapp_reref_chan_inds{uniq_net_ind};
-                    
                     EEG_tmp =curr_epoch_beapp2eeglab(file_proc_info,eeg{curr_rec_per},curr_rec_per);
                     EEG_tmp = pop_reref (EEG_tmp, [file_proc_info.net_reref_chan_inds], 'keepref', 'on'); 
                     diary on;

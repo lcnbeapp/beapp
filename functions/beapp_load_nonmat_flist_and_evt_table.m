@@ -45,7 +45,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function [src_fname_all,src_linenoise_all,src_offsets_in_ms_all,beapp_fname_all,src_net_typ_all]  = beapp_load_nonmat_flist_and_evt_table ...
-(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc, src_format_typ)
+(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc, src_format_typ,run_per_file,file_idx)
 
 % get list of files of source type in source directory
 cd(src_dir{1});
@@ -58,8 +58,10 @@ end
 
 % pull in event offsets or individual linenoise freqs from table if needed 
 if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ == 4
-    load(event_file_info_table_loc);
-    
+   load(event_file_info_table_loc);
+    if run_per_file 
+        beapp_file_info_table =  beapp_file_info_table(file_idx,:);
+    end
     % find files listed both in source directory and offset info table
     [src_fname_all,ind_table] =  intersect(beapp_file_info_table.FileName,src_file_list,'stable');
     src_fname_all = src_fname_all';
@@ -83,7 +85,7 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ 
     end 
     
     % EEGLAB, often will need to pull net name
-    if src_format_typ == 4
+    if src_format_typ == 4 || src_format_typ == 5
         % store group net types and sampling rates (from table)
         src_net_typ_all = beapp_file_info_table.NetType(ind_table);
     else

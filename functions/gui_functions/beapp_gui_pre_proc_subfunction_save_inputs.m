@@ -115,7 +115,7 @@ switch current_sub_panel
         
         
     case 'rereference'
-        
+         
         grp_proc_info.reref_typ = resstruct_pre_proc_settings.reref_type_resp;
         
         if isfield(resstruct_pre_proc_settings,'ref_elec_sel_table') 

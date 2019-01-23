@@ -109,7 +109,7 @@ switch current_sub_panel
             seg_ver_geometry=  [1 1 6];
             skipline_panel ='on';
         end
-        
+
     case 'seg_evt_stm_on_off_info'
         
         empty_10_cel = cell(10,1);

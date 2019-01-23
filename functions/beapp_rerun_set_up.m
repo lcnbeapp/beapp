@@ -34,7 +34,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [beapp_fname_all,src_unique_net_vstructs,unique_net_types,src_unique_net_ref_rows,src_net_10_20_elecs,largest_nchan] =...
     beapp_rerun_set_up(beapp_toggle_mods, first_module_on,rerun_fselect_table_str,beapp_use_rerun_table,unique_net_types,...
-    ref_net_library_options,ref_net_library_dir)
+    ref_net_library_options,ref_net_library_dir,run_per_file,file_idx)
 
 % find first module on in this run
 first_src_dir = find_input_dir(first_module_on,beapp_toggle_mods);
@@ -47,10 +47,13 @@ else
     src_dir_flist = {src_dir_flist.name};
     
     % use rerun file selection list if the user has one
-    if beapp_use_rerun_table
+    if beapp_use_rerun_table || run_per_file
         
         % get group information for files in both user input table and source directory
         load(rerun_fselect_table_str);
+        if run_per_file
+           rerun_fselect_table = rerun_fselect_table(file_idx,:);
+        end
         [beapp_fname_all,indexes_in_table] = intersect(rerun_fselect_table.FileName,src_dir_flist);
         beapp_fname_all= beapp_fname_all';
         if isempty(unique_net_types{1})

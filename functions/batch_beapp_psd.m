@@ -56,6 +56,10 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             analysis_win_start = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_analysis_win_start .* file_proc_info.beapp_srate));
             analysis_win_end = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_analysis_win_end .* file_proc_info.beapp_srate))-1;
             
+            if ~(grp_proc_info_in.psd_baseline_normalize == 0)  && grp_proc_info_in.src_data_type == 2           
+                baseline_win_start = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_trial_baseline_win_start .* file_proc_info.beapp_srate));
+                baseline_win_end = file_proc_info.evt_seg_win_evt_ind + floor((grp_proc_info_in.evt_trial_baseline_win_end .* file_proc_info.beapp_srate))-1;
+            end
             % may be negative if analyzing window after event
             file_proc_info.evt_seg_win_evt_ind = file_proc_info.evt_seg_win_evt_ind-(analysis_win_start-1);
         end
@@ -80,21 +84,27 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 % analyze desired part of segment for event related data
                 if grp_proc_info_in.src_data_type ==2
                     try
-                        eeg_w{curr_condition,1} = eeg_w{curr_condition,1}(:,analysis_win_start: analysis_win_end,:);
+                        eeg_w_activity{curr_condition,1} = eeg_w{curr_condition,1}(:,analysis_win_start: analysis_win_end,:);
+                        
+                        if ~(grp_proc_info_in.psd_baseline_normalize == 0)
+                            eeg_w_baseline = eeg_w{curr_condition,1}(:,baseline_win_start:baseline_win_end,:); 
+                        end
                     catch err
                         if strcmp(err.identifier,'MATLAB:badsubscript')
                             error('BEAPP: analysis segment boundary selected falls outside boundaries used to segment data. Change inputs or re-segment');
                         end
                     end
+                else
+                    %eeg_w_activity{curr_condition,1} = eeg_w{curr_condition,1};
                 end
                 
                 if ~isempty(grp_proc_info_in.win_select_n_trials)
                     
-                    if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
+                    if size(eeg_w_activity{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
                         
                         % only keep n trials
-                        inds_to_select = sort(randperm(size(eeg_w{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
-                        eeg_w{curr_condition,1} = eeg_w{curr_condition,1}(:,:,inds_to_select);
+                        inds_to_select = sort(randperm(size(eeg_w_activity{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
+                        eeg_w_activity{curr_condition,1} = eeg_w_activity{curr_condition,1}(:,:,inds_to_select);
                     else 
                         disp(['BEAPP file: ' file_proc_info.beapp_fname{1} ' condition ' file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition} ' does not have the user selected number of segments. Skipping...']);
                         eeg_wfp{curr_condition,1} = [];
@@ -105,7 +115,47 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 
                 [eeg_wfp{curr_condition,1}, eeg_wf{curr_condition,1},f{curr_condition,1}] = calc_psd_of_win_typ(grp_proc_info_in.psd_win_typ,...
                     eeg_w{curr_condition,1},file_proc_info.beapp_srate,grp_proc_info_in.psd_pmtm_alpha,grp_proc_info_in.psd_nfft);
-                
+                %if normalizing with baseline: calculate psd for baseline, use
+                %it to normalize
+                if ~(grp_proc_info_in.psd_baseline_normalize == 0)  && grp_proc_info_in.src_data_type == 2
+                 [eeg_wfp_baseline, eeg_wf_baseline,f_baseline] = calc_psd_of_win_typ(grp_proc_info_in.psd_win_typ,...
+                   eeg_w_baseline,file_proc_info.beapp_srate,grp_proc_info_in.psd_pmtm_alpha,grp_proc_info_in.psd_nfft);
+                  
+                   %downsample signal psd if baseline has fewer frequencies
+                      if size(f_baseline,2) < size(f{curr_condition,1},2) 
+                          freqs2delete = [];
+                            for freq = 1:size(f{curr_condition,1},2)
+                                %if baseline does not have given frequency,
+                                %delete from signal
+                                if ~ismember(f{curr_condition,1}(1,freq),f_baseline) 
+                                    freqs2delete = [freqs2delete, freq];
+                                end
+                            end
+                            eeg_wfp{curr_condition,1}(:,freqs2delete,:) = [];
+                            eeg_wf{curr_condition,1}(:,freqs2delete,:) = [];
+                            f{curr_condition,1}(:,freqs2delete) = [];
+                            
+                    %downsample baseline psd if signal has fewer frequencies
+                      elseif size(f_baseline,2) > size(f{curr_condition,1},2)
+                          freqs2delete = [];
+                            for freq = 1:size(f_baseline,2)
+                                %if baseline does not have given frequency,
+                                %delete from signal
+                                if ~ismember(f_baseline(1,freq),f{curr_condition,1}) 
+                                    freqs2delete = [freqs2delete, freq];
+                                end
+                            end
+                            eeg_wfp_baseline(:,freqs2delete,:) = [];
+                            eeg_wf_baseline(:,freqs2delete,:) = [];
+                            f_baseline(:,freqs2delete) = [];
+                      end
+                      if grp_proc_info_in.psd_baseline_normalize == 1 %decibel conversion 
+                            eeg_wfp{curr_condition,1} = 10*log10(eeg_wfp{curr_condition,1} ./ eeg_wfp_baseline);
+                      elseif grp_proc_info_in.psd_baseline_normalize ==  2 %percent change
+                            eeg_wfp{curr_condition,1} = 100*((eeg_wfp{curr_condition,1} - eeg_wfp_baseline) ./ eeg_wfp_baseline);
+                      end
+                  
+                end
                 % interpolate if flagged on by user
                 if grp_proc_info_in.psd_interp_typ>1
                     [eeg_wf{curr_condition,1},interp_f{curr_condition,1}] = permute_and_interp_eeg(eeg_wf{curr_condition,1},...

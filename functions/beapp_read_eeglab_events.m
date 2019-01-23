@@ -1,5 +1,5 @@
 function [evt_info] = beapp_read_eeglab_events(eeglab_event_struct,behav_coding_bad_value,...
-    src_eeglab_cond_info_field,src_eeglab_latency_units,file_proc_info)
+    src_eeglab_cond_info_field,src_eeglab_latency_units,file_proc_info,format_type)
 
 %% read in eeglab events
 
@@ -37,9 +37,9 @@ if ~isempty(eeglab_event_struct)
         
         if isfield (eeglab_event_struct,'epoch')
             
-            % should only be 1 for unsegmented files
+            % should only be 1 for unsegmented files UPDATED 12/11/18
             evt_info(curr_event).evt_times_epoch_rel = eeglab_event_struct(curr_event).epoch;
-            if  ~grp_proc_info_in.src_format_typ ==3 && (eeglab_event_struct(curr_event).epoch > 1)
+            if  ~format_type ==4 && (eeglab_event_struct(curr_event).epoch > 1)
                 warning ([file_proc_info.beapp_fname{1} ': src format typ indicated as unsegmented .set but file contains more than one segment, confirm unsegmented']);
             end
         else

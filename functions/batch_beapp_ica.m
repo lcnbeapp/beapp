@@ -48,6 +48,7 @@ src_dir = find_input_dir('ica',grp_proc_info_in.beapp_toggle_mods);
 
 % initialize report. depending on setting some values will not be generated
 if grp_proc_info_in.beapp_toggle_mods{'ica','Module_Xls_Out_On'}
+    if grp_proc_info_in.beapp_toggle_mods{'ica','Module_Xls_Out_On'}
     ica_report_categories = {'BEAPP_Fname','Time_Elapsed_For_File','Num_Rec_Periods', 'Number_Channels_UserSelected',...
         'File_Rec_Period_Lengths_In_Secs','Number_Good_Channels_Selected_Per_Rec_Period', ...
         'Interpolated_Channel_IDs_Per_Rec_Period', 'Percent_ICs_Rejected_Per_Rec_Period', ...
@@ -56,6 +57,7 @@ if grp_proc_info_in.beapp_toggle_mods{'ica','Module_Xls_Out_On'}
     ICA_report_table= cell2table(cell(length(grp_proc_info_in.beapp_fname_all),length(ica_report_categories)));
     ICA_report_table.Properties.VariableNames=ica_report_categories;
     ICA_report_table.BEAPP_Fname = grp_proc_info_in.beapp_fname_all';
+    end
 end
 
 % add path to cleanline
@@ -63,7 +65,7 @@ if exist('cleanline', 'file')
     cleanline_path = which('eegplugin_cleanline.m');
     cleanline_path = cleanline_path(1:findstr(cleanline_path,'eegplugin_cleanline.m')-1);
     addpath(genpath(cleanline_path));
-end;
+end
 
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     tic
@@ -73,12 +75,23 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         tic;
-        
-        ica_chan_labels_in_eeglab_format =  cellfun(@(x) strrep(cellstr(strcat('E', num2str(x(:)))),' ','')',grp_proc_info_in.beapp_ica_additional_chans_lbls,'UniformOutput',0);
-       
+        epoch_length = file_proc_info.src_epoch_nsamps / file_proc_info.src_srate;
+        if epoch_length < 15 && ~grp_proc_info_in.beapp_ica_type==3
+           warning(strcat('Current file length=',num2str(epoch_length),...
+               '_seconds. MARA requires at least 15 seconds of data to work correctly'))
+        end
+        %FOR TESTING
+        uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
+        ica_chan_labels_in_eeglab_format = {file_proc_info.net_vstruct(grp_proc_info_in.beapp_ica_additional_chans_lbls{uniq_net_ind}).labels};
+%         use_all_10_20s = 1;
+%         if grp_proc_info_in.beapp_ica_type == 3 && grp_proc_info_in.beapp_ica_run_all_10_20 == 0
+%             use_all_10_20s = 0;
+%         end
+            
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
-            ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude);
+            ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude,...
+            grp_proc_info_in.beapp_ica_run_all_10_20,grp_proc_info_in.beapp_ica_10_20_chans_lbls{uniq_net_ind});
         
         for curr_rec_period = 1:size(eeg,2)
             

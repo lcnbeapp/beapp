@@ -161,7 +161,7 @@ grp_proc_info.beapp_prev_run_tag = ''; % run tag for previous run that you would
 grp_proc_info.beapp_use_rerun_table = 0; % use rerun table to select subset of files previously run 
 grp_proc_info.seg_info_mff_src_dir = {''}; % for almost all users should be empty, functionality not supported
 grp_proc_info.beapp_fname_all={''}; %list of beapp file names, set during get_beapp_srcflist
-grp_proc_info.beapp_run_per_file = 1;
+grp_proc_info.beapp_run_per_file = 0;
 grp_proc_info.beapp_file_idx = 1;
 
 %% general user setting defaults

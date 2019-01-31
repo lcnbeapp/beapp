@@ -173,7 +173,7 @@ grp_proc_info.beapp_ica_10_20_chans_lbls{2} = [];
 % additional channels labels being analyzed beyond 10-20 channels in ICA module
 % MUST match number of nets and order of nets in .src_unique nets exactly
 grp_proc_info.beapp_ica_additional_chans_lbls{1} = []; % def = []. ex. [4,8,19,20]
-grp_proc_info.beapp_ica_10_20_chans_lbls{2} = []; 
+grp_proc_info.beapp_ica_additional_chans_lbls{2} = [];
 
 % REREFENCING SPECIFICATIONS
  %type of reference method to use (1= average, 2= CSD Laplacian, 3 = specific electrodes, 4 = REST)

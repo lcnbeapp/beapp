@@ -84,27 +84,25 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 % analyze desired part of segment for event related data
                 if grp_proc_info_in.src_data_type ==2
                     try
-                        eeg_w_activity{curr_condition,1} = eeg_w{curr_condition,1}(:,analysis_win_start: analysis_win_end,:);
-                        
                         if ~(grp_proc_info_in.psd_baseline_normalize == 0)
                             eeg_w_baseline = eeg_w{curr_condition,1}(:,baseline_win_start:baseline_win_end,:); 
                         end
+                        eeg_w{curr_condition,1} = eeg_w{curr_condition,1}(:,analysis_win_start: analysis_win_end,:); 
+                        
                     catch err
                         if strcmp(err.identifier,'MATLAB:badsubscript')
                             error('BEAPP: analysis segment boundary selected falls outside boundaries used to segment data. Change inputs or re-segment');
                         end
                     end
-                else
-                    %eeg_w_activity{curr_condition,1} = eeg_w{curr_condition,1};
                 end
                 
                 if ~isempty(grp_proc_info_in.win_select_n_trials)
-                    
-                    if size(eeg_w_activity{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
+                     
+                    if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
                         
                         % only keep n trials
-                        inds_to_select = sort(randperm(size(eeg_w_activity{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
-                        eeg_w_activity{curr_condition,1} = eeg_w_activity{curr_condition,1}(:,:,inds_to_select);
+                        inds_to_select = file_proc_info.selected_segs{curr_condition,1};
+                        eeg_w{curr_condition,1} = eeg_w{curr_condition,1}(:,:,inds_to_select);
                     else 
                         disp(['BEAPP file: ' file_proc_info.beapp_fname{1} ' condition ' file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition} ' does not have the user selected number of segments. Skipping...']);
                         eeg_wfp{curr_condition,1} = [];

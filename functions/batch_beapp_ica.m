@@ -75,11 +75,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
         tic;
-        epoch_length = file_proc_info.src_epoch_nsamps / file_proc_info.src_srate;
-        if epoch_length < 15 && ~grp_proc_info_in.beapp_ica_type==3
-           warning(strcat('Current file length=',num2str(epoch_length),...
-               '_seconds. MARA requires at least 15 seconds of data to work correctly'))
-        end
+%         epoch_length = file_proc_info.src_epoch_nsamps / file_proc_info.src_srate;
+%         if epoch_length < 15 && ~grp_proc_info_in.beapp_ica_type==3
+%            warning(strcat('Current file length=',num2str(epoch_length),...
+%                '_seconds. MARA requires at least 15 seconds of data to work correctly'))
+%         end
         %FOR TESTING
         uniq_net_ind = find(strcmp(grp_proc_info_in.src_unique_nets, file_proc_info.net_typ{1}));
         ica_chan_labels_in_eeglab_format = {file_proc_info.net_vstruct(grp_proc_info_in.beapp_ica_additional_chans_lbls{uniq_net_ind}).labels};

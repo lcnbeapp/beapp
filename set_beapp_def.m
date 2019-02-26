@@ -173,7 +173,7 @@ grp_proc_info.src_data_type = 1; % type of data being processed (for segmenting,
 grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
 grp_proc_info.src_unique_nets={''}; % unique net names in dataset 
 grp_proc_info.src_fname_all={''}; %list of source file names, set during get_beapp_srcflist or as a user input
-grp_proc_info.src_eeg_vname={'Category_1_Segment1'}; %variable name of the EEG data EEG_Segment1
+grp_proc_info.src_eeg_vname={'Category_1_Segment1','Category_1','EEG_Segment1','EEGSegment1'}; %variable name of the EEG data EEG_Segment1
 grp_proc_info.src_format_typ=1; %type of source file 1=netstation, 2=mff, 3=mff in *.mat format, previously proc_info.beapp_format_typ
 grp_proc_info.src_net_typ_all=[]; %list of net types from source files set in get_beapp_srcnettyp
 grp_proc_info.src_srate_all=[]; %list of net types from source files set in get_beapp_srcsrate

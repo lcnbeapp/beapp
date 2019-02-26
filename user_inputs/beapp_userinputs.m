@@ -103,7 +103,7 @@
 grp_proc_info.src_dir={''}; %the directory containing your source files
 grp_proc_info.beapp_curr_run_tag = ''; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
 grp_proc_info.beapp_prev_run_tag = ''; % def = ''.  run tag for previous run that you would like to use as source data for rerun. can be timestamp, but must be exact.
-grp_proc_info.beapp_advinputs_on= 1; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
+grp_proc_info.beapp_advinputs_on= 0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 
 % MODULE SELECTION
 % pipeline flags:0=off, 1=on
@@ -264,7 +264,7 @@ grp_proc_info.psd_interp_typ=2; %type of interpolation of psd 1 none, 2 linear, 
 grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}=1; %flags the export data to xls report option on
 
 %for event-related data only
-grp_proc_info.psd_baseline_normalize = 1; %0 to not normalize, 1 to normalize using decibel conversion; 2 to normalize with percent change 
+grp_proc_info.psd_baseline_normalize = 0; %0 to not normalize, 1 to normalize using decibel conversion; 2 to normalize with percent change 
 
 % ITPC SPECIFICATIONS
 grp_proc_info.beapp_itpc_params.win_size= 0.128; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)

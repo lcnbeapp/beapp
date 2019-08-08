@@ -33,7 +33,7 @@ if ~isempty(evt_info)
         return;
     else
         
-        conditions_being_analyzed = table(NaN(length(tags_used),1),beapp_event_eprime_values.condition_names(tags_used_inds)',beapp_event_code_onset_strs(tags_used_inds), NaN(length(tags_used),1),NaN(length(tags_used),1),NaN(length(tags_used),1),NaN(length(tags_used),1),...
+        conditions_being_analyzed = table(NaN(length(tags_used),1),beapp_event_eprime_values.condition_names(tags_used_inds)',beapp_event_code_onset_strs(tags_used_inds)', NaN(length(tags_used),1),NaN(length(tags_used),1),NaN(length(tags_used),1),NaN(length(tags_used),1),...
             'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes','All_Evt_Codes_for_Cond','Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
         
         % check to see if user is collapsing conditions from the native

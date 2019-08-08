@@ -133,7 +133,18 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         [conds_all,cond_inds_table_all,cond_inds_values_all]=intersect(file_proc_info.evt_conditions_being_analyzed.Condition_Name,...
             file_proc_info.grp_wide_possible_cond_names_at_segmentation,'stable');
         
-        file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));
+        file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));        
+        
+        if ~isempty(grp_proc_info_in.win_select_n_trials)
+            if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
+                for curr_condition = 1:size(eeg_w,1)
+                    inds_to_select = sort(randperm(size(eeg_w{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
+                    file_proc_info.selected_segs{curr_condition,1} = inds_to_select;
+                end
+            else 
+                file_proc_info.selected_segs{curr_condition,1} = [];
+            end
+        end
         
         if ~all(cellfun(@isempty,eeg_w))
             file_proc_info = beapp_prepare_to_save_file('segment',file_proc_info, grp_proc_info_in, src_dir{1});

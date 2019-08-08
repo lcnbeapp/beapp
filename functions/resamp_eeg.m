@@ -33,12 +33,13 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function eeg_out=resamp_eeg(eeg_in,srate_in,srate_out,resamp_typ)
-     
-    if strcmp(resamp_typ,'interpolation')
-        t_in=1/srate_in:1/srate_in:size(eeg_in,2)/srate_in;
-        t_out=1/srate_out:1/srate_out:t_in(end);
-        eeg_out=interp1(t_in,eeg_in',t_out)';
-        
-    elseif strcmp(resamp_typ,'downsampling')
-        eeg_out=(downsample(eeg_in',srate_in/srate_out,1))';
+    for seg = 1:size(eeg_in,3) %Should this stay? Added 2/11/19 for segmented .set files where eeg_in' would break due to 3 d
+        if strcmp(resamp_typ,'interpolation')
+            t_in=1/srate_in:1/srate_in:size(eeg_in,2)/srate_in;
+            t_out=1/srate_out:1/srate_out:t_in(end);
+            eeg_out(:,:,seg)=interp1(t_in,eeg_in(:,:,seg)',t_out)';
+
+        elseif strcmp(resamp_typ,'downsampling')
+            eeg_out(:,:,seg)=(downsample(eeg_in(:,:,seg)',srate_in/srate_out,1))';
+        end
     end

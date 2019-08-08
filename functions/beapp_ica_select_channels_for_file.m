@@ -50,11 +50,11 @@ if use_all_10_20 == 1
         file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls;
     end
 else 
-    overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(ica_10_20_chans2use).labels},happe_additional_chans_lbls,'stable');
+    overlap_10_20_and_additional_chans = intersect({file_proc_info.net_vstruct(ica_10_20_chans2use{uniq_net_ind}).labels},happe_additional_chans_lbls,'stable');
 
     % remove additional channels already included in 10-20s
     if ~isempty(overlap_10_20_and_additional_chans)
-         file_proc_info.net_happe_additional_chans_lbls =setdiff(happe_additional_chans_lbls,{file_proc_info.net_vstruct(ica_10_20_chans2use).labels},'stable');
+         file_proc_info.net_happe_additional_chans_lbls =setdiff(happe_additional_chans_lbls,{file_proc_info.net_vstruct(ica_10_20_chans2use{uniq_net_ind}).labels},'stable');
     else
         %file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls{uniq_net_ind};
         file_proc_info.net_happe_additional_chans_lbls = happe_additional_chans_lbls;

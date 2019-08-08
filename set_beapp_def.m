@@ -222,7 +222,7 @@ grp_proc_info.name_10_20_elecs = {'FP1','FP2','F7','F3','F4','F8','C3','C4','T5'
 grp_proc_info.beapp_ica_type  = 1; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
 grp_proc_info.beapp_ica_run_all_10_20 = 1;
 grp_proc_info.beapp_ica_10_20_chans_lbls{1} = []; 
-grp_proc_info.beapp_ica_additional_chans_lbls {1}= []; %additional channels to use in ICA module besides 10-20
+grp_proc_info.beapp_ica_additional_chans_lbls{1}= []; %additional channels to use in ICA module besides 10-20
 grp_proc_info.happe_plotting_on = 0 ; % if 1, plot visualizations from MARA, require user input
 
 %% rereference module defaults
@@ -268,7 +268,10 @@ grp_proc_info.evt_analysis_win_end = 0.800;  % def = .800; end time in seconds f
 grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module. 
 grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
 grp_proc_info.evt_trial_baseline_win_end = 0; % def = 0;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
-
+%Option to segment on nth trial
+grp_proc_info.select_nth_trial = 0;
+grp_proc_info.segment_stim_relative_to = {''}; 
+grp_proc_info.segment_nth_stim_str = {''};
 %% variables for general output module processing 
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications
@@ -332,6 +335,14 @@ grp_proc_info.beapp_xlsout_elect_indx=1:129; %Channel numbers for the report. If
 grp_proc_info.beapp_itpc_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max itpc
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean itpc
+grp_proc_info.beapp_itpc_params.baseline_norm = 1;
+grp_proc_info.beapp_itpc_params.use_common_baseline = 1;
+grp_proc_info.beapp_itpc_params.common_baseline_idx = 1;
+grp_proc_info.beapp_itpc_params.set_freq_range=0;
+grp_proc_info.beapp_itpc_params.min_freq = 2;
+grp_proc_info.beapp_itpc_params.max_freq = 50;
+grp_proc_info.beapp_itpc_params.min_cyc = 1;
+grp_proc_info.beapp_itpc_params.max_cyc = 8;
 %% FOOOF default variables 
 grp_proc_info.fooof_min_freq = 1; %The frequency range of the psd fooof will run on
 grp_proc_info.fooof_max_freq = 50;
@@ -363,9 +374,9 @@ grp_proc_info.pac_save_participants = {}; %Specify for which participants report
 grp_proc_info.pac_save_channels = []; %Specify to only save reports for some channel #'s. Ex: [1,2] save reports from channels 1 and 2; [] to not specify channels
 grp_proc_info.pac_xlsout_on = 1; %1 if excel reports should be saved, 0 if not. 
 grp_proc_info.pac_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
-grp_proc_info_in.slid_win_sz = 1; 
-grp_proc_info.slid_win_on = 1; %turn on to measure pac across time
-grp_proc_info.pac_set_num_segs = 1; %choose whether a set the number of segments should be used for pac
+grp_proc_info.slid_win_sz = 1; 
+grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
+grp_proc_info.pac_set_num_segs = 0; %choose whether a set the number of segments should be used for pac
 grp_proc_info.pac_num_segs = 6; %if set_num_segs is on: set the number of segments to use for pac
 grp_proc_info.pac_calc_zscores = 0;
 %%Bycycle default methods 

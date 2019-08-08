@@ -73,7 +73,7 @@ end
 % store group net types and sampling rates (from table)
 grp_proc_info_in.src_net_typ_all = beapp_file_info_table.NetType(indexes_in_table);
 grp_proc_info_in.src_srate_all = beapp_file_info_table.SamplingRate(indexes_in_table);
-grp_proc_info_in.src_unique_nets = unique(grp_proc_info_in.src_net_typ_all);
+grp_proc_info_in.src_unique_nets = unique(grp_proc_info_in.src_net_typ_all,'stable');
 
 % check if user has given file-specific line noise specifications
 if ~isnumeric(grp_proc_info_in.src_linenoise)

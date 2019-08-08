@@ -53,7 +53,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
             (file_proc_info,grp_proc_info_in.src_data_type, ...
             grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs,...
              grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_event_use_tags_only);
-        
+         
         % skip file if it doesn't contain user-chosen event tags (unless pure baseline)
         if skip_file, continue; end
         
@@ -73,6 +73,12 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                 % check that there are target events to segment
                 if ~all(ismember({file_proc_info.evt_info{curr_epoch}.type},'Non_Target'))
                     
+                    %8/2/19: select nth D10 after a D20
+                    if ~(grp_proc_info_in.select_nth_trial == 0)
+                        [file_proc_info.evt_info{curr_epoch}] = beapp_extract_nth_trial(file_proc_info.evt_info{curr_epoch},...
+                            grp_proc_info_in.select_nth_trial,grp_proc_info_in.beapp_event_code_onset_strs,...
+                            grp_proc_info_in.segment_stim_relative_to,grp_proc_info_in.segment_nth_stim_str);
+                    end
                     %add the events to the EEG structure
                     EEG_epoch_structs{curr_epoch}=add_events_eeglab_struct(EEG_orig,file_proc_info.evt_info{curr_epoch});
                     EEG_epoch_structs{curr_epoch}.data=eeg{curr_epoch};
@@ -222,6 +228,19 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
         [conds_all,cond_inds_table_all,cond_inds_values_all]=intersect(file_proc_info.evt_conditions_being_analyzed.Condition_Name,...
             file_proc_info.grp_wide_possible_cond_names_at_segmentation,'stable');
         file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));
+        
+        %% TEST ME PLEASE (added 2/19)
+        if ~isempty(grp_proc_info_in.win_select_n_trials)
+            if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
+                for curr_condition = 1:size(eeg_w,1)
+                    inds_to_select = sort(randperm(size(eeg_w{curr_condition,1},3),grp_proc_info_in.win_select_n_trials));
+                    file_proc_info.selected_segs{curr_condition,1} = inds_to_select;
+                end
+            else 
+                file_proc_info.selected_segs{curr_condition,1} = [];
+            end
+        end
+        %%
         
         if ~all(cellfun(@isempty,eeg_w))
             file_proc_info = beapp_prepare_to_save_file('segment',file_proc_info, grp_proc_info_in, src_dir{1});

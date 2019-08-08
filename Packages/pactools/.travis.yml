@@ -1,0 +1,22 @@
+language: python
+
+cache:
+  timeout: 1000
+  directories:
+  - $HOME/mne_data
+  # - $HOME/.cache/pip
+
+matrix:
+  include:
+    # Most recent versions
+    - env: PYTHON_VERSION="3.6" COVERAGE="true"
+    - env: PYTHON_VERSION="2.7"
+    - env: RUN_FLAKE8="true" SKIP_TEST="true"
+
+before_install: source continuous_integration/before_install.sh
+install: source continuous_integration/install.sh
+script: source continuous_integration/test_script.sh
+after_success: source continuous_integration/after_script.sh
+
+notifications:
+  email: false

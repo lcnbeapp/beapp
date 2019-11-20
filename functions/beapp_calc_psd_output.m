@@ -90,7 +90,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged mean log normalized power
         if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanmean(mean_pwr_per_hz_in_band_within_segs./total_pwr,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanmean(abs_pwr_in_band_within_segments./total_pwr,3));
             curr_tab= curr_tab+1;
         end
         
@@ -102,7 +102,7 @@ for curr_band=1:length(psd_bw_name)
         
          % user flagged mean log10 normalized power
         if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanmean(mean_pwr_per_hz_in_band_within_segs./total_pwr,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanmean(abs_pwr_in_band_within_segments./total_pwr,3));
             curr_tab= curr_tab+1;
         end
     end
@@ -118,7 +118,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged sd normalized power
         if grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= nanstd(mean_pwr_per_hz_in_band_within_segs./total_pwr,0,3);
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= nanstd(abs_pwr_in_band_within_segments./total_pwr,0,3);
             curr_tab= curr_tab+1;
         end
         
@@ -130,7 +130,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged mean log normalized power
         if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanstd(mean_pwr_per_hz_in_band_within_segs./total_pwr,0,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanstd(abs_pwr_in_band_within_segments./total_pwr,0,3));
             curr_tab= curr_tab+1;
         end
         
@@ -142,7 +142,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged sd log10 normalized power
         if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanstd(mean_pwr_per_hz_in_band_within_segs./total_pwr,0,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanstd(abs_pwr_in_band_within_segments./total_pwr,0,3));
             curr_tab= curr_tab+1;
         end
     end
@@ -158,7 +158,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged median normalized power
         if grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= nanmedian(mean_pwr_per_hz_in_band_within_segs./total_pwr,3);
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= nanmedian(abs_pwr_in_band_within_segments./total_pwr,3);
             curr_tab= curr_tab+1;
         end
         
@@ -170,7 +170,7 @@ for curr_band=1:length(psd_bw_name)
         
         % user flagged median log normalized power
         if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanmedian(mean_pwr_per_hz_in_band_within_segs./total_pwr,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log(nanmedian(abs_pwr_in_band_within_segments./total_pwr,3));
             curr_tab= curr_tab+1;
         end
         
@@ -182,7 +182,7 @@ for curr_band=1:length(psd_bw_name)
         
          % user flagged median log10 normalized power
         if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanmedian(mean_pwr_per_hz_in_band_within_segs./total_pwr,3));
+            psd_report_values(1,col_ctr+1:col_ctr+file_proc_info.src_nchan,curr_tab)= log10(nanmedian(abs_pwr_in_band_within_segments./total_pwr,3));
             curr_tab= curr_tab+1;
         end
     end

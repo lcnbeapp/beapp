@@ -51,7 +51,7 @@ if grp_proc_info_in.beapp_xlsout_av_on
     end
 
     if grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{curr_tabname}='mean_NormAbsPwr';
+        tabnames{curr_tabname}='mean_RelativePwr';
         curr_tabname = curr_tabname +1;
     end
     
@@ -61,7 +61,7 @@ if grp_proc_info_in.beapp_xlsout_av_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{curr_tabname}='mean_Log_NormAbsPwr';
+      tabnames{curr_tabname}='mean_Log_RelativePwr';
       curr_tabname = curr_tabname +1;
     end
     
@@ -71,7 +71,7 @@ if grp_proc_info_in.beapp_xlsout_av_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{curr_tabname}='mean_Log10_NormAbsPwr';
+      tabnames{curr_tabname}='mean_Log10_RelativePwr';
       curr_tabname = curr_tabname +1;
     end
 end
@@ -84,7 +84,7 @@ if grp_proc_info_in.beapp_xlsout_sd_on
     end
     
     if grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{curr_tabname}='sd_NormAbsPwr';
+        tabnames{curr_tabname}='sd_RelativePwr';
         curr_tabname = curr_tabname +1;
     end
 
@@ -94,7 +94,7 @@ if grp_proc_info_in.beapp_xlsout_sd_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{curr_tabname}='sd_Log_NormAbsPwr';
+        tabnames{curr_tabname}='sd_Log_RelativePwr';
         curr_tabname = curr_tabname +1;
     end
     
@@ -104,7 +104,7 @@ if grp_proc_info_in.beapp_xlsout_sd_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{curr_tabname}='sd_Log10_NormAbsPwr';
+        tabnames{curr_tabname}='sd_Log10_RelativePwr';
         curr_tabname = curr_tabname +1;
     end
 end
@@ -116,7 +116,7 @@ if grp_proc_info_in.beapp_xlsout_med_on
     end
 
     if grp_proc_info_in.beapp_xlsout_norm_on
-        tabnames{curr_tabname}='med_NormAbsPwr';
+        tabnames{curr_tabname}='med_RelativePwr';
         curr_tabname = curr_tabname +1;
     end
     
@@ -126,7 +126,7 @@ if grp_proc_info_in.beapp_xlsout_med_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{curr_tabname}='med_Log_NormAbsPwr';
+      tabnames{curr_tabname}='med_Log_RelativePwr';
       curr_tabname = curr_tabname +1;
     end
     
@@ -136,7 +136,7 @@ if grp_proc_info_in.beapp_xlsout_med_on
     end
     
     if grp_proc_info_in.beapp_xlsout_log10_on && grp_proc_info_in.beapp_xlsout_norm_on
-      tabnames{curr_tabname}='med_Log10_NormAbsPwr';
+      tabnames{curr_tabname}='med_Log10_RelativePwr';
       curr_tabname = curr_tabname +1;
     end
 end

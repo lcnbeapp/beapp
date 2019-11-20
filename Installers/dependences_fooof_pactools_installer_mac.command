@@ -1,9 +1,9 @@
-pip install msgpack numpy scipy matplotlib scikit-learn
-pip install mne h5py
+pip3 install msgpack numpy scipy matplotlib scikit-learn
+pip3 install mne h5py
 
 cd ../Packages/fooof-master
-pip install .
+pip3 install .
 
 cd ../pactools
-pip install .
+pip3 install .
 

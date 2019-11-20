@@ -158,7 +158,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                                         file_proc_info.beapp_srate,[grp_proc_info_in.beapp_itpc_params.min_cyc grp_proc_info_in.beapp_itpc_params.max_cyc],... 
                                         'baseline',NaN,'itctype','phasecoher',... 
                                         'plotmean','off','plotersp','off','plotitc','off','plotphasesign','off','plotphaseonly','off','verbose',...
-                                        'off');
+                                        'off','timesout',[0 500 1000]);
                                         powbase{curr_condition,1}(curr_chan,:) = NaN;
                                         f_powbase(curr_chan,:) = NaN; 
                                 end
@@ -198,6 +198,12 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             end
             
             if ~all(cellfun(@isempty,eeg_itc))
+                if exist('powbase_2') && (grp_proc_info_in.beapp_itpc_params.baseline_norm == 1)%if powbase_2 exists, powbase was set to be NaN for input, and powbase_2 contains actual output
+                    powbase = powbase_2;
+                end
+                if size(f_powbase,2) < 2
+                    f_powbase = f{1,1};
+                end
                 file_proc_info = beapp_prepare_to_save_file('itpc',file_proc_info, grp_proc_info_in, src_dir{1});
                 save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_itc','ERSP','t','f','powbase','f_powbase');
             end

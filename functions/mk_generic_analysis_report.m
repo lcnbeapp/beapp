@@ -46,6 +46,9 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [hdr] = mk_generic_analysis_report(report_values,tname_out,report_info,bw_names,largest_nchan,all_condition_labels, all_obsv_sizes, beapp_out_dir)
 col_ctr = 0;
+if ~(size(unique(bw_names),2) == size(bw_names,2))
+    warning('Duplicate Band Width names found; May lead to error')
+end
 for curr_analysis = 1:length(tname_out)
     for curr_band =1:length(bw_names)
         hdr(curr_analysis,col_ctr+1:col_ctr+largest_nchan) = strcat('E',strread(num2str(1:largest_nchan),'%s'),['_',bw_names{curr_band},'_',tname_out{curr_analysis}]);
@@ -58,7 +61,7 @@ end
 % type
 for curr_condition= 1: length(report_values)
      report_info.Condition_Name=all_condition_labels(:,curr_condition);
-     report_info.Num_Segs= all_obsv_sizes(:,curr_condition,1); 
+     report_info.Num_Segs_Used = all_obsv_sizes(:,curr_condition,1); 
      report_info.Num_Segs_Pre_Rej =  all_obsv_sizes(:,curr_condition,2); 
      report_info.Num_Segs_Good_Behav =  all_obsv_sizes(:,curr_condition,3); 
 

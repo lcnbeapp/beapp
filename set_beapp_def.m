@@ -109,9 +109,9 @@ grp_proc_info.src_dir={''}; %source directory containing the EEG data exported f
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc','fooof','pac','bycycle'};
-Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','out','seg','seg'}'; 
-Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','out','out','out','out','out'}';
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc','topoplot','fooof','pac','bycycle'};
+Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','psd','seg','seg'}'; %TODO: make output from psd 'psd'
+Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','psd','out','out','out','out','out'}';
 
 Mod_Names=ModuleNames(:);
 Module_On = true(length(ModuleNames),1); % flag all modules on as default
@@ -269,9 +269,10 @@ grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmba
 grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
 grp_proc_info.evt_trial_baseline_win_end = 0; % def = 0;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
 %Option to segment on nth trial
-grp_proc_info.select_nth_trial = 0;
+grp_proc_info.select_nth_trial = [];
 grp_proc_info.segment_stim_relative_to = {''}; 
 grp_proc_info.segment_nth_stim_str = {''};
+grp_proc_info.beapp_event_group_stim=0;
 %% variables for general output module processing 
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications
@@ -293,16 +294,6 @@ grp_proc_info.win_select_trials_in_range = [];
 %removed the option of reusing previously calculated frequency info
 grp_proc_info.bw(1,1:2)=[2,4]; %bandwidth 1 start and end frequencies (the first band), can have as many or as few bandwidths as the user would like
 grp_proc_info.bw_name(1)={'Delta'}; %name of bandwidth 1
-grp_proc_info.bw(2,1:2)=[4,6]; %bandwidth 2
-grp_proc_info.bw_name(2)={'Theta'}; %name of bandwidth 2
-grp_proc_info.bw(3,1:2)=[6,9]; %bandwidth 3
-grp_proc_info.bw_name(3)={'LowAlpha'}; %name of bandwidth 3
-grp_proc_info.bw(4,1:2)=[9,13]; %bandwidth 4
-grp_proc_info.bw_name(4)={'HighAlpha'}; %name of bandwidth 4
-grp_proc_info.bw(5,1:2)=[13,30]; %bandwidth 5
-grp_proc_info.bw_name(5)={'Beta'}; %name of bandwidth 5
-grp_proc_info.bw(6,1:2)=[30,50]; %bandwidth 6
-grp_proc_info.bw_name(6)={'Gamma'}; %name of bandwidth 6
 grp_proc_info.bw_total_freqs = [1:100]; % frequencies to include in calculation of total power (for normalization). def = [1:100].
 grp_proc_info.win_select_n_trials = []; % use all available trials
 %% PSD default variables
@@ -335,14 +326,14 @@ grp_proc_info.beapp_xlsout_elect_indx=1:129; %Channel numbers for the report. If
 grp_proc_info.beapp_itpc_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max itpc
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean itpc
-grp_proc_info.beapp_itpc_params.baseline_norm = 1;
-grp_proc_info.beapp_itpc_params.use_common_baseline = 1;
-grp_proc_info.beapp_itpc_params.common_baseline_idx = 1;
+grp_proc_info.beapp_itpc_params.baseline_norm=1;
+grp_proc_info.beapp_itpc_params.use_common_baseline=0;
+grp_proc_info.beapp_itpc_params.common_baseline_idx=1;
 grp_proc_info.beapp_itpc_params.set_freq_range=0;
-grp_proc_info.beapp_itpc_params.min_freq = 2;
-grp_proc_info.beapp_itpc_params.max_freq = 50;
-grp_proc_info.beapp_itpc_params.min_cyc = 1;
-grp_proc_info.beapp_itpc_params.max_cyc = 8;
+grp_proc_info.beapp_itpc_params.min_freq= 2;
+grp_proc_info.beapp_itpc_params.max_freq=50;
+grp_proc_info.beapp_itpc_params.min_cyc=1;
+grp_proc_info.beapp_itpc_params.max_cyc=8;
 %% FOOOF default variables 
 grp_proc_info.fooof_min_freq = 1; %The frequency range of the psd fooof will run on
 grp_proc_info.fooof_max_freq = 50;

@@ -87,7 +87,22 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
 %         if grp_proc_info_in.beapp_ica_type == 3 && grp_proc_info_in.beapp_ica_run_all_10_20 == 0
 %             use_all_10_20s = 0;
 %         end
-            
+        %%REMOVES REPETITIVE CHANS (WILL BREAK HAPPE IF PRESENT)
+        chans2remove = [];
+        rmv_idx = 1;
+         for chan1 = 1:size(eeg{1,1},1)
+            for chan2 = 1:size(eeg{1,1},1)
+                if ~(chan1 == chan2)
+                  %  if ~(any(eeg{1,1}(chan1,:) == eeg{1,1}(chan2,:)==0))
+                    if (sum(eeg{1,1}(chan1,:) == eeg{1,1}(chan2,:))) > size(eeg{1,1})/2
+                        chans2remove(1,rmv_idx) = chan1;
+                        rmv_idx = rmv_idx+1;
+                    end
+                end 
+            end
+        end
+        chans2remove = unique(chans2remove);
+        grp_proc_info_in.beapp_indx_chans_to_exclude{1,1} = chans2remove;
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
             ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude,...
@@ -124,6 +139,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             file_proc_info.beapp_nchans_used(curr_rec_period) = length(file_proc_info.beapp_indx{curr_rec_period});
             chan_name_indx_dict(:,2) = num2cell(file_proc_info.beapp_indx{curr_rec_period});
             [~,ind_marked_bad_chans]= intersect({file_proc_info.net_vstruct.labels},setdiff({full_selected_channels.labels},{EEG_tmp.chanlocs.labels}),'stable');
+            %ERROR REPORTED HERE: horzcat error; ind_marked_bad_chans was a
+            %column, can't be concatenated with a row
             file_proc_info.beapp_bad_chans{curr_rec_period} = unique([file_proc_info.beapp_bad_chans{curr_rec_period} ind_marked_bad_chans]);
             
             % if HAPPE is selected, run wICA on file

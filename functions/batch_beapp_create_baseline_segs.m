@@ -88,6 +88,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 %many samples as there are in the user defined window size
                 curr_epoch_curr_cond_eeg_w{curr_condition,1} = beapp_extract_segments(eeg_msk_w_cond_info,file_proc_info,grp_proc_info_in,eeg{curr_epoch});
                 
+                file_proc_info.evt_conditions_being_analyzed.Num_Segs_Pre_Rej(curr_condition) = size(curr_epoch_curr_cond_eeg_w{curr_condition,1},3);
                 % detrend segment according to user preference
                 curr_epoch_curr_cond_eeg_w{curr_condition,1} = detrend_segment(curr_epoch_curr_cond_eeg_w{curr_condition,1},grp_proc_info_in.segment_linear_detrend);
                 
@@ -134,6 +135,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             file_proc_info.grp_wide_possible_cond_names_at_segmentation,'stable');
         
         file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));        
+        %update ICA excel report
+        beapp_update_ica_report(file_proc_info.evt_conditions_being_analyzed,grp_proc_info_in.beapp_root_dir{1,1},...
+            grp_proc_info_in.beapp_genout_dir,grp_proc_info_in.beapp_prev_run_tag,grp_proc_info_in.beapp_curr_run_tag,grp_proc_info_in.beapp_fname_all{curr_file});
         
         if ~isempty(grp_proc_info_in.win_select_n_trials)
             if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials

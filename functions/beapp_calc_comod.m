@@ -4,7 +4,7 @@ function [comodulogram, result_z_scores, result_surr_max, phase_bins, amp_dist, 
     method,low_fq_width,high_fq_width,low_fq_res,high_fq_res,calc_zscores,compute_shifts,shifts)
 signal = py.numpy.array(signal);
 %set settings for pactools
-michaelsaysso = 2;
+michaelsaysso = 1;
 if michaelsaysso == 1
     curr_results = NaN(size(high_fq_range,2),size(low_fq_range,2));
     result_z_scores =  NaN(size(high_fq_range,2),size(low_fq_range,2));
@@ -48,6 +48,7 @@ if michaelsaysso == 1
 %                 curr_results(hf,lf) = double(py.array.array('d',py.numpy.nditer(fit.comod_)));
 %             end
             phase_bins = double(py.array.array('d',py.numpy.nditer(fit.phase_bins)));
+            phase_dist = phase_bins;
             %phase_bins = NaN;
             %amp_dist = NaN(1,18);
             %comodulogram = reshape(curr_results,[high_fq_res low_fq_res]); 
@@ -59,8 +60,19 @@ if michaelsaysso == 1
                 %result_surr_max = double(py.array.array('d',py.numpy.nditer(fit.surrogate_max_)));
                 %result_surr_max = reshape(result_surr_max,[high_fq_res low_fq_res]);
             else 
-                
+                calc_btwn_chans = 1;
+                if calc_btwn_chans
+                    phase_dist = double(py.array.array('d',py.numpy.nditer(fit.phase)));
+                    amps = double(py.array.array('d',py.numpy.nditer(fit.amp)));
+                    phase_binned = discretize(phase_dist,18);
+                     for b=1:18
+                        selection = amps(phase_binned==b);
+                        amplitude_dist(b) = mean(selection);
+                     end
+                end
                 amp_dist(hf,lf,:) = double(py.array.array('d',py.numpy.nditer(fit.amp_dist)));
+                %subtle differences between the amp_dist I make and the one
+                %returned by pactools...
                 divergence_kl = sum(amp_dist(hf,lf,:) .* log(amp_dist(hf,lf,:) * 18));
                 curr_results(hf,lf) = divergence_kl / log(18);
             end
@@ -114,13 +126,28 @@ elseif michaelsaysso == 2
     estimator.high_fq_width = py.float(high_fq_width); %TEMP:
     %let pactools set
     fit = estimator.fit(signal);
-    curr_results = double(py.array.array('d',py.numpy.nditer(fit.comod_)));
+    %curr_results = double(py.array.array('d',py.numpy.nditer(fit.comod_)));
     phase_bins = double(py.array.array('d',py.numpy.nditer(fit.phase_bins)));
     %phase_bins = NaN;
     %amp_dist = NaN(1,18);
     amp_dist = double(py.array.array('d',py.numpy.nditer(fit.amp_dist)));
-    comodulogram = reshape(curr_results,[high_fq_res low_fq_res]); 
+    amps = double(py.array.array('d',py.numpy.nditer(fit.amp)));
+    % = reshape(curr_results,[high_fq_res low_fq_res]); 
     phase_dist = double(py.array.array('d',py.numpy.nditer(fit.phase)));
+    %procedure from pactools:
+    %digitize phase dist 
+    %then  for b in np.unique(phase_preprocessed):
+     %       selection = amplitude[phase_preprocessed == b]
+     %       amplitude_dist[b] = np.mean(selection)
+     %my attempt to do things myself...doesn't replicate 
+     %%THE AMPLITUDE DIST HERE IS ALL LF AMPLITUDE DISTS APPENDED
+     %%TOGETHER...NEED TO CALC ONE AT A TIME
+     phase_binned = discretize(phase_dist,18);
+     for b=1:18
+        selection = amp_dist(phase_binned==b);
+        amplitude_dist(b) = mean(selection);
+     end
+     
 end
     
 

@@ -37,6 +37,15 @@
 function [EEG]=add_events_eeglab_struct(EEG,evt_info_curr_rec_period)
 
 for curr_event=1:length(evt_info_curr_rec_period)
+   
+    %MM added 8/28/19 (see what it does)
+%     EEG.event(curr_event).evt_codes=evt_info_curr_rec_period(curr_event).evt_codes;
+%     EEG.event(curr_event).evt_times_micros_rel=evt_info_curr_rec_period(curr_event).evt_times_micros_rel; %see if this fixes timing info
+%     EEG.event(curr_event).evt_times_samp_rel=evt_info_curr_rec_period(curr_event).evt_times_samp_rel;
+%     EEG.event(curr_event).evt_times_samp_abs=evt_info_curr_rec_period(curr_event).evt_times_samp_abs;
+%     EEG.event(curr_event).duration_time=evt_info_curr_rec_period(curr_event).duration_time;
+%     EEG.event(curr_event).evt_cel_type=evt_info_curr_rec_period(curr_event).evt_cel_type;
+%     EEG.event(curr_event).behav_code=evt_info_curr_rec_period(curr_event).behav_code;
     
     % add event label, time latency, and sample number to EEGLAB structure
     if isfield(evt_info_curr_rec_period,'type')
@@ -45,6 +54,7 @@ for curr_event=1:length(evt_info_curr_rec_period)
     
     EEG.event(curr_event).latency=double(evt_info_curr_rec_period(curr_event).evt_times_samp_rel); 
     EEG.event(curr_event).init_index=double(evt_info_curr_rec_period(curr_event).evt_ind); 
-    EEG.event(curr_event).urevent=EEG.event(curr_event).init_index; 
+    EEG.event(curr_event).urevent=EEG.event(curr_event).init_index;
+
 end
 

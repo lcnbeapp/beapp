@@ -56,10 +56,12 @@ if ~isempty(inds_gaps_in_user_total_freqs)
         else 
            freq_set_end_val = bw_total_freqs(inds_gaps_in_user_total_freqs(curr_diff_ind));
         end 
-        
         inds_freqs_in_total_range_to_add=find(frequencies_in_array>=freq_set_start_val & frequencies_in_array<=freq_set_end_val);
         if size(inds_freqs_in_total_range,2) == 1 %12/4: sometimes the two inds arrays are along different dimensions
-            inds_freqs_in_total_range = inds_freqs_in_total_range';
+           inds_freqs_in_total_range = inds_freqs_in_total_range';
+        end
+        if size(inds_freqs_in_total_range_to_add,2) == 1
+           inds_freqs_in_total_range_to_add = inds_freqs_in_total_range_to_add';
         end
         inds_freqs_in_total_range = sort(unique(([inds_freqs_in_total_range,inds_freqs_in_total_range_to_add])));
     end

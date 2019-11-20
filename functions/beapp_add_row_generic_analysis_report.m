@@ -56,6 +56,9 @@ report_info.Current_SRate(curr_file) = file_proc_info.beapp_srate;
 report_info.Src_Num_Rec_Periods(curr_file) = file_proc_info.src_num_epochs;
 report_info.Idx_Rec_Periods_Analyzed(curr_file)={file_proc_info.epoch_inds_to_process};
 report_info.Bad_Chans_By_Rec_Period(curr_file) = {strjoin(cellfun(@mat2str,file_proc_info.beapp_bad_chans,'UniformOutput',0),',')};
+if cellfun(@strcmp,report_info.Bad_Chans_By_Rec_Period(curr_file),{'zeros(0,1)'}) %MM added 11/20/19, fixed 'zeros(0,1)' error
+    report_info.Bad_Chans_By_Rec_Period(curr_file) = {NaN};
+end
 report_info.Num_Bad_Chans_By_Rec_Period(curr_file) = {strjoin(cellfun(@ (x) num2str(length(x)),file_proc_info.beapp_bad_chans,'UniformOutput',0),',')};
 report_info.Num_Good_Chans_By_Rec_Period(curr_file) = {strjoin(cellfun(@mat2str,num2cell(file_proc_info.beapp_nchans_used),'UniformOutput',0),',')};
 

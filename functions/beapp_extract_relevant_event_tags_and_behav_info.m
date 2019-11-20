@@ -1,5 +1,6 @@
 function [file_proc_info, skip_file] = beapp_extract_relevant_event_tags_and_behav_info ...
-    (file_proc_info,src_data_type,beapp_event_eprime_values,beapp_event_code_onset_strs,src_format_typ, beapp_event_use_tags_only)
+    (file_proc_info,src_data_type,beapp_event_eprime_values,beapp_event_code_onset_strs,src_format_typ, beapp_event_use_tags_only,...
+    select_nth_trial,segment_nth_stim_str)
 
 skip_file = 0;
 % make sure eeg outputs line up across all files being processed in
@@ -39,6 +40,7 @@ else
              [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,skip_file] = beapp_extract_conditions_tags_only ...
                 (beapp_event_code_onset_strs, file_proc_info.evt_info, beapp_event_eprime_values,file_proc_info.beapp_fname{1});
         end
+        
     else
         warning([file_proc_info.beapp_fname{1} ': file does not contain any event tag information']);
         skip_file = 1;
@@ -51,6 +53,14 @@ else
     % incorporate behavioral information
     [file_proc_info.evt_info,behav_coding] = beapp_exclude_trials_using_behavioral_codes (file_proc_info.evt_info);
     file_proc_info.grp_wide_possible_cond_names_at_segmentation = unique(beapp_event_eprime_values.condition_names,'stable');
+    
+    %MM 9/10/19: add _n for selecting nth trial
+    if ~isempty(select_nth_trial)
+        for i=1:length(select_nth_trial)
+            file_proc_info.grp_wide_possible_cond_names_at_segmentation(1,i) = strcat(segment_nth_stim_str,'_',num2str(select_nth_trial(1,i))); 
+        end
+    end
+
     %
     if src_data_type ==2
         if behav_coding

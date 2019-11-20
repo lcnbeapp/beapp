@@ -62,13 +62,13 @@ Idx_Rec_Periods_Analyzed =cell(length(fname_all),1);
 Num_Bad_Chans_By_Rec_Period = cell(length(fname_all),1);
 Bad_Chans_By_Rec_Period= cell(length(fname_all),1);
 Num_Good_Chans_By_Rec_Period = cell(length(fname_all),1);
-Num_Segs = NaN(length(fname_all),1);
+Num_Segs_Used = NaN(length(fname_all),1);
 Num_Segs_Pre_Rej = NaN(length(fname_all),1);
 Num_Segs_Good_Behav = NaN(length(fname_all),1);
 
 report_info = table(FileName, Condition_Name,Src_Net_Type, Src_SRate,...
     Current_SRate,Src_Num_Rec_Periods, Idx_Rec_Periods_Analyzed, Num_Bad_Chans_By_Rec_Period,...
-    Num_Good_Chans_By_Rec_Period,Num_Segs,Num_Segs_Pre_Rej,Num_Segs_Good_Behav, Bad_Chans_By_Rec_Period);
+    Num_Good_Chans_By_Rec_Period,Num_Segs_Used,Num_Segs_Pre_Rej,Num_Segs_Good_Behav, Bad_Chans_By_Rec_Period);
 all_condition_labels = cell(length(fname_all),length(all_possible_conds));
 
 % 3d array -- file x condition x seg_count_type (final segs, segs pre_rej,

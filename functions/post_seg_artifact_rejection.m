@@ -24,3 +24,4 @@ if grp_proc_info_in.beapp_happe_segment_rejection
 end
 
 EEG_tmp = eeg_rejsuperpose(EEG_tmp, 1, 0, 1, 1, 1, 1, 1, 1);
+

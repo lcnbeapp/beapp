@@ -52,7 +52,8 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
         [file_proc_info, skip_file] = beapp_extract_relevant_event_tags_and_behav_info ...
             (file_proc_info,grp_proc_info_in.src_data_type, ...
             grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs,...
-             grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_event_use_tags_only);
+             grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_event_use_tags_only,...
+             grp_proc_info_in.select_nth_trial,grp_proc_info_in.segment_nth_stim_str);
          
         % skip file if it doesn't contain user-chosen event tags (unless pure baseline)
         if skip_file, continue; end
@@ -73,8 +74,8 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                 % check that there are target events to segment
                 if ~all(ismember({file_proc_info.evt_info{curr_epoch}.type},'Non_Target'))
                     
-                    %8/2/19: select nth D10 after a D20
-                    if ~(grp_proc_info_in.select_nth_trial == 0)
+                    %8/2/19: select nth stim type A after a stim type B
+                    if ~isempty(grp_proc_info_in.select_nth_trial)
                         [file_proc_info.evt_info{curr_epoch}] = beapp_extract_nth_trial(file_proc_info.evt_info{curr_epoch},...
                             grp_proc_info_in.select_nth_trial,grp_proc_info_in.beapp_event_code_onset_strs,...
                             grp_proc_info_in.segment_stim_relative_to,grp_proc_info_in.segment_nth_stim_str);
@@ -91,10 +92,17 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                         file_proc_info.evt_conditions_being_analyzed.Good_Behav_Trials_Pre_Rej(cond_inds_table) = bincounts_conds(cond_inds_values) +  file_proc_info.evt_conditions_being_analyzed.Good_Behav_Trials_Pre_Rej(cond_inds_table);
                     end
                     
+                    if isempty(grp_proc_info_in.select_nth_trial)
                     % segment all desired conditions by time before/after event type
-                    [EEG_epoch_structs{curr_epoch}, inds_of_events_in_boundaries]= pop_epoch(EEG_epoch_structs{curr_epoch},...
-                        file_proc_info.evt_conditions_being_analyzed.Condition_Name',...
-                        [grp_proc_info_in.evt_seg_win_start grp_proc_info_in.evt_seg_win_end],'verbose','off');
+                        [EEG_epoch_structs{curr_epoch}, inds_of_events_in_boundaries]= pop_epoch(EEG_epoch_structs{curr_epoch},...
+                            file_proc_info.evt_conditions_being_analyzed.Condition_Name',...
+                            [grp_proc_info_in.evt_seg_win_start grp_proc_info_in.evt_seg_win_end],'verbose','off');
+                    else
+                        %%MM: 9/9/19
+                         [EEG_epoch_structs{curr_epoch}, inds_of_events_in_boundaries]= pop_epoch(EEG_epoch_structs{curr_epoch},...
+                            file_proc_info.grp_wide_possible_cond_names_at_segmentation',...
+                            [grp_proc_info_in.evt_analysis_win_start grp_proc_info_in.evt_analysis_win_end],'verbose','off');
+                    end 
                     
                     if ~isempty(EEG_epoch_structs{curr_epoch})
                         % get sample index for event in segment (used to make subwindows in analysis modules)
@@ -149,8 +157,13 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                         % get segments to keep, not segments to
                         % reject
                         tmp_EEG_struct_rejglobal = not([EEG_epoch_structs{curr_epoch}.reject.rejglobal]);
+                    end                    
+                    %%MM 9/9/19:
+                    if grp_proc_info_in.beapp_event_group_stim == 1
+                        tmp_EEG_struct_rejglobal = remove_evt_seqs_in_groups(length(file_proc_info.grp_wide_possible_cond_names_at_segmentation),...
+                             length(EEG_epoch_structs{1, 1}.epoch),tmp_EEG_struct_rejglobal,EEG_epoch_structs{1,1}.epoch,...
+                             file_proc_info.grp_wide_possible_cond_names_at_segmentation);
                     end
-                    
 % %                      if strcmp(grp_proc_info_in.beapp_curr_run_tag,'no_bsl_same_45_chosen_at_seg_042418')
 % %                          
 % %                          for curr_tag = 1 :length(all_tag_list)
@@ -163,11 +176,13 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
 %                     % allocate segments according to dataset wide
 %                     % conditions analyzed, not what is in file
                     for curr_condition = 1:length(file_proc_info.grp_wide_possible_cond_names_at_segmentation)
-                                                
+                        
                         targ_cond_logical = ismember(all_tag_list, file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition});
-                         
+                        
                         % keep good segments of this condition type
                         segs_to_keep = all([targ_cond_logical; tmp_EEG_struct_rejglobal]);
+                        file_proc_info.evt_conditions_being_analyzed.Num_Segs_Pre_Rej(curr_condition) = sum(targ_cond_logical);
+                        file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(curr_condition) = sum(segs_to_keep);
                         
 %                         if strcmp(grp_proc_info_in.beapp_curr_run_tag,'no_bsl_same_45_chosen_at_seg_042418')
 %      
@@ -210,14 +225,21 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
                         else
                             curr_epoch_curr_cond_eeg_w{curr_condition,1} = [];
                         end
+                        
 %                         
 %                         [curr_epoch_curr_cond_eeg_w{curr_condition,1},~] = extract_condition_segments_from_eeglab_struct...
 %                             (EEG_epoch_structs{curr_epoch}, all_tag_list,file_proc_info.grp_wide_possible_cond_names_at_segmentation{curr_condition}, size(eeg{curr_epoch},1),file_proc_info.beapp_indx{curr_epoch});
 %                         
                         eeg_w{curr_condition,1}=cat(3,eeg_w{curr_condition,1}, curr_epoch_curr_cond_eeg_w{curr_condition,1});
+                        %8/29/19: add the info about each kept epoch to file_proc_info
+                        if isfield(EEG_epoch_structs{1,1},'epoch') 
+                            file_proc_info.epoch{curr_condition,1} = EEG_epoch_structs{1,1}.epoch(segs_to_keep);
+                        end
                         clear curr_cond_event_list_idxs
                     end
-                    
+                    beapp_update_ica_report(file_proc_info.evt_conditions_being_analyzed,grp_proc_info_in.beapp_root_dir{1,1},...
+                            grp_proc_info_in.beapp_genout_dir,grp_proc_info_in.beapp_prev_run_tag,...
+                            grp_proc_info_in.beapp_curr_run_tag,grp_proc_info_in.beapp_fname_all{curr_file});
                 end
                 clear all_tag_list non_targ_idx
             end

@@ -108,7 +108,7 @@ grp_proc_info.beapp_dir_warn_off = 1; % def = 0; if 1, mute directory warnings
 grp_proc_info.beapp_use_rerun_table = 0; % def = 0; if 1, use rerun table to run a subset of files. not needed for normal reruns
 grp_proc_info.beapp_rmv_bad_chan_on= 0; % def = 0; 1 if you'd like to remove channels flagged as bad in PREP or HAPPE
 grp_proc_info.beapp_run_per_file = 0; %turn on to run only 1 file in beapp_file_info_table; intended for computer cluster use
-grp_proc_info.beapp_file_idx = 1;
+grp_proc_info.beapp_file_idx = 1; %used only if running per file
 
 % FORMATTING SPECIFICATIONS
 grp_proc_info.mff_seg_throw_out_bad_segments = 1; % throw out segments marked bad when importing pre-segmented MFF files. def = 1; 
@@ -140,13 +140,14 @@ grp_proc_info.beapp_erp_maf_on=0; %flags on the moving average filter when the E
 grp_proc_info.beapp_erp_maf_order=30; %Order of the moving average filter
 
 %To segment nth trial (not every one)
-grp_proc_info.select_nth_trial = 3;
-grp_proc_info.segment_stim_relative_to = {'DI20'}; 
-grp_proc_info.segment_nth_stim_str = {'DI10'};
+grp_proc_info.select_nth_trial = []; %set to [] to select all relevant trials
+grp_proc_info.segment_stim_relative_to = {''}; 
+grp_proc_info.segment_nth_stim_str = {''};
+
+grp_proc_info.beapp_event_group_stim = 0; %def = 0; to group sequences of stimuli (and remove all if one is rejected in sequence)
 
 %% output measure settings
 % PSD XLS report settings
-grp_proc_info.psd_output_typ = 1; % psd = 1, power = 2, def = 1
 grp_proc_info.psd_pmtm_l=3; %number of tapers to use if using the multitaper window type, should be a positive integer 3 or greater
 %Report values in: (must select at least 1)
 grp_proc_info.beapp_xlsout_av_on=1; %toggles on the mean power option
@@ -154,21 +155,25 @@ grp_proc_info.beapp_xlsout_sd_on=1; %toggles on the standard deviation option
 grp_proc_info.beapp_xlsout_med_on=1; %toggles on the median option
 %Report categories:
 grp_proc_info.beapp_xlsout_raw_on=1; %toggles on that the absolute power should be reported
-grp_proc_info.beapp_xlsout_norm_on=1; %toggles on that the normalized power should be reported
+grp_proc_info.beapp_xlsout_norm_on=1; %toggles on that the relative power should be reported
 grp_proc_info.beapp_xlsout_log_on=1; %toggles on that the natural log should be reported
 grp_proc_info.beapp_xlsout_log10_on=1; %toggles on that the log10 should be reported
 
 % ITPC 
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max ITPC in xls report?
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean ITPC in xls report?
-grp_proc_info.beapp_itpc_params.set_freq_range=0; %default [minfreq 50], minfreq being determined by the number of data points, cycles and sampling frequency.
+grp_proc_info.beapp_itpc_params.set_freq_range=1; %default [minfreq 50], minfreq being determined by the number of data points, cycles and sampling frequency.
+grp_proc_info.beapp_itpc_params.min_freq=4; %minimum frequency limit 
+grp_proc_info.beapp_itpc_params.max_freq=55; %maximum frequency limit
+grp_proc_info.beapp_itpc_params.use_common_baseline=1;
+grp_proc_info.beapp_itpc_params.common_baseline_idx=1;
 
 % PAC
-grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
 grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
- grp_proc_info.pac_set_num_segs = 0; %choose whether a set the number of segments should be used for pac
- grp_proc_info.pac_num_segs = 30; %if set_num_segs is on: set the number of segments to use for pac
-grp_proc_info.pac_calc_zscores = 0; %will take longer for pac to run if on. Requires a larger window size
+grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
+grp_proc_info.pac_set_num_segs = 0; %choose whether a set the number of segments should be used for pac
+grp_proc_info.pac_num_segs = 30; %if set_num_segs is on: set the number of segments to use for pac
+grp_proc_info.pac_calc_zscores = 1; %will take longer for pac to run if on. Requires a larger window size
 
 %Bycycle
 grp_proc_info.bycyc_set_num_segs = 0;

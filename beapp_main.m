@@ -219,6 +219,10 @@ if grp_proc_info_main.beapp_toggle_mods{'itpc','Module_On'}
     grp_proc_info_main = batch_beapp_itpc(grp_proc_info_main);
 end
 
+if grp_proc_info_main.beapp_toggle_mods{'topoplot','Module_On'}
+    grp_proc_info_main = batch_beapp_topoplot(grp_proc_info_main);
+end
+
 if grp_proc_info_main.beapp_toggle_mods{'fooof','Module_On'}
     batch_beapp_fooof(grp_proc_info_main);
 end

@@ -232,8 +232,10 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
 %                         
                         eeg_w{curr_condition,1}=cat(3,eeg_w{curr_condition,1}, curr_epoch_curr_cond_eeg_w{curr_condition,1});
                         %8/29/19: add the info about each kept epoch to file_proc_info
-                        if isfield(EEG_epoch_structs{1,1},'epoch') 
-                            file_proc_info.epoch{curr_condition,1} = EEG_epoch_structs{1,1}.epoch(segs_to_keep);
+                        if isfield(EEG_epoch_structs{1,1},'epoch')
+                            if ~isempty(EEG_epoch_structs{1,1}.epoch)
+                                file_proc_info.epoch{curr_condition,1} = EEG_epoch_structs{1,1}.epoch(segs_to_keep);
+                            end
                         end
                         clear curr_cond_event_list_idxs
                     end
@@ -251,7 +253,7 @@ for curr_file = 1:length(grp_proc_info_in.beapp_fname_all)
             file_proc_info.grp_wide_possible_cond_names_at_segmentation,'stable');
         file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(cond_inds_table_all)= cellfun(@ (x) size(x,3),eeg_w(cond_inds_values_all));
         
-        %% TEST ME PLEASE (added 2/19)
+        %% (added 2/19)
         if ~isempty(grp_proc_info_in.win_select_n_trials)
             if size(eeg_w{curr_condition,1},3)>= grp_proc_info_in.win_select_n_trials
                 for curr_condition = 1:size(eeg_w,1)

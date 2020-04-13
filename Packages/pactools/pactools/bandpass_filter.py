@@ -68,11 +68,18 @@ def multiple_band_pass(sigs, fs, frequency_range, bandwidth, n_cycles=None,
 
         # --------- with mne.filter.band_pass_filter
         if filter_method == 'mne':
-            from mne.filter import band_pass_filter
+            #MM Edit 1/10: I think band_pass_filter is deprecated
+          #  from mne.filter import band_pass_filter
+           # for ii in range(n_epochs):
+            #    low_sig = band_pass_filter(
+             #       sigs[ii, :], Fs=fs, Fp1=frequency - bandwidth / 2.0,
+              #      Fp2=frequency + bandwidth / 2.0,
+               #     l_trans_bandwidth=bandwidth / 4.0,
+                #    h_trans_bandwidth=bandwidth / 4.0, n_jobs=1, method='iir')
+            from mne.filter import filter_data
             for ii in range(n_epochs):
-                low_sig = band_pass_filter(
-                    sigs[ii, :], Fs=fs, Fp1=frequency - bandwidth / 2.0,
-                    Fp2=frequency + bandwidth / 2.0,
+                low_sig = filter_data(sigs[ii,:],sfreq=fs, l_freq=frequency - bandwidth / 2.0,
+                    h_freq = frequency+bandwidth / 2.0,
                     l_trans_bandwidth=bandwidth / 4.0,
                     h_trans_bandwidth=bandwidth / 4.0, n_jobs=1, method='iir')
 

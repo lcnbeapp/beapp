@@ -755,7 +755,7 @@ def _one_modulation_index(amplitude, phase_preprocessed, norm_a, method, shift,
         raw_amplitude_dist = amplitude_dist[:]
         n_bins = n_bins
 
-        amplitude_dist /= np.sum(amplitude_dist)
+       # amplitude_dist /= np.sum(amplitude_dist)
         divergence_kl = np.sum(amplitude_dist * np.log(amplitude_dist * n_bins))
         MI = divergence_kl / np.log(n_bins)
         phase_bins = np.linspace(-np.pi, np.pi, n_bins) # og = n_bins
@@ -1113,10 +1113,10 @@ def _get_shifts(random_state, n_points, minimum_shift, fs, n_surrogates):
             raise ValueError("The minimum shift is longer than half the "
                              "visible data.")
 
-        #shifts = random_state.randint(
-            #n_minimum_shift, n_points - n_minimum_shift, size=n_iterations)
+        shifts = random_state.randint(
+            n_minimum_shift, n_points - n_minimum_shift, size=n_iterations)
         #np.save('shifts', shifts)
-        shifts = np.load('shifts.npy')
+        #shifts = np.load('shifts.npy')
     else:
         shifts = np.array([0])
 

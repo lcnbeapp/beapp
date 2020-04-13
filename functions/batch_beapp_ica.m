@@ -73,7 +73,14 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     
     if exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
         
-        load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+        try
+            load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+        catch 
+            disp('Problem Loading')
+            pause(5)
+            load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+        end
+
         tic;
 %        epoch_length = file_proc_info.src_epoch_nsamps / file_proc_info.src_srate;
 %         if epoch_length < 15 && ~grp_proc_info_in.beapp_ica_type==3
@@ -103,6 +110,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         end
         chans2remove = unique(chans2remove);
         grp_proc_info_in.beapp_indx_chans_to_exclude{1,1} = chans2remove;
+        if ~isempty(chans2remove)
+           warning(['Channels ' num2str(chans2remove) ' demonstrated identical or no data; those channels were removed from further analysis']);
+        end
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
             ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude,...

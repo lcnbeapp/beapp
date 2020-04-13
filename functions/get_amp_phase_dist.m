@@ -1,11 +1,10 @@
-function [amp_dist, phase_dist] = get_amp_phase_dist(signal, lf, hf, srate, high_fq_width)
-   comod_filter = 0;
+function [amp_dist, phase_dist] = get_amp_phase_dist(signal, lf, hf, srate, high_fq_width, pac_variable_hf_filt)
     estimator = py.pactools.Comodulogram(srate,lf);
     estimator.progress_bar = 0; %set to 0 cause it's broken
     estimator.method = py.str('tort');
     estimator.high_fq_range = hf;
     estimator.low_fq_width = py.float(2);         
-    if comod_filter
+    if pac_variable_hf_filt
         hf_low = hf - 2;
         hf_high = hf+lf;
         estimator.high_fq_width = hf_high - hf_low;

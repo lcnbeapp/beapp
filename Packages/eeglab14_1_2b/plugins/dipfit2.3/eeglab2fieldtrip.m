@@ -45,7 +45,7 @@ data = [];
 
 % add the objects that are common to all fieldboxes
 tmpchanlocs  = EEG.chanlocs;
-data.label   = { tmpchanlocs(EEG.icachansind).labels };
+%data.label   = { tmpchanlocs(EEG.icachansind).labels };
 data.fsample = EEG.srate;
 
 % get the electrode positions from the EEG structure: in principle, the number of 
@@ -100,7 +100,7 @@ switch fieldbox
       data.trial{index}  = EEG.data(:,:,index);
       data.time{index}   = linspace(EEG.xmin, EEG.xmax, EEG.pnts); % should be checked in FIELDTRIP
     end;
-    data.label   = { tmpchanlocs(1:EEG.nbchan).labels };
+  %  data.label   = { tmpchanlocs(1:EEG.nbchan).labels };
 
     
   case 'timelockanalysis'

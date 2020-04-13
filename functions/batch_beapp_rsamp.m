@@ -42,7 +42,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     
     if exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
         
+    try
         load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+    catch 
+        disp('Problem loading');
+    end
         tic;
         
         % resample each epoch if necessary

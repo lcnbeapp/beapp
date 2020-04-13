@@ -43,7 +43,7 @@ ndtyps =  grp_proc_info_in.beapp_xlsout_raw_on + grp_proc_info_in.beapp_xlsout_n
 ntransfs = grp_proc_info_in.beapp_xlsout_log_on+grp_proc_info_in.beapp_xlsout_log10_on+1;
 ntabs=nstats*ndtyps*ntransfs;
 
-for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
+ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     
     cd(src_dir{1});
     
@@ -120,6 +120,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                    eeg_w_baseline,file_proc_info.beapp_srate,grp_proc_info_in.psd_pmtm_alpha,grp_proc_info_in.psd_nfft);
                   
                    %downsample signal psd if baseline has fewer frequencies
+                   f_baseline = f_baseline';
+                   f{curr_condition} = f{curr_condition}';
                       if size(f_baseline,2) < size(f{curr_condition,1},2) 
                           freqs2delete = [];
                             for freq = 1:size(f{curr_condition,1},2)
@@ -187,7 +189,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 end
             end
             
-        end
+         end
         clearvars -except grp_proc_info_in curr_file src_dir report_info ...
             psd_report_values save_warn_as_error all_condition_labels all_obsv_sizes report_initialized ntabs
     end

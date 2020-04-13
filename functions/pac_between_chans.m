@@ -2,8 +2,8 @@ function pac_between_chans(grp_proc_info_in)
 
  src_dir = find_input_dir('pac',grp_proc_info_in.beapp_toggle_mods);
     %Preallocate arrays and matrices
-    max_n_channels = 256; %maximum number of channels in the EEG dataset -- currently hardcoded
-
+    max_n_channels = grp_proc_info_in.largest_nchan;
+    
     for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
 
         cd(src_dir{1});
@@ -44,7 +44,8 @@ function pac_between_chans(grp_proc_info_in)
                                 for seg = 1:size(segments_torun,2) 
                                     curr_seg = segments_torun(1,seg); 
                                     signal = curr_eeg(chan,:,curr_seg);
-                                    [amp_dists(chan_idx,curr_seg,:),phase_dists(chan_idx,curr_seg,:)] = get_amp_phase_dist(signal,low_fq_range(1,lf),high_fq_range(1,hf),file_proc_info.beapp_srate,grp_proc_info_in.pac_high_fq_width);
+                                    [amp_dists(chan_idx,curr_seg,:),phase_dists(chan_idx,curr_seg,:)] = get_amp_phase_dist(signal,low_fq_range(1,lf),high_fq_range(1,hf),file_proc_info.beapp_srate,...
+                                        grp_proc_info_in.pac_high_fq_width,grp_proc_info_in.pac_variable_hf_filt);
                                 end
 
                                 %all_chan_phase_amp(chan,:) = nanmean(curr_chan_phase_amp,1);

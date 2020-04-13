@@ -370,6 +370,8 @@ grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
 grp_proc_info.pac_set_num_segs = 0; %choose whether a set the number of segments should be used for pac
 grp_proc_info.pac_num_segs = 6; %if set_num_segs is on: set the number of segments to use for pac
 grp_proc_info.pac_calc_zscores = 0;
+grp_proc_info.pac_calc_btwn_chans = 0; %Compute PAC between 2 channels, instead of within each channel (BETA)
+grp_proc_info.pac_variable_hf_filt = 0;
 %%Bycycle default methods 
 grp_proc_info.bycyc_set_num_segs = 0;
 grp_proc_info.bycyc_num_segs = 0;

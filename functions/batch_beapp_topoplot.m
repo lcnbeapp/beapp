@@ -98,7 +98,7 @@ else
     %just plot 10_20s
     for bw_idx = 1:size(grp_proc_info_in.bw,1)
         subplot(1,size(grp_proc_info_in.bw,1),bw_idx)
-        topoplot(nanmean(all_psd(bw_idx,:,:),3),file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs),'maplimits','maxmin','electrodes','on');
+        topoplot(nanmedian(all_psd(bw_idx,:,:),3),file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs),'maplimits','maxmin','electrodes','on');
         title(grp_proc_info_in.bw_name{1,bw_idx})
        % cbar;   
     end

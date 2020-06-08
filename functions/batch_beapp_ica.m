@@ -180,7 +180,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     %interpolate channels marked bad above, reference data
                     EEG_out = pop_interp(EEG_out, full_selected_channels, 'spherical');
                 end
-                EEG_out = pop_reref(EEG_out, []);
+               % EEG_out = pop_reref(EEG_out, []);
             end
             
             eeg{curr_rec_period} = NaN(size(eeg{curr_rec_period}));

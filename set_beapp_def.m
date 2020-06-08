@@ -357,13 +357,13 @@ grp_proc_info.pac_low_fq_res = 50; %The # of frequencies to calculate between th
 grp_proc_info.pac_high_fq_min = 10; %Minimum frequency of the low frequency to calculate
 grp_proc_info.pac_high_fq_max = 125; %Maximum frequency of the low frequency to calculate
 grp_proc_info.pac_high_fq_res = 50; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
-grp_proc_info.pac_method = 'canolty'; %Can be: 'ozkurt', 'canolty', 'tort', 'penny', 'vanwijk', 'duprelatour', 'colgin', 'sigl', 'bispectrum'
+grp_proc_info.pac_method = 'tort'; %Can be: 'ozkurt', 'canolty', 'tort', 'penny', 'vanwijk', 'duprelatour', 'colgin', 'sigl', 'bispectrum'
 grp_proc_info.pac_low_fq_width = 2.0; %Bandwidth of the bandpass filter for the lower frequency
 grp_proc_info.pac_high_fq_width = 20; %Bandwidth of the bandpass filter for the higher frequency
 grp_proc_info.pac_save_all_reports = 1; 
 grp_proc_info.pac_save_participants = {}; %Specify for which participants reports should be saved; {} to not specify participants. Ex: {'baselineEEG01.mat'}
 grp_proc_info.pac_save_channels = []; %Specify to only save reports for some channel #'s. Ex: [1,2] save reports from channels 1 and 2; [] to not specify channels
-grp_proc_info.pac_xlsout_on = 1; %1 if excel reports should be saved, 0 if not. 
+grp_proc_info.pac_xlsout_on = 0; %1 if excel reports should be saved, 0 if not. 
 grp_proc_info.pac_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
 grp_proc_info.slid_win_sz = 1; 
 grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
@@ -372,7 +372,17 @@ grp_proc_info.pac_num_segs = 6; %if set_num_segs is on: set the number of segmen
 grp_proc_info.pac_calc_zscores = 0;
 grp_proc_info.pac_calc_btwn_chans = 0; %Compute PAC between 2 channels, instead of within each channel (BETA)
 grp_proc_info.pac_variable_hf_filt = 0;
-%%Bycycle default methods 
+grp_proc_info.pac_save_amp_dist = 0; %save the binned high frequency amplitude distribution
+%% Bycycle default methods 
 grp_proc_info.bycyc_set_num_segs = 0;
 grp_proc_info.bycyc_num_segs = 0;
+grp_proc_info.bycycle_freq_bands = [12,14]; %Ex: 6,8;8,10. 
+grp_proc_info.bycycle_gen_reports = true;
+grp_proc_info.bycycle_save_reports = true;
+grp_proc_info.bycycle_burstparams.amplitude_fraction_threshold = .3;
+grp_proc_info.bycycle_burstparams.amplitude_consistency_threshold = .4;
+grp_proc_info.bycycle_burstparams.period_consistency_threshold = .5;
+grp_proc_info.bycycle_burstparams.monotonicity_threshold = .8;
+grp_proc_info.bycycle_burstparams.N_cycles_min = 3;
+
 end

@@ -1,7 +1,16 @@
-function [new_zscore_comod, rawmi_comod] = beapp_calc_mi_zscore(amp_dist,calc_zscore)
+%Calculates a comodulogram of MIs, phase_biases. If user selects to calculate z-scores, 
+%z-scored MIs are also calculated/
+%Instead of calculating the MI of each segment separately, and then
+%averaging those values, this function averaged the amplitude distributions
+%across the segments, and then calculated the MI on these averaged
+%amplitude distributions. Otherwise, MI increases more with noise, since
+%each segment contains few samples.
+
+function [new_zscore_comod, rawmi_comod, phase_bias_comod] = beapp_calc_mi_zscore(amp_dist,calc_zscore)
 n_bins = 18;
 new_zscore_comod = NaN(size(amp_dist,1),size(amp_dist,2),size(amp_dist,4));
 rawmi_comod = NaN(size(amp_dist,1),size(amp_dist,2),size(amp_dist,4));
+phase_bias_comod = NaN(size(amp_dist,1),size(amp_dist,2),size(amp_dist,4));
 for chan = 1:size(amp_dist,4)
     if ~isnan(amp_dist(1,1,1,chan,1))
         for hf = 1:size(amp_dist,1)
@@ -21,6 +30,15 @@ for chan = 1:size(amp_dist,4)
                     else
                         surr_mis(1,surr-1) = divergence_kl / log(n_bins);
                     end                       
+                end
+                for surr = 1:size(amp_dist,5)
+                    amplitude_dist = amp_dist(hf,lf,10:18,chan,surr);                       
+                    amplitude_dist = squeeze(amplitude_dist)';
+                    sum_dist = 0;
+                    for bin = 1:9
+                        sum_dist = sum_dist+amplitude_dist(1,bin);
+                    end
+                    phase_bias_comod(hf,lf,chan,surr) = sum_dist;     
                 end
                 if calc_zscore
                     comod_z_score = real_mi;

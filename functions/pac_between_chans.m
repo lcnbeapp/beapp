@@ -1,5 +1,5 @@
 function pac_between_chans(grp_proc_info_in)
-
+%TODO: Loop over conditions (just does first condition right now)
  src_dir = find_input_dir('pac',grp_proc_info_in.beapp_toggle_mods);
     %Preallocate arrays and matrices
     max_n_channels = grp_proc_info_in.largest_nchan;

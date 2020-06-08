@@ -85,5 +85,9 @@ if use_all_10_20 == 1
         chan_IDs = setdiff(chan_IDs,lbls_chans_to_exclude_this_net,'stable');
     end
 else
-    chan_IDs = ([file_proc_info.net_vstruct(ica_10_20_chans2use).labels file_proc_info.net_happe_additional_chans_lbls]);
+    if isempty(file_proc_info.net_happe_additional_chans_lbls)
+        chan_IDs = ({file_proc_info.net_vstruct(ica_10_20_chans2use{uniq_net_ind}).labels});
+    else
+        chan_IDs = ({file_proc_info.net_vstruct(ica_10_20_chans2use{uniq_net_ind}).labels file_proc_info.net_happe_additional_chans_lbl{uniq_net_ind}});
+    end
 end

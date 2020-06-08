@@ -100,21 +100,21 @@
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % GENERAL USER INPUTS for BEAPP: Set these for any data runs
-grp_proc_info.src_dir={'E:\Datasets'}; %the directory containing your source files
-grp_proc_info.beapp_curr_run_tag = 'myrun'; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
+grp_proc_info.src_dir={'D:\Datasets\BU\test'}; %the directory containing your source files
+grp_proc_info.beapp_curr_run_tag = 'run_as_is'; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
 grp_proc_info.beapp_prev_run_tag = ''; % def = ''.  run tag for previous run that you would like to use as source data for rerun. can be timestamp, but must be exact.
-grp_proc_info.beapp_advinputs_on= 1; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
+grp_proc_info.beapp_advinputs_on= 0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 
 % MODULE SELECTION
 % pipeline flags:0=off, 1=on
-grp_proc_info.beapp_toggle_mods{'format',{'Module_On','Module_Export_On'}}=[0,0]; % Convert source files to BEAPP format
+grp_proc_info.beapp_toggle_mods{'format',{'Module_On','Module_Export_On'}}=[1,1]; % Convert source files to BEAPP format
 grp_proc_info.beapp_toggle_mods{'prepp',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on PREP Pipeline
 grp_proc_info.beapp_toggle_mods{'filt',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on filtering
-grp_proc_info.beapp_toggle_mods{'rsamp',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on resampling
-grp_proc_info.beapp_toggle_mods{'ica',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on ICA module (ICA, ICA+MARA, HAPPE)
+grp_proc_info.beapp_toggle_mods{'rsamp',{'Module_On','Module_Export_On'}}=[1,1]; %Turn on resampling
+grp_proc_info.beapp_toggle_mods{'ica',{'Module_On','Module_Export_On'}}=[1,1]; %Turn on ICA module (ICA, ICA+MARA, HAPPE)
 grp_proc_info.beapp_toggle_mods{'rereference',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on rereferencing
 grp_proc_info.beapp_toggle_mods{'detrend',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on detrending 
-grp_proc_info.beapp_toggle_mods{'segment',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on segmentation
+grp_proc_info.beapp_toggle_mods{'segment',{'Module_On','Module_Export_On'}}=[1,1]; % Turn on segmentation
 grp_proc_info.beapp_toggle_mods{'psd',{'Module_On','Module_Export_On'}}=[0,0]; %flag that toggles the PSD calculations
 grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[0,0]; %turns ITPC analysis on, use with event data only
 grp_proc_info.beapp_toggle_mods{'topoplot',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on topoplots
@@ -131,8 +131,8 @@ grp_proc_info.src_presentation_software = 1; % presentation software used for pa
 %Formatting specifications: Optional
 grp_proc_info.src_linenoise= 60; % def = 60. for the notch filter, HAPPE,cleanline and PREP. If linenoise is different across files, set to = 'input_table' and put information in appropriate input table
 grp_proc_info.src_unique_nets= {''}; % def ={''} If not running HAPP-E with multiple nets, optional for speed. Required for more than one net if running HAPP-E
-grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
-grp_proc_info.src_eeg_vname={'EEG_Segment1','Category_1_Segment1','Category_1','EEGSegment1'}; %possible variable name of the EEG data EEG_Segment1
+grp_proc_info.epoch_inds_to_process = [1]; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
+grp_proc_info.src_eeg_vname={'EEG_Segment1','Category_1_Segment1','Category_1','EEGSegment1','CA61_011419_L0A'}; %possible variable name of the EEG data EEG_Segment1
 
 %Formatting specifications: Events
 %Formatting specifications: Event Offsets
@@ -190,9 +190,9 @@ grp_proc_info.dtrend_typ=1; %type of detrending method to use (1=mean, 2=linear,
 %SEGMENTING SPECIFICATIONS -- General (applies to baseline, conditioned
 %baseline, and event related)
 grp_proc_info.segment_linear_detrend = 0; %def = 0; detrend segments. 0 off, 1 = linear, 2 = mean detrend
-grp_proc_info.art_thresh = 150; %def = 180. threshold in uV for artifact removal -- will need to be adjusted for scale if HAPPE or CSDLP is run beforehand
+grp_proc_info.art_thresh = 40; %def = 180. threshold in uV for artifact removal -- will need to be adjusted for scale if HAPPE or CSDLP is run beforehand
 grp_proc_info.beapp_reject_segs_by_amplitude= 0; % def = 1; flag that toggles amplitude-based rejection of segments after segment creation
-grp_proc_info.beapp_happe_segment_rejection = 1; % def = 0; joint probability and post-segmentation amplitude based rejection of segments
+grp_proc_info.beapp_happe_segment_rejection = 0; % def = 0; joint probability and post-segmentation amplitude based rejection of segments
 
 % SEGMENTING SPECIFICATIONS -- BASELINE/CONDITIONED BASELINE ONLY
 %Set segment size (number of seconds for each window for segmentation and calculations (for continuous data; for event data, see below)
@@ -209,10 +209,10 @@ grp_proc_info.beapp_baseline_rej_perc_above_threshold = .01; % def = .01; (.01%,
 
 % SEGMENTING SPECIFICATIONS -- EVENT-RELATED/ CONDITIONED BASELINE ONLY
 grp_proc_info.beapp_event_use_tags_only = 1; % def =0 (use event codes/tags/strings and condition/cel information). 1 = use event codes/tags/strings only for segmenting (usually for .set source files)
-grp_proc_info.beapp_event_code_onset_strs={''}; %Ex {'stm+'} the event codes assigned during data collection to signifiy the onset of the stimulus. 
+grp_proc_info.beapp_event_code_onset_strs={'Segment'}; %Ex {'stm+'} the event codes assigned during data collection to signifiy the onset of the stimulus. 
 
 % Desired condition names: Order must match cell numbers if cell sets are being used, or event tags if only event tags are being used
-grp_proc_info.beapp_event_eprime_values.condition_names = {''};
+grp_proc_info.beapp_event_eprime_values.condition_names = {'Segment'};
 %grp_proc_info.beapp_event_eprime_values.event_codes(:,1) = [1]; % these MUST line up across all possible cell sets
 %grp_proc_info.beapp_event_eprime_values.event_codes(:,2) = [2];
 %grp_proc_info.beapp_event_eprime_values.event_codes(:,3) = [3];
@@ -221,8 +221,8 @@ grp_proc_info.beapp_event_eprime_values.condition_names = {''};
 grp_proc_info.beapp_event_code_offset_strs={''}; %def = {''} Ex {'TRSP'} the event codes assigned during data collection to signifiy the offset of the stimulus (should match onset strs)
 
 %For event-related data only: Set where to create segments, relative to the event marker of interest
-grp_proc_info.evt_seg_win_start = -.800; % def = -0.100;  start time in seconds for segments, relative to the event marker of interest (ex -0.100, 0) 
-grp_proc_info.evt_seg_win_end = 1.000;  % def = .800; end time in seconds for segments, relative to the event marker of interest (ex .800, 1) 
+grp_proc_info.evt_seg_win_start = 0; % def = -0.100;  start time in seconds for segments, relative to the event marker of interest (ex -0.100, 0) 
+grp_proc_info.evt_seg_win_end = 2;  % def = .800; end time in seconds for segments, relative to the event marker of interest (ex .800, 1) 
 
 %Set which event data to analyze, relative to the event marker of interest (This can be the whole segment, or part of a segment) 
 grp_proc_info.evt_analysis_win_start = -.800; % def = -0.100;  start time in seconds for analysis segments, relative to the event marker of interest (ex -0.100, 0) 
@@ -238,7 +238,7 @@ grp_proc_info.evt_trial_baseline_win_end = -.050; % def = -0.100;  start time in
 % select n of usable segments PER CONDITION to use for output measure
 % [] = use all possible segments, n = use specific number, discard file if file has
 % fewer than n
-grp_proc_info.win_select_n_trials = [30];
+grp_proc_info.win_select_n_trials = [];
 
 %OUTPUT MEASURE SPECIFICATIONS
 % Bandwith information. Total includes in all output bands by default
@@ -260,8 +260,8 @@ grp_proc_info.bw_total_freqs = [1:55,65:100];
 
 % PSD SPECIFICATIONS
 grp_proc_info.psd_win_typ=2; %power spectra windowing type 0=rectangular window, 1=hanning window, 2=multitaper (recomended 2 seconds or longer)
-grp_proc_info.psd_interp_typ=2; %type of interpolation of psd 1 none, 2 linear, 3 nearest neighbor, 4 piecewise cubic spline  
-grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}=1; %flags the export data to xls report option on
+grp_proc_info.psd_interp_typ=1; %type of interpolation of psd 1 none, 2 linear, 3 nearest neighbor, 4 piecewise cubic spline  
+grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}=0; %flags the export data to xls report option on
 
 %for event-related data only
 grp_proc_info.psd_baseline_normalize = 0; %0 to not normalize, 1 to normalize using decibel conversion; 2 to normalize with percent change 
@@ -295,13 +295,13 @@ grp_proc_info.fooof_channel_groups = {}; %Ex: {[8,9,10],[15,16,17,18,19,20]}; if
 grp_proc_info.fooof_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
 
 %PAC SPECIFICATIONS
-grp_proc_info.pac_low_fq_min = 2; %Minimum frequency of the low frequency to calculate
-grp_proc_info.pac_low_fq_max = 20; %Maximum frequency of the low frequency to calculate
-grp_proc_info.pac_low_fq_res = 10; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
-grp_proc_info.pac_low_fq_width = 2.0; %Bandwidth of the bandpass filter for the lower frequency
-grp_proc_info.pac_high_fq_min = 20; %Minimum frequency of the low frequency to calculate
-grp_proc_info.pac_high_fq_max = 100; %Maximum frequency of the low frequency to calculate
-grp_proc_info.pac_high_fq_res = 21; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
+grp_proc_info.pac_low_fq_min = 12; %Minimum frequency of the low frequency to calculate
+grp_proc_info.pac_low_fq_max = 12; %Maximum frequency of the low frequency to calculate
+grp_proc_info.pac_low_fq_res = 1; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
+grp_proc_info.pac_low_fq_width = 8; %Bandwidth of the bandpass filter for the lower frequency
+grp_proc_info.pac_high_fq_min = 45; %Minimum frequency of the low frequency to calculate
+grp_proc_info.pac_high_fq_max = 45; %Maximum frequency of the low frequency to calculate
+grp_proc_info.pac_high_fq_res = 1; %The # of frequencies to calculate between the min and max;Ex: to calculate for frequencies 1-10, set min to 1, max to 10, and res to 10
 grp_proc_info.pac_high_fq_width = 20; %Bandwidth of the bandpass filter for the higher frequency
 grp_proc_info.pac_method = 'tort'; %Can be: 'ozkurt', 'canolty', 'tort', 'penny', 'vanwijk', 'duprelatour', 'colgin', 'sigl', 'bispectrum'
 grp_proc_info.pac_save_all_reports = 0; %1 if all reports should be saved; 0 if not
@@ -309,3 +309,8 @@ grp_proc_info.pac_save_participants = {}; %Specify for which participants report
 grp_proc_info.pac_save_channels = []; %Specify to only save reports for some channel #'s. Ex: [1,2] save reports from channels 1 and 2; [] to not specify channels
 grp_proc_info.pac_xlsout_on = 0; %1 if excel reports should be saved, 0 if not. 
 grp_proc_info.pac_chans_to_analyze = []; %list channels to analyze if only some channels should be analyzed; else, leave as []
+
+%BYCYCLE SPECIFICATIONS
+grp_proc_info.bycycle_freq_bands = [6,8;8,10;12,14]; %Ex: 6,8;8,10. Enter minimum, maximum frequency for each range, and separate ranges using a semicolon.
+grp_proc_info.bycycle_gen_reports = true;
+grp_proc_info.bycycle_save_reports = true;

@@ -72,7 +72,13 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         
         %% save and update file history
         cd(grp_proc_info_in.beapp_toggle_mods{'topoplot','Module_Dir'}{1});
-        
+        [v date] = version;
+        date = datetime(date);
+        if date > datetime('September 21, 2018') %if matlab version is 2018b or later, can use this function
+            sgtitle(erase(file_proc_info.beapp_fname,'.mat'),'interpreter','none')
+        else
+           disp(erase(file_proc_info.beapp_fname,'.mat')) 
+        end
         savefig(strcat(file_proc_info.beapp_fname{1},'.fig'));
         close all
         
@@ -81,7 +87,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
            % save(file_proc_info.beapp_fname{1},'eeg_w','file_proc_info');
         end
         
-        clearvars -except grp_proc_info_in src_dir curr_file all_psd file_proc_info
+        clearvars -except grp_proc_info_in src_dir curr_file all_psd file_proc_info date
       end
 
 end
@@ -92,8 +98,6 @@ if length(grp_proc_info_in.src_unique_nets) < 2
         title(grp_proc_info_in.bw_name{1,bw_idx})
        % cbar;   
     end
-    savefig('Group_Average.fig');
-    close all
 else
     %just plot 10_20s
     for bw_idx = 1:size(grp_proc_info_in.bw,1)
@@ -102,7 +106,12 @@ else
         title(grp_proc_info_in.bw_name{1,bw_idx})
        % cbar;   
     end
-    savefig('Group_Average.fig');
-    close all
 end
+if date > datetime('September 21, 2018') %if matlab version is 2018b or later, can use this function
+    sgtitle('Group Average')
+else
+   disp('Group Average')
+end
+savefig('Group_Average.fig');
+close all
     

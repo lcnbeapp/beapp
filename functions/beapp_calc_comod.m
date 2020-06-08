@@ -35,11 +35,7 @@ for lf = 1:size(low_fq_range,2)
             estimator.n_surrogates = py.int(200);
             estimator.minimum_shift = 0.1;
         end
-        try
-            fit = estimator.fit(signal);
-        catch
-            disp('error')
-        end
+        fit = estimator.fit(signal);
         phase_bins = double(py.array.array('d',py.numpy.nditer(fit.phase_bins)));
         phase_dist = phase_bins;
         %comodulogram = reshape(curr_results,[high_fq_res low_fq_res]); 

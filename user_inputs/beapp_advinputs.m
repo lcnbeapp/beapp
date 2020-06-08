@@ -107,8 +107,8 @@
 grp_proc_info.beapp_dir_warn_off = 1; % def = 0; if 1, mute directory warnings
 grp_proc_info.beapp_use_rerun_table = 0; % def = 0; if 1, use rerun table to run a subset of files. not needed for normal reruns
 grp_proc_info.beapp_rmv_bad_chan_on= 1; % def = 0; 1 if you'd like to remove channels flagged as bad in PREP or HAPPE
-grp_proc_info.beapp_run_per_file = 1; %turn on to run only 1 file in beapp_file_info_table; intended for computer cluster use
-grp_proc_info.beapp_file_idx = 2; %used only if running per file
+grp_proc_info.beapp_run_per_file = 0; %turn on to run only 1 file in beapp_file_info_table; intended for computer cluster use
+grp_proc_info.beapp_file_idx = 1; %used only if running per file
 
 % FORMATTING SPECIFICATIONS
 grp_proc_info.mff_seg_throw_out_bad_segments = 1; % throw out segments marked bad when importing pre-segmented MFF files. def = 1; 
@@ -169,12 +169,18 @@ grp_proc_info.beapp_itpc_params.use_common_baseline=1;
 grp_proc_info.beapp_itpc_params.common_baseline_idx=1;
 
 % PAC
-grp_proc_info.slid_win_on = 0; %turn on to measure pac across time
+grp_proc_info.slid_win_on = 0; %turn on to measure pac across time 
 grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
-grp_proc_info.pac_calc_zscores = 0; %will take longer for pac to run if on. Requires a larger window size
+grp_proc_info.pac_calc_zscores = 1; %will take longer for pac to run if on. Requires a larger window size
 grp_proc_info.pac_calc_btwn_chans = 0; %Compute PAC between 2 channels, instead of within each channel (BETA)
 grp_proc_info.pac_variable_hf_filt = 0; %Varies the high frequency filter width to prevent overlap with low frequency (not recommended)
+grp_proc_info.pac_save_amp_dist = 1; %save the binned high frequency amplitude distribution
 
-%Bycycle
+%BYCYCLE
 grp_proc_info.bycyc_set_num_segs = 0;
 grp_proc_info.bycyc_num_segs = 6;
+grp_proc_info.bycycle_burstparams.amplitude_fraction_threshold = .3;
+grp_proc_info.bycycle_burstparams.amplitude_consistency_threshold = .4;
+grp_proc_info.bycycle_burstparams.period_consistency_threshold = .5;
+grp_proc_info.bycycle_burstparams.monotonicity_threshold = .8;
+grp_proc_info.bycycle_burstparams.N_cycles_min = 3;

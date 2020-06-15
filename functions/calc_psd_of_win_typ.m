@@ -44,22 +44,34 @@ switch win_typ
         
     case 2  %multitaper, using the pmtm function (only takes 1D channel x time inputs)
         
+        firstrun = 1;
         for curr_segment=1:size(eeg_w_curr_cond,3)
             
             % save psd outputs for each channel into eeg_wfp
             for curr_channel=1:size(eeg_w_curr_cond,1)
-                
-                [tmp_psd,fxx]=pmtm(squeeze(eeg_w_curr_cond(curr_channel,:,curr_segment))',pmtm_alpha,psd_nfft,srate);
-                
-                % save frequency axis during first iteration
-                if curr_segment==1 && curr_channel==1
-                    f=fxx;
+                run = 1;
+                try 
+                    validateattributes(squeeze(eeg_w_curr_cond(curr_channel,:,curr_segment))',{'single','double'}, {'finite','nonnan'},'pmtm','x');
+                catch
+                    run = 0;
+                end
+                if run
+                    [tmp_psd,fxx]=pmtm(squeeze(eeg_w_curr_cond(curr_channel,:,curr_segment))',pmtm_alpha,psd_nfft,srate);
+                    eeg_wfp_curr_cond(curr_channel,:,curr_segment)=tmp_psd';
                 end
                 
-                eeg_wfp_curr_cond(curr_channel,:,curr_segment)=tmp_psd';
+                % save frequency axis during first iteration
+                if firstrun && run
+                    f=fxx;
+                    firstrun = 0;
+                end 
             end
         end
         
-        %eeg_wf is not an output option for pmtm function
-        eeg_wf_curr_cond=NaN(size(eeg_wfp_curr_cond));
+        %To make sure nchannels is the same
+        if size(eeg_wfp_curr_cond,1) < size(eeg_w_curr_cond,1)
+            eeg_wfp_curr_cond(curr_channel,:,:) = NaN;
+        end
+        eeg_wfp_curr_cond(eeg_wfp_curr_cond==0) = NaN;
+        eeg_wf_curr_cond=NaN(size(eeg_wfp_curr_cond));%eeg_wf is not an output option for pmtm function
 end

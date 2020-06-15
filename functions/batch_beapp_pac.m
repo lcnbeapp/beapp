@@ -41,7 +41,6 @@ else
 
     src_dir = find_input_dir('pac',grp_proc_info_in.beapp_toggle_mods);
     %Preallocate arrays and matrices
-    %max_n_channels = 256; %maximum number of channels in the EEG dataset -- currently hardcoded
     max_n_channels = grp_proc_info_in.largest_nchan;
 
      for curr_file=1:length(grp_proc_info_in.beapp_fname_all)

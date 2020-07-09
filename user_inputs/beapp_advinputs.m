@@ -172,9 +172,9 @@ grp_proc_info.beapp_itpc_params.common_baseline_idx=1;
 grp_proc_info.slid_win_on = 0; %turn on to measure pac across time 
 grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
 grp_proc_info.pac_calc_zscores = 1; %will take longer for pac to run if on. Requires a larger window size
-grp_proc_info.pac_calc_btwn_chans = 0; %Compute PAC between 2 channels, instead of within each channel (BETA)
+grp_proc_info.pac_calc_btwn_chans = 1; %Compute PAC between 2 channels, instead of within each channel (BETA)
 grp_proc_info.pac_variable_hf_filt = 0; %Varies the high frequency filter width to prevent overlap with low frequency (not recommended)
-grp_proc_info.pac_save_amp_dist = 1; %save the binned high frequency amplitude distribution
+grp_proc_info.pac_save_amp_dist = 0; %save the binned high frequency amplitude distribution
 
 %BYCYCLE
 grp_proc_info.bycyc_set_num_segs = 0;

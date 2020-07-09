@@ -99,9 +99,10 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
         tic;
         
         % load file and identify variable with EEG data from user list
-        load(grp_proc_info_in.src_fname_all{curr_file});        
+        load(grp_proc_info_in.src_fname_all{curr_file}); 
+        grp_proc_info_in.src_eeg_vname(end+1) = {erase(grp_proc_info_in.src_fname_all{curr_file},'.mat')};
         file_eeg_vname = intersect(who,grp_proc_info_in.src_eeg_vname);
-        
+        grp_proc_info_in.src_eeg_vname(end) = [];
         if length(file_eeg_vname) ~=1
             warning(['BEAPP file ' grp_proc_info_in.src_fname_all{curr_file} ': problem finding EEG data variable with information provided. Skipping file']);
             continue;

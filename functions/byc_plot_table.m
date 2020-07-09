@@ -58,8 +58,9 @@ pause(.5)
 if save_reports
     src_dir{1} = pwd;
     cd(byc_dir);
+    mkdir(strcat(filename,'_Image_outputs'));
     cd(strcat(filename,'_Image_outputs'));
-    savefig([filename '_Channel' chan '_Segment',seg,'TimeSeries'])
+    savefig([filename '_Channel' chan '_Segment',seg,'TimeSeries.fig'])
     cd(src_dir{1});
 end
 % savefig([fig_folder 'band_pass_peaks'])
@@ -121,6 +122,6 @@ pause(.5)
 if save_reports
     cd(byc_dir);
     cd(strcat(filename,'_Image_outputs'));
-    savefig([filename '_Channel' chan '_Segment',seg,'Histograms'])
+    savefig([filename '_Channel' chan '_Segment',seg,'Histograms.fig'])
     cd(src_dir{1});
 end

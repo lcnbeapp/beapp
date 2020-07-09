@@ -2,7 +2,7 @@
 %10/18/2017 LB from sample script from BEAPP 4.0
 
 % directory where files are stored (check me!)
-table_files_src_dir = 'C:\Users\ch203202\Dropbox (BCH)\datasets\filt_60s_segments_noHAPPE\';% E:\050_Emotion\Infant
+table_files_src_dir = 'D:\Datasets\ISP_PAC_Runs\segment_HAPPE_morechans\segment_source_analysis_model7_mne_2sseg_morechans_td\';% E:\050_Emotion\Infant
 % full path to eeglab.m within BEAPP-HAPPE (check me!)
 %eeglab_path = '/Users/LGD/Documents/beapp-master 2/Packages/eeglab14_1_2b/eeglab.m';
 
@@ -28,25 +28,25 @@ beapp_file_info_table.FileName = flist;
 for curr_file = 1: length(flist)
     
     file_eeg_vname = intersect(who,src_eeg_vname_pos);
-%     load (flist{curr_file});
-%     disp(['Reading file number ' int2str(curr_file)]);
-%     if length(file_eeg_vname) ~=1
-%         disp(flist{curr_file})
-%         warning(['problem finding EEG data variable with information provided. Skipping']);
-%         continue;
-%     else
-%         eeg=eval(file_eeg_vname{1});
-%     end
-%     
-%     % modify here depending on how
-%     if (size(eeg,1) == 64) || (size(eeg,1) == 65)
-%         beapp_file_info_table.NetType(curr_file) = {'Geodesic Sensor Net 64 2.0'};
-%     elseif (size(eeg,1) == 128) || (size(eeg,1) == 129)
-%         beapp_file_info_table.NetType(curr_file) = {'HydroCel GSN 128 1.0'};
-%     end
-%     
-%     beapp_file_info_table.SamplingRate(curr_file) = samplingRate;
-%     clear samplingRate Category_1_Segment1 EEG_Segment1 eeg Category_1 Category1
+    load (flist{curr_file});
+    disp(['Reading file number ' int2str(curr_file)]);
+    if length(file_eeg_vname) ~=1
+        disp(flist{curr_file})
+        warning(['problem finding EEG data variable with information provided. Skipping']);
+        continue;
+    else
+        eeg=eval(file_eeg_vname{1});
+    end
+    
+    % modify here depending on how
+    if (size(eeg,1) == 64) || (size(eeg,1) == 65)
+        beapp_file_info_table.NetType(curr_file) = {'Geodesic Sensor Net 64 2.0'};
+    elseif (size(eeg,1) == 128) || (size(eeg,1) == 129)
+        beapp_file_info_table.NetType(curr_file) = {'HydroCel GSN 128 1.0'};
+    end
+    
+    beapp_file_info_table.SamplingRate(curr_file) = samplingRate;
+    clear samplingRate Category_1_Segment1 EEG_Segment1 eeg Category_1 Category1
 end
 cd(table_save_directory);
 save('beapp_file_info_table.mat','beapp_file_info_table');

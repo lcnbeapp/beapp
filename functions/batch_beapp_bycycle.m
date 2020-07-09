@@ -59,7 +59,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                     if ~isempty(grp_proc_info_in.win_select_n_trials)
                         segments_torun = file_proc_info.selected_segs{curr_condition,1};
                     else
-                        segments_torun = randsample(size(curr_eeg,3),grp_proc_info_in.bycyc_num_segs);
+                        if grp_proc_info_in.bycyc_set_num_segs==1
+                            segments_torun = randsample(size(curr_eeg,3),grp_proc_info_in.bycyc_num_segs);
+                        else
+                            segments_torun = [1:size(curr_eeg,3)];
+                        end
                     end
                     frequency_bands = grp_proc_info_in.bycycle_freq_bands; 
                     for chan = 1:max_n_chans

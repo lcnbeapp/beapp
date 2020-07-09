@@ -2,7 +2,7 @@
 %10/18/2017 LB from sample script from BEAPP 4.0
 
 % directory where files are stored (check me!)
-table_files_src_dir = 'C:\Users\ch203202\Dropbox (BCH)\Datasets_new\segment_combined_1_27_20_noNaNs\';% E:\050_Emotion\Infant
+table_files_src_dir = 'C:\Users\ch203202\Dropbox (BCH)\PAC_canolty_analysis\data_runs\pac_new_zscore_attempt_amp_dist_allsameshifts_td\';% E:\050_Emotion\Infant
 % full path to eeglab.m within BEAPP-HAPPE (check me!)
 %eeglab_path = '/Users/LGD/Documents/beapp-master 2/Packages/eeglab14_1_2b/eeglab.m';
 

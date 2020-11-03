@@ -81,7 +81,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                                     curr_seg = segments_torun(1,seg); 
                                     signal = curr_eeg(chan,:,curr_seg); 
                                     signal = py.numpy.array(signal);
-                                    fs = size(curr_eeg,2) / 2; %where 2 = segment length
+                                    fs = file_proc_info.beapp_srate;
                                     fs = py.float(fs);
                                     %signal = py.bycycle.filt.lowpass_filter(signal, fs, py.float(35));
                                     burst_kwargs = py.dict(pyargs('amplitude_fraction_threshold',grp_proc_info_in.bycycle_burstparams.amplitude_fraction_threshold,...

@@ -1,4 +1,5 @@
 # The Batch Electroencephalography Automated Processing Platform (BEAPP)
+
 <p>The Boston EEG Automated Processing Pipeline (BEAPP) is a modular, Matlab-based software designed to facilitate automated, flexible batch processing of baseline and event-related EEG files in datasets with mixed acquisition formats.</p>
 <p>Rather than prescribing a specified set of EEG processing steps, BEAPP allows users to choose from a menu of options. Each option can be turned on or off, and options turned &ldquo;on&rdquo; can be tailored to fit the user&rsquo;s needs.&nbsp; BEAPP currently provides options for the following user-controlled modules:</p>
 <ol>
@@ -15,7 +16,7 @@
 </ol>
 <li>Resampling</li>
 <li>Independent Components Analysis (ICA) with optional use of&nbsp;<a href="https://github.com/irenne/MARA">MARA</a>&nbsp;artifact classifier</li>
-<li><a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00097/full">HAPPE Pipeline</a></li>
+<li><a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00097/full">HAPPE Pipeline</a> (<b>Note:</b> see <a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00513/full#supplementary-material">supplementary material</a> for appropriate modules and inputs to toggle when running HAPPE)</li>
 <ol>
 <li>Select 10-20 channel locations, and other channels of interest</li>
 <li>1 Hz high-pass filter</li>
@@ -63,7 +64,8 @@
 <li>Ability to change the order of modules</li>
 </ol>
 <p>&nbsp; In publications, please reference: 
- 
+
+
  Levin AR, Méndez Leal AS, Gabard-Durnam LJ, and O'Leary, HM. 
 <a href="https://www.frontiersin.org/articles/10.3389/fnins.2018.00513/full"> BEAPP: The Batch Electroencephalography Automated Processing Platform</a>. Frontiers in Neuroscience (2018).
 

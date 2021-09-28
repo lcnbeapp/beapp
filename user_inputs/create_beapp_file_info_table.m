@@ -1,10 +1,9 @@
-%% EMO Toys mat_file_info_table generation
-%10/18/2017 LB from sample script from BEAPP 4.0
+%% mat_file_info_table generation
 
 % directory where files are stored (check me!)
-table_files_src_dir = 'D:\Datasets\ISP_PAC_Runs\segment_HAPPE_morechans\segment_source_analysis_model7_mne_2sseg_morechans_td\';% E:\050_Emotion\Infant
+table_files_src_dir = 'Path\to\Directory';
 % full path to eeglab.m within BEAPP-HAPPE (check me!)
-%eeglab_path = '/Users/LGD/Documents/beapp-master 2/Packages/eeglab14_1_2b/eeglab.m';
+eeglab_path = 'Path\to\beapp\Packages\eeglab14_1_2b\eeglab.m';
 
 %% Do not edit me
 cd(fileparts(which(mfilename)));

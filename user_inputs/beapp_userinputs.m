@@ -100,8 +100,8 @@
 
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % GENERAL USER INPUTS for BEAPP: Set these for any data runs
-grp_proc_info.src_dir={'D:\Datasets\BU\test'}; %the directory containing your source files
-grp_proc_info.beapp_curr_run_tag = 'run_as_is'; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
+grp_proc_info.src_dir={'C:\Sample_directory'}; %the directory containing your source files
+grp_proc_info.beapp_curr_run_tag = ''; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
 grp_proc_info.beapp_prev_run_tag = ''; % def = ''.  run tag for previous run that you would like to use as source data for rerun. can be timestamp, but must be exact.
 grp_proc_info.beapp_advinputs_on= 0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 
@@ -131,7 +131,7 @@ grp_proc_info.src_presentation_software = 1; % presentation software used for pa
 %Formatting specifications: Optional
 grp_proc_info.src_linenoise= 60; % def = 60. for the notch filter, HAPPE,cleanline and PREP. If linenoise is different across files, set to = 'input_table' and put information in appropriate input table
 grp_proc_info.src_unique_nets= {''}; % def ={''} If not running HAPP-E with multiple nets, optional for speed. Required for more than one net if running HAPP-E
-grp_proc_info.epoch_inds_to_process = [1]; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
+grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
 grp_proc_info.src_eeg_vname={'EEG_Segment1','Category_1_Segment1','Category_1','EEGSegment1','CA61_011419_L0A'}; %possible variable name of the EEG data EEG_Segment1
 
 %Formatting specifications: Events
@@ -225,13 +225,13 @@ grp_proc_info.evt_seg_win_start = 0; % def = -0.100;  start time in seconds for 
 grp_proc_info.evt_seg_win_end = 2;  % def = .800; end time in seconds for segments, relative to the event marker of interest (ex .800, 1) 
 
 %Set which event data to analyze, relative to the event marker of interest (This can be the whole segment, or part of a segment) 
-grp_proc_info.evt_analysis_win_start = -.800; % def = -0.100;  start time in seconds for analysis segments, relative to the event marker of interest (ex -0.100, 0) 
-grp_proc_info.evt_analysis_win_end = 1.000;  % def = .800; end time in seconds for analysis segments, relative to the event marker of interest (ex .800, 1) 
+grp_proc_info.evt_analysis_win_start = -.100; % def = -0.100;  start time in seconds for analysis segments, relative to the event marker of interest (ex -0.100, 0) 
+grp_proc_info.evt_analysis_win_end = .800;  % def = .800; end time in seconds for analysis segments, relative to the event marker of interest (ex .800, 1) 
 
 %Set which event data is baseline 
 grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module. 
-grp_proc_info.evt_trial_baseline_win_start = -550; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
-grp_proc_info.evt_trial_baseline_win_end = -.050; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
+grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
+grp_proc_info.evt_trial_baseline_win_end = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
 
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications

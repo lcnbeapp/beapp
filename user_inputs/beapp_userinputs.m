@@ -267,14 +267,15 @@ grp_proc_info.beapp_toggle_mods{'psd','Module_Xls_Out_On'}=0; %flags the export 
 grp_proc_info.psd_baseline_normalize = 0; %0 to not normalize, 1 to normalize using decibel conversion; 2 to normalize with percent change 
 
 % ITPC SPECIFICATIONS
+% see newtimef in EEGLAB for more details on these inputs
 grp_proc_info.beapp_itpc_params.win_size= 0.128; %CURRENTLY NOT USED; the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_params.baseline_norm = 1;
 grp_proc_info.beapp_itpc_params.use_common_baseline = 1;
 grp_proc_info.beapp_itpc_params.common_baseline_idx = 1;
-grp_proc_info.beapp_itpc_params.min_freq = 2;
-grp_proc_info.beapp_itpc_params.max_freq = 0.5;
-grp_proc_info.beapp_itpc_params.min_cyc = 1;
-grp_proc_info.beapp_itpc_params.max_cyc = 8;
+grp_proc_info.beapp_itpc_params.min_freq = 2;  % def = 2; frequency limits
+grp_proc_info.beapp_itpc_params.max_freq = 80;  % def = 80
+grp_proc_info.beapp_itpc_params.min_cyc = 2; % def = 2; number of cycles in each Morlet wavelet
+grp_proc_info.beapp_itpc_params.max_cyc = 2; % def = 0; 0 = use same window size across freqs, 1 = use same number of cycles, 0<max_cyc<1 = increase cycles  linearly, max_cyc>1 = incr cycles from min_cyc up to max cyc
 grp_proc_info.beapp_toggle_mods{'itpc','Module_Xls_Out_On'}=0;%flags the export data to xls report option on
 
 % FOOOF SPECIFICATIONS 

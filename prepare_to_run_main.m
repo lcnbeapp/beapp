@@ -13,8 +13,8 @@ grp_proc_info_in.bw_total_freqs = sort(grp_proc_info_in.bw_total_freqs);
 if grp_proc_info_in.src_format_typ ==3
     grp_proc_info_in.beapp_toggle_mods{'format','Module_Output_Type'} = {'seg'};
 end
+%set the variables for multitaper window if selected by userfname
 
-%set the variables for multitaper window if selected by user
 set_beapp_pmtm_vars;
 %% prepping net library 
 if ~isdir([grp_proc_info_in.ref_net_library_dir]);

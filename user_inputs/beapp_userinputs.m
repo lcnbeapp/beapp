@@ -115,6 +115,7 @@ grp_proc_info.beapp_toggle_mods{'ica',{'Module_On','Module_Export_On'}}=[1,1]; %
 grp_proc_info.beapp_toggle_mods{'rereference',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on rereferencing
 grp_proc_info.beapp_toggle_mods{'detrend',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on detrending 
 grp_proc_info.beapp_toggle_mods{'segment',{'Module_On','Module_Export_On'}}=[1,1]; % Turn on segmentation
+grp_proc_info.beapp_toggle_mods{'HAPPE+ER',{'Module_On','Module_Export_On'}}=[1,1]; %Turn on HAPPE+ER Pre-processing pipeline - will automatically not run any other preprocessing pipeline
 grp_proc_info.beapp_toggle_mods{'psd',{'Module_On','Module_Export_On'}}=[0,0]; %flag that toggles the PSD calculations
 grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[0,0]; %turns ITPC analysis on, use with event data only
 grp_proc_info.beapp_toggle_mods{'topoplot',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on topoplots
@@ -232,6 +233,57 @@ grp_proc_info.evt_analysis_win_end = .800;  % def = .800; end time in seconds fo
 grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module. 
 grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
 grp_proc_info.evt_trial_baseline_win_end = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
+
+
+%HAPPE-ER EXTRA MEASURES
+
+%% YB adding 7/13 Visualization
+grp_proc_info.vis_psd_min = 'need default val'; % If visualizatio("Minimum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_psd_max = 'need default val input' ;%("Maximum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_topoplot_freqs = 'need default val input'; %
+grp_proc_info.vis_erp_min = 'need default val' ; % input('Start time, in MILLISECONDS, for the ERP timeseries figure:\n> ') ;
+grp_proc_info.vis_erp_max = 'need default val' ; % input(['End time, in MILLISECONDS, for the ERP timeseries figure:\n' ...
+                  %  'NOTE: This should end 1+ millisecond(s) before your segmentation parameter ends (e.g. 299 for 300).\n' ...
+                   % '> ']) ;
+ %EVENT FIELD TYPE IN NET STATION FILE
+ 
+grp_proc_info.typeFields = {'code'}; % Add any additional type fields besides "code", separating other entries with a comma ;
+         
+ %NET Type
+ grp_proc_info.happe_net_type = 2; %fprintf(['Acquisition layout type:\n  1 = EGI Geodesic Sensor ' ...
+   % 'Net\n  2 = EGI HydroCel Geodesic Sensor Net\n  3 = Neuroscan Quik-Cap' ...
+    %'\n  4 = Other'
+grp_proc_info.happe_net_num_channels = []; %enter how many channels (64, 128)
+grp_proc_info.chans_to_analyze = 'all' ; %can be 'all' or 'coi', if 'coi', it will analyze 10-20 (if turned on) and additional channels (from additional_channels_ica)
+%RESAMPLING
+ grp_proc_info.happe_resamp_on = 0; %turn on or off happe resampling
+ %LINENOISE
+ grp_proc_info.lineNoise_harms_on = 0 ; %turning on line noise reduction at other frequencies (not always but often at harmonics of electric linenoise frequency) default 0, if you turn to 1 set next variable 
+ grp_proc_info.lineNoise_harms_freqs = []; %vector of other frequencies for linenoise reduction, default [];
+ 
+ %ARTIFACT DETECTION
+  grp_proc_info.badChans_rej=1; %turn on bad channel rejection? defualt one
+ grp_proc_info.wavelet_softThresh = 0; %0 default set to hard to retain more data/assuming more artifact in data, could switch to soft if desired
+ 
+ %REREFERENCING
+ grp_proc_info.reref_on = 1; %set to on but can turn off
+ grp_proc_info.reref_chan= []; %default [], if there is rereference channel in your data, list name here
+ % SEGMENTATION
+grp_proc_info.art_thresh_min = -150;  % -200 to 200 for infant data, and -150 to 150 for child, adolescent, and adult data
+grp_proc_info.segRej_ROI_on = 0; %default uses all channels (0) , 1 would use specific set of rois (regions of interest)
+grp_proc_info.segRej_ROI_chans = {}; %default empty cell, otherwise enter channels to use for seg rejection with the format 'E[channelnum' ex 'E12' separated by commas
+grp_proc_info.segment_interp = 0; %'Interpolate the specific channels data determined ' ...'to be artifact/bad within each segment? N=0, Y = 1
+
+%SAVE FORMAT
+  
+grp_proc_info.save_format = [1];  %'Format to save processed data:\n  1 = .txt file (electrodes as ' ...
+  %  'columns, time as rows) - Choose this for ERP timeseries\n  2 = .mat' ...
+  %  ' file (MATLAB format)\n  3 = .set file (EEGLAB format)\n']) ;  
+  
+%FILTER 
+grp_proc_info.ERPfilter = []; %['Choose a filter:\n 0: fir = Hamming windowed sinc FIR filter (EEGLAB''s standard filter)\n  ' ...
+             %  or 1: 'butter = IIR butterworth filter (ERPLAB''s standard filter)\n']) ;
+%%
 
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications

@@ -1,0 +1,3 @@
+[submodule "Packages/HAPPE_v2_3_0"]
+	path = Packages/HAPPE_v2_3_0
+	url = git@github.com:https://github.com/ybraverman/HAPPE_v2_3_0.git

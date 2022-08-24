@@ -8,7 +8,7 @@ if grp_proc_info.src_data_type == 1 %baseline
     params.paradigm.ERP.on = 0;
 else %condition baseline or event related
     params.paradigm.task =1; %1 maps to 'task';
-    params.paradigm.ERP.on = 1;
+    params.paradigm.ERP.on = grp_proc_info.ERPAnalysis;
 end
 % Line below copied from setParams SET QC FREQS BASED ON THE PARADIGM: Use the paradigm to determine which set of frequencies to use in evaluating pipeline metrics.
 if params.paradigm.ERP.on; params.QCfreqs = [.5, 1, 2, 5, 8, 12, ...
@@ -60,23 +60,17 @@ params.paradigm.ERP.highpass = grp_proc_info.beapp_filters{'Highpass','Filt_Cuto
 %% IMPORTING FILE INFORMATION 
 params.loadInfo = struct() ;
 params.loadInfo.chanlocs.inc = 1; %Copied from happe' loadingInfo code - Assume that the channel locations are included. Because this is true for most layouts/nets, it is easier to change in in the no-location layouts.
-params.loadInfo.inputFormat = 1; %always 1 bc went through format beforehand 
-params.loadInfo.layout(1) = grp_proc_info.happe_net_type;
-params.loadInfo.layout(2) = grp_proc_info.happe_net_num_channels;
+params.loadInfo.inputFormat = 1; %always 1 (.mat) bc went through format beforehand 
 params.loadInfo.correctEGI = 0; %HARD CODING TO BE 0 bc will be corrected by beapp - check by file type
-params.loadInfo.typeFields = grp_proc_info.typeFields;
-%params.loadInfo.srate = happe wont use srate because it's only used in
-%lines that pull in file which we'll be doing in beapp before hand
 %% CHANNELS OF INTEREST SECTION MAPPED
 if ~params.loadInfo.chanlocs.inc
     params.chans.IDs = {} ; params.chans.subset = 'all' ;
 else
     params.chans.subset = grp_proc_info.chans_to_analyze;
-    params.chans.subset = 'coi_include';
-    if ~isempty(grp_proc_info.beapp_ica_additional_chans_lbls{1,1});
+    if ~isempty(grp_proc_info.beapp_ica_additional_chans_lbls{1,1})
     addit_chans = cell(1,length(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}));
         for num_to_conv = 1:length(grp_proc_info.beapp_ica_additional_chans_lbls{1,1})
-            addit_chans{num_to_conv} = char(strcat('E',num2str(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}(num_to_conv))));
+            addit_chans{num_to_conv} = char(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}(num_to_conv)) ; %char(strcat('E',num2str(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}(num_to_conv))));
         end
     end
     if grp_proc_info.beapp_ica_run_all_10_20   
@@ -85,14 +79,13 @@ else
     params.chans.IDs = unique(addit_chans);
     end
 end
-params.chans.subset = 'all';
 %% LINE NOISE FREQUENCY AND METHOD SECTIN MAPPED
 params.lineNoise.freq = grp_proc_info.src_linenoise; % 'Frequency of electrical (line) noise in Hz: USA data probably = 60; Otherwise, probably =50 ;
 params.lineNoise.neighbors = [params.lineNoise.freq-10, params.lineNoise.freq-5, ...
     params.lineNoise.freq-2, params.lineNoise.freq-1, params.lineNoise.freq, ...
     params.lineNoise.freq+1, params.lineNoise.freq+2, params.lineNoise.freq+5, ...
     params.lineNoise.freq+10] ;
-params.lineNoise.harms.on = grp_proc_info.lineNoise_harms_on; %fprintf(['Are there any additional frequencies, (e.g., harmonics) to' ...reduce? [Y/N]\n']) ;
+params.lineNoise.harms.on = grp_proc_info.lineNoise_harms_on; 
 if params.lineNoise.harms.on
     params.lineNoise.harms.freqs = unique(grp_proc_info.lineNoise_harms_freqs, 'stable'); %
     if isempty(params.lineNoise.harms.freqs)
@@ -121,7 +114,7 @@ end
 %% FILTER SECTION MAPPED
 if ~params.loadInfo.chanlocs.inc; params.filt.butter = 0;
 elseif params.paradigm.ERP.on
-    params.filt.butter = grp_proc_info.ERPfilter ; %chooses between ('fir and 'butter') ;
+    params.filt.butter = grp_proc_info.ERPfilter ; 
 else; params.filt.butter = 0 ;
 end
 %% BAD CHANNEL DETECTION SECTION MAPPED
@@ -136,63 +129,56 @@ end
 %% WAVELET METHODOLOGY SECTION MAPPED
 params.wavelet.legacy = 0 ; %making default and not legacy
 if ~params.wavelet.legacy && params.paradigm.ERP.on
-    params.wavelet.softThresh = grp_proc_info.wavelet_softThresh; % choose2('hard', 'soft') ;
+    params.wavelet.softThresh = grp_proc_info.wavelet_softThresh; 
 end
 %% MUSCIL SECTION MAPPED
 if ~params.paradigm.ERP.on
-    fprintf(['Use ICLabel to reduce remaining muscle artifact ' ...
-        'in your data? [Y/N]\nNOTE: This will drastically increase' ...
-        ' processing time. Recommended for files with significant' ...
-        ' muscle artifact.\n']) ;
-    params.muscIL = 0 ; %set to no for now, but could ad as option in future? choose2('N', 'Y') ;
+    params.muscIL = grp_proc_info.muscIL_on ; 
 else; params.muscIL = 0;
 end
 %% SEGMENTATION SECTION MAPPED
-params.segment.on = 1; % on by default
+params.segment.on = grp_proc_info.happe_segment_on;  % on by default
 if params.paradigm.task
-    params.segment.start = grp_proc_info.evt_seg_win_start ;% input(['Segment start, in seconds, relative to stimulus onset:\nExample: -100\n> '])/1000 ;
-    params.segment.end = grp_proc_info.evt_seg_win_end; %Segment end, in seconds,  'relative to stimulus onset:\n> '])
+    params.segment.start = grp_proc_info.evt_seg_win_start ;
+    params.segment.end = grp_proc_info.evt_seg_win_end; 
     if params.paradigm.ERP.on
-        % DETERMINE TASK OFFSET For this, maybe make it possible to upload a list of offset delays?
-        params.segment.offset = grp_proc_info.event_tag_offsets; % CHECK ON INPUT TABLE OPTION input(['Offset delay, in MILLISECONDS, ' ...
-        %  'between stimulus initiation and presentation. NOTE: Please enter the total offset (combined system and task-specific offsets)
-        % DETERMINE IF WANT BASELINE CORRECTION
-        params.baseCorr.on = grp_proc_info.evt_trial_baseline_removal; %choose2('n', 'y') ;
+        params.segment.offset = NaN; % hardcoded because offset is dealt with already during formatting and don't want to double introduce offset
+        params.baseCorr.on = grp_proc_info.evt_trial_baseline_removal; 
         if params.baseCorr.on
-            params.baseCorr.start = grp_proc_info.evt_trial_baseline_win_start*1000 ; % input(['Enter, in MILLISECONDS, where the baseline segment begins:\nExample: -100\n> ']) ;
-            params.baseCorr.end = grp_proc_info.evt_trial_baseline_win_end*1000; % input(['Enter, in MILLISECONDS, where the baseline segment ends:\n' ...'NOTE: 0 indicates stimulus onset.\n> ']) ;
+            params.baseCorr.start = grp_proc_info.evt_trial_baseline_win_start*1000 ; %  MILLISECONDS, where the baseline segment begins:\nExample: -100
+            params.baseCorr.end = grp_proc_info.evt_trial_baseline_win_end*1000; %  MILLISECONDS, where the baseline segment ends
         end
     end
-elseif ~params.paradigm.task; params.segment.length = grp_proc_info.win_size_in_secs ; %("Segment length, in SECONDS:\n> ") ;
+elseif ~params.paradigm.task; params.segment.length = grp_proc_info.win_size_in_secs ; %Segment length, in SECONDS
 end
-%% INTERPOLATION SECTION MAPPED
+%% INTERPOLATION SECTION Interpolate the specific channels data determined 'to be artifact/bad within each segment? [Y/N]
 if ~params.loadInfo.chanlocs.inc  % || ~params.badChans.rej
     params.segment.interp = 0 ;
 else
-%['Interpolate the specific channels data determined 'to be artifact/bad within each segment? [Y/N]\n']) ;
-    params.segment.interp =grp_proc_info.segment_interp ; % choose2('n', 'y') ;
+    params.segment.interp =grp_proc_info.segment_interp ;
 end
 %% SEGMENT REJECTION SECTION MAPPED
 if  grp_proc_info.beapp_reject_segs_by_amplitude || grp_proc_info.beapp_happe_segment_rejection
     params.segRej.on = 1;
+else
+    params.segRej.on = 0;
 end
-%  method of segment rejection:\n  amplitude =' ...Amplitude criteria only, similarity only, Both amplitude criteria and segment similarity\n']) ;
+%  method of segment rejection: Amplitude criteria only, similarity only, Both amplitude criteria and segment similarity
 if  grp_proc_info.beapp_reject_segs_by_amplitude &&grp_proc_info.beapp_happe_segment_rejection
     params.segRej.method = 'both';
 elseif grp_proc_info.beapp_happe_segment_rejection
     params.segRej.method = 'similarity';
 else
     params.segRej.method = 'amplitude';
-end% def = 1; flag that toggles amplitude-based rejection of segments after segment creation
+end
 if strcmpi(params.segRej.method, 'amplitude') || ...
         strcmpi(params.segRej.method, 'both')
-    params.segRej.minAmp = grp_proc_info.art_thresh_min ;%input(['Minimum signal amplitude to use as the artifact threshold:\n> ']) ;
-    params.segRej.maxAmp = grp_proc_info.art_thresh; %input(['Maximum signal amplitude to use as the artifact threshold:\n> ']) ;
+    params.segRej.minAmp = grp_proc_info.art_thresh_min ;%Minimum signal amplitude to use as the artifact threshold
+    params.segRej.maxAmp = grp_proc_info.art_thresh; %Maximum signal amplitude to use as the artifact threshold
 end
-% 'Use all channels or a region of interest for segment rejection?  all = All channels\n  roi = Region of interest\n']) ;
-params.segRej.ROI.on = grp_proc_info.segRej_ROI_on ; %choose2('all', 'roi') ;
+params.segRej.ROI.on = grp_proc_info.segRej_ROI_on ; 
 if params.segRej.ROI.on
-    params.segRej.ROI.chans = unique(grp_proc_info.segRej_ROI_chans); 
+    params.segRej.ROI.chans = unique(grp_proc_info.segRej_ROI_chans); %Use all channels or a region of interest for segment rejection? 
 end
 if params.paradigm.task && params.loadInfo.inputFormat == 1
     % fprintf(['Use pre-selected "usable" trials to restrict analysis? [Y/N]\n']) ;
@@ -201,18 +187,16 @@ end
 %% RE-REFERENCING SECTION MAPPED FOR NOW (no rest)
 if ~params.loadInfo.chanlocs.inc; params.reref.on = 0;
 else
-    % fprintf('Re-reference data? [Y/N]\n') ;
-    params.reref.on = grp_proc_info.reref_on; % choose2('n', 'y') ;
+    params.reref.on = grp_proc_info.reref_on; 
     if params.reref.on
-        params.reref.flat = 1; %HARDCODED, need to generalize or add input %fprintf(['Does your data contain a flatline or all zero ' ...'reference channel? [Y/N]\n']) ;
-        %if params.reref.flat
-        params.reref.chan = grp_proc_info.reref_chan; % input('> ', 's') ;
+        params.reref.flat = grp_proc_info.reref_flat; 
+        if params.reref.flat
+        params.reref.chan = grp_proc_info.reref_chan; 
+        end
     end  
-%'Re-referencing type:Average re-referencing, Re-reference to a channel or subset of channels\n  rest = Re-reference using' ...infinity with REST (Yao, 2001)\n']) ;
     reref_map = {1,'average';2,'NaN';3,'subset';4,'rest'};     %type of reference method to use (1= average, 2= CSD Laplacian, 3 = specific electrodes, 4 = REST)
     params.reref.method = reref_map{grp_proc_info.reref_typ,2};
     if strcmpi(params.reref.method, 'subset')
-        % channel/subset of channels to re-reference to
         params.reref.subset = grp_proc_info.beapp_reref_chan_inds{1,1}; 
     elseif strcmpi(params.reref.method, 'rest')
         fprintf(['REST from beapp to happe not currently supported']) ; %TO DO
@@ -221,16 +205,15 @@ end
 %% SAVE FORMAT SECTION MAPPED
 params.outputFormat = grp_proc_info.save_format;
 %% VISUALIZATIONS SECTION MAPPED
-params.vis.enabled = grp_proc_info.happe_plotting_on; %choose2('N', 'Y') ;
+params.vis.enabled = grp_proc_info.happe_plotting_on; 
 if params.vis.enabled
     % POWER SPECTRUM: Min and Max
-    params.vis.min = grp_proc_info.vis_psd_min ; %input("Minimum value for power spectrum figure:\n> ") ;
-    params.vis.max =grp_proc_info.vis_psd_max; % input("Maximum value for power spectrum figure:\n> ") ;
+    params.vis.min = grp_proc_info.vis_psd_min ; %Minimum value for power spectrum figure
+    params.vis.max =grp_proc_info.vis_psd_max; % Maximum value for power spectrum figure
     params.vis.toPlot = unique(grp_proc_info.vis_topoplot_freqs,'stable'); % Frequencies for spatial topoplots
     if params.paradigm.ERP.on
-        % DETERMINE TIME RANGE FOR THE TIMESERIES FIGURE
-        params.vis.min = grp_proc_info.vis_erp_min; % input('Start time, in MILLISECONDS, for the ERP timeseries figure:\n> ') ;
-        params.vis.max =grp_proc_info.vis_erp_max; % input(['End time, in MILLISECONDS, for the ERP timeseries figure:\n' ...
+        params.vis.min = grp_proc_info.vis_erp_min; % Start time, in MILLISECONDS, for the ERP timeseries figure
+        params.vis.max =grp_proc_info.vis_erp_max; % End time, in MILLISECONDS, for the ERP timeseries figure
     end
 end
 %%  SAVE INPUT PARAMETERS

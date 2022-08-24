@@ -1,9 +1,10 @@
 %what I need out from each happe run
-function beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params,dataQCNames)
+function beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params)
 
-lnMeans = {qual_control.lnMean};
-wavMeans = {qual_control.wavMean};
-dataQC = {qual_control.dataQC};
+lnMeans = qual_control.lnMean;
+wavMeans = qual_control.wavMean;
+dataQC = qual_control.dataQC;
+dataQCNames = qual_control.dataQCNames;
 if grp_proc_info_in.HAPPE_ER_reprocessing
     reprocess = 1;
     rerunExt = ['_rerun_' datestr(now, 'dd-mm-yyyy')];
@@ -13,7 +14,7 @@ else
 end
 %% GENERATE OUTPUT TABLES
 fprintf('Generating quality assessment outputs...\n') ;
-srcDir = grp_proc_info_in.src_dir{1,1}
+srcDir = grp_proc_info_in.src_dir{1,1};
 allDirNames = {'intermediate_processing', 'wavelet_cleaned_continuous', ...
     'muscIL', 'ERP_filtered', 'segmenting', 'processed', ...
     'quality_assessment_outputs'} ;
@@ -28,7 +29,6 @@ for i=1:length(allDirNames)
 end
 cd([srcDir filesep dirNames{contains(dirNames, ...
     'quality_assessment_outputs')}]) ;
-rmpath(genpath(cleanlineDir)) ;
 try
     % CREATE AND SAVE PIPELINE QUALITY ASSESSMENT
     if ~reprocess
@@ -60,7 +60,7 @@ try
         pipelineQC_saveName = helpName(['HAPPE_pipelineQC' rerunExt '_' ...
            datestr(now, 'dd-mm-yyyy') '.csv']) ;
         writetable(array2table(pipelineQC, 'VariableNames', pipelineQC_names, ...
-            'RowNames', grp_proc_info_in.beapp_fname_all), pipelineQC_saveName, 'WriteRowNames', ...
+            'RowNames', grp_proc_info_in.beapp_fname_all'), pipelineQC_saveName, 'WriteRowNames', ...
             true, 'QuoteStrings', true);
     end
 
@@ -71,8 +71,8 @@ try
     % Save the data QC table.
     dataQC_saveName = helpName(['HAPPE_dataQC' rerunExt '_' datestr(now, ...
         'dd-mm-yyyy') '.csv']) ;
-    dataQCTab = cell2table(dataQC, 'VariableNames', dataQCnames, 'RowNames', ...
-        FileNames);
+    dataQCTab = cell2table(dataQC, 'VariableNames', dataQCNames, 'RowNames', ...
+        grp_proc_info_in.beapp_fname_all');
     writetable(dataQCTab, dataQC_saveName, 'WriteRowNames', true, 'QuoteStrings', ...
         true) ;
 

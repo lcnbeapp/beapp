@@ -91,6 +91,8 @@ if event_tracks.size() > 0
                 evt_info(eventInd).evt_times_micros_rel = double(event_time_epoch_rel_in_micros);
                 evt_info(eventInd).evt_times_epoch_rel=double(event_rec_period);
                 evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+round(file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000))+1;
+                               % evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+round(file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000));
+
                 evt_info(eventInd).evt_times_samp_abs = double(event_time_samp_abs)+file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000)+1;
                 evt_info(eventInd).evt_ind=double(eventInd);
                 evt_info(eventInd).evt_duration_samps=time2samples(event.getDuration,file_proc_info_in.src_srate,6,'fix');

@@ -32,75 +32,68 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 function grp_proc_info_in = batch_beapp_HAPPE_ER(grp_proc_info_in)
-src_dir = find_input_dir('HAPPE+ER',grp_proc_info_in.beapp_toggle_mods);
+src_dir_orig = find_input_dir('HAPPE+ER',grp_proc_info_in.beapp_toggle_mods,grp_proc_info_in.HAPPE_ER_reprocessing);
 disp('|====================================|');
-%% Check if reprocessing
-fprintf(['Select an option:\n  raw = Run on raw data from the start\n' ...
-    '  reprocess = Run on HAPPE-processed data starting post-artifact ' ...
-    'reduction\n']) 
-grp_proc_info_in.HAPPE_ER_reprocessing = 0; %choose2('raw', 'reprocess') ;
-%% Translate beapp's user inputs to happe params (if necessary)
-if ~isempty(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1}) && ~exist(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1})
-    error('Cannot find HAPPE+ER Parameter file at given path, please check path in beapp_set_input_file_locations')
-elseif isempty(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1})
-    if grp_proc_info_in.HAPPE_ER_reprocessing == 0
-        grp_proc_info_in =beapp_translate_to_happe_inputs_clean(grp_proc_info_in);% beapp_create_happe_params(grp_proc_info_in);
-    elseif grp_proc_info_in.HAPPE_ER_reprocessing == 1
-        error('No path to HAPPE+ER Parameter file provided, please set the path in beapp_set_input_file_locations')
-    end
-end
-%% loop through files
-addpath(genpath(grp_proc_info_in.ref_HAPPE_V2_3_loc_dir))
-qual_control=struct();
+% If rerunning happe, copy necessary files to dest_src_dir and move there
+src_dir = happe_er_rerun_file_check(grp_proc_info_in.HAPPE_ER_reprocessing,src_dir_orig,grp_proc_info_in.beapp_toggle_mods.Module_Dir(find(strcmpi(grp_proc_info_in.beapp_toggle_mods.Properties.RowNames, 'HAPPE+ER'))),grp_proc_info_in.beapp_fname_all);
+
+% Translate beapp's user inputs to happe params (if necessary) and load / initialize data/pipeline assesment structs
+[qual_control,params] = set_happe_v3_params_qcs(grp_proc_info_in);
+[dirNames] = set_happe_v3_path(grp_proc_info_in,params);
+
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     cd(src_dir{1});
-    %
-    if exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
+    if grp_proc_info_in.HAPPE_ER_reprocessing || exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
         tic;
-        %load eeg
-        load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
-        % convert to eeg lab format
-        [EEGraw] = beapp2eeglab(file_proc_info,eeg{1,1},1,1);
-        % add events specific to happe-er/based on file type
-        [EEGraw] = add_happe_er_events_eeglab_struct(file_proc_info,EEGraw);
-  %% Run HAPPE-ER Processing steps 
-       
-  [eegByTags,params, dataQC, dataQCTab,lnMeans,wavMeans] = HAPPE_v2_3_yb(EEGraw, grp_proc_info_in,{grp_proc_info_in.beapp_fname_all{curr_file}},curr_file); % Call HAPPE 
-       
-           
-       
+        if ~grp_proc_info_in.HAPPE_ER_reprocessing
+            load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+            [EEGraw] = beapp2eeglab(file_proc_info,eeg{1,1},1,1);
+            [EEGraw] = add_happe_er_events_eeglab_struct(file_proc_info,EEGraw);       % add events specific to happe-er/based on file type
+        else
+            load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
+            EEGraw = NaN(5,1);
+        end
+        %% Run HAPPE-ER Processing steps
+        [eeg_out, dataQC,chan_info,lnMeans,wavMeans,errorLog] = HAPPE_v2_3_yb(params,EEGraw, grp_proc_info_in.HAPPE_ER_reprocessing,{grp_proc_info_in.beapp_fname_all{curr_file}},fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE+ER_',grp_proc_info_in.beapp_curr_run_tag)),dirNames); % Call HAPPE V3
         %% Update file_output_struct
-      %  qual_control(curr_file).lnMean = lnMeans;
-      %  qual_control(curr_file).wavMean = wavMeans;
-      %  qual_control(curr_file).dataQC = dataQC; 
+        qual_control(1).lnMean = [qual_control(1).lnMean; lnMeans];
+        qual_control(1).wavMean = [qual_control(1).wavMean; wavMeans];
+        qual_control(1).dataQC = [qual_control(1).dataQC; dataQC];
         %% Update File Proc Info
-        if ~isempty(eegByTags)
-        file_proc_info = update_file_proc_info_posthappe_er(grp_proc_info_in,file_proc_info,dataQCTab,params,eegByTags);
+        if ~isempty(eeg_out)
+            file_proc_info = update_file_proc_info_posthappe_er(grp_proc_info_in,file_proc_info,qual_control,params,eeg_out,chan_info);
         end
         %% Convert Data back to BEAPP for segmented files
-        eeg_w = cell(length(eegByTags),1);
-        for condition = 1:length(eegByTags)
+        eeg_final = cell(length(eeg_out),1);
+        for condition = 1:length(eeg_out)
             try
-            eeg_w{condition,1} = eegByTags{1,condition}.data;
+                eeg_final{condition,1} = eeg_out{1,condition}.data;
             catch
-                eeg_w{condition,1} = [];
+                eeg_final{condition,1} = [];
             end
+        end
+        if params.paradigm.task
+            eeg_w = eeg_final;
+        else
+            eeg = eeg_final;
         end
         %% save and update file history
         cd(grp_proc_info_in.beapp_toggle_mods{'HAPPE+ER','Module_Dir'}{1});
         %
-        if ~all(cellfun(@isempty,eeg_w))
+        if ~all(cellfun(@isempty,eeg_final))
             file_proc_info = beapp_prepare_to_save_file('HAPPE+ER',file_proc_info, grp_proc_info_in, src_dir{1});
-            save(strcat(file_proc_info.src_subject_id,'.mat'),'eeg_w','file_proc_info');
+            if params.paradigm.task
+            save(strcat(file_proc_info.beapp_fname{1,1}),'eeg_w','file_proc_info');
+            else
+            save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info');
+            end  
         end
-        clearvars -except grp_proc_info_in src_dir curr_file qual_control params dataQCTab
+        clearvars -except grp_proc_info_in src_dir curr_file qual_control params  src_fname_all
     end
-    
 end
 %save output table and dataQC table
-  %  beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params,dataQCTab.Properties.VariableNames)
-    rmpath(genpath(grp_proc_info_in.ref_HAPPE_V2_3_loc_dir));
-
+beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params,errorLog)
+rmpath(genpath(grp_proc_info_in.ref_HAPPE_V2_3_loc_dir));
 end
 
  

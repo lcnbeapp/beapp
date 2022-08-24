@@ -276,6 +276,7 @@ grp_proc_info.segment_nth_stim_str = {''};
 grp_proc_info.beapp_event_group_stim=0;
 %% defaults for HAPPE+ER additional inputs
 %Format
+grp_proc_info.HAPPE_ER_reprocessing = 0; %choose2('raw', 'reprocess') ;
 grp_proc_info.chans_to_analyze = 'all';
 grp_proc_info.typeFields = {'code'}; % Add any additional type fields besides "code", separating other entries with a comma ;        
 grp_proc_info.happe_net_type = []; %NET Type %fprintf(['Acquisition layout type:\n  1 = EGI Geodesic Sensor ' ...% 'Net\n  2 = EGI HydroCel Geodesic Sensor Net\n  3 = Neuroscan Quik-Cap' ...%'\n  4 = Other'
@@ -291,7 +292,10 @@ grp_proc_info.art_thresh_min = -150;  % -200 to 200 for infant data, and -150 to
 grp_proc_info.segRej_ROI_on = 0; %default uses all channels (0) , 1 would use specific set of rois (regions of interest)
 grp_proc_info.segRej_ROI_chans = {}; %default empty cell, otherwise enter channels to use for seg rejection with the format 'E[channelnum' ex 'E12' separated by commas
 grp_proc_info.segment_interp = 0; %'Interpolate the specific channels data determined ' ...'to be artifact/bad within each segment? N=0, Y = 1
-
+grp_proc_info.muscIL_on = 0;
+grp_proc_info.happe_segment_on = 0;
+grp_proc_info.ERPAnalysis = 0; 
+grp_proc_info.reref_flat = 0;
 %SAVE FORMAT
 grp_proc_info.save_format = [1];  %'Format to save processed data:\n  1 = .txt file (electrodes as ' ...
   %  'columns, time as rows) - Choose this for ERP timeseries\n  2 = .mat' ...

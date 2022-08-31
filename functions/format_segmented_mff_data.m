@@ -32,19 +32,22 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [eeg_w, file_proc_info] =  format_segmented_mff_data (eeg,file_proc_info,user_set_condition_names,throw_out_bad_segments)
-
+if sum(contains(fieldnames(file_proc_info),'src_epoch_start_times'))==1
 if ~isequal(file_proc_info.src_epoch_start_times,[file_proc_info.seg_info.s_start_time])
     warning([file_proc_info.beapp_fname{1} ':segment quality and condition information timestamps do not match data, please check'])
+end
 end
 
 % sometimes is different from conditions in dataset (as in GAMES). For now
 % need to be separate
 conditions_in_segments  =  unique({file_proc_info.seg_info.condition_name});
 
-file_proc_info.grp_wide_possible_cond_names_at_segmentation = user_set_condition_names;
 
+file_proc_info.grp_wide_possible_cond_names_at_segmentation = user_set_condition_names;
+if file_proc_info.src_format_typ == 3
 file_proc_info.evt_seg_win_evt_ind = time2samples(nanmean([file_proc_info.seg_info.s_evt_start_time]-...
     [file_proc_info.seg_info.s_start_time]), file_proc_info.beapp_srate,6,'round');
+end 
 
 for curr_condition = 1:length(user_set_condition_names)
     
@@ -59,8 +62,12 @@ for curr_condition = 1:length(user_set_condition_names)
         end
         
         if ~isempty (cond_seg_idxs)
+            if file_proc_info.src_format_typ == 5
+                eeg_w{curr_condition,1} = eeg(:,:,cond_seg_idxs);
+            elseif file_proc_info.src_format_typ == 3
             cond_segments = eeg(cond_seg_idxs);
             eeg_w{curr_condition,1} = cat(3,cond_segments{:});
+            end
         else
             %warning([file_proc_info.beapp_fname{1} ':no usable segments matching conditions were found']);
             eeg_w{curr_condition,1}  = [];

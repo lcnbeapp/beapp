@@ -36,11 +36,11 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function file_proc_info = beapp_read_set_segment_info(EEG_struct,file_proc_info,grp_proc_info_in)
 if grp_proc_info_in.src_data_type ~=1
-    all_categories = grp_proc_info_in.beapp_event_eprime_values.condition_names; 
+    all_categories = grp_proc_info_in.beapp_event_eprime_values.condition_names;
 else
     all_categories = [];
 end
-   file_proc_info.evt_seg_win_evt_ind = find(EEG_struct.times == 0);
+file_proc_info.evt_seg_win_evt_ind = find(EEG_struct.times == 0);
 condition_name = cell(size(EEG_struct.epoch,2),1);
 if ~isempty(all_categories)
     cat_names = cell(length(all_categories),1);
@@ -54,13 +54,12 @@ if ~isempty(all_categories)
         cat_indices = (evt_type_idx&evt_lat_idx);
         cat_epochs = [EEG_struct.event(cat_indices).epoch];
         cat_names{curr_cat}= char(all_categories{curr_cat});
-    
-            condition_name(cat_epochs) = deal({cat_names{curr_cat}});
+
+        condition_name(cat_epochs) = deal({cat_names{curr_cat}});
         clear cat cat_epoch
     end
-seg_info = struct('condition_name',condition_name);
-    sortedSegs = seg_info;
-    file_proc_info.seg_info = sortedSegs;
+    seg_info = struct('condition_name',condition_name);
+    file_proc_info.seg_info = seg_info;
     file_proc_info.seg_tasks=cat_names;
     clearvars -except file_proc_info
 end

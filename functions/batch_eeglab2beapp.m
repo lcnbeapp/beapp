@@ -145,8 +145,8 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
 
         % Read in epoch information - YB added
 file_proc_info = beapp_read_set_segment_info(EEG_struct,file_proc_info,grp_proc_info_in);        
-        [eeg_w, file_proc_info] = format_segmented_mff_data (eeg{1,1},file_proc_info,...
-            grp_proc_info_in.beapp_event_eprime_values.condition_names,0);
+        [eeg_w, file_proc_info] = format_segmented_set_data (eeg{1,1},file_proc_info,...
+            grp_proc_info_in.beapp_event_eprime_values.condition_names,0,grp_proc_info_in.src_data_type);
         if ~all(cellfun(@isempty,eeg_w))
             save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w');
         end

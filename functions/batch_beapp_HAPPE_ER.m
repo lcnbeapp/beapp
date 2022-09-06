@@ -56,6 +56,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         %% Run HAPPE-ER Processing steps
         [eeg_out, dataQC,chan_info,lnMeans,wavMeans,errorLog] = HAPPE_v2_3_yb(params,EEGraw, grp_proc_info_in.HAPPE_ER_reprocessing,{grp_proc_info_in.beapp_fname_all{curr_file}},fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE+ER_',grp_proc_info_in.beapp_curr_run_tag)),dirNames); % Call HAPPE V3
         %% Update file_output_struct
+        if ~iscell(eeg_out)
+            eeg_out = {eeg_out};
+        end
         qual_control(1).lnMean = [qual_control(1).lnMean; lnMeans];
         qual_control(1).wavMean = [qual_control(1).wavMean; wavMeans];
         qual_control(1).dataQC = [qual_control(1).dataQC; dataQC];
@@ -66,13 +69,13 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         %% Convert Data back to BEAPP for segmented files
         eeg_final = cell(length(eeg_out),1);
         for condition = 1:length(eeg_out)
-            try
+                if ~isempty(eeg_out{1,condition})
                 eeg_final{condition,1} = eeg_out{1,condition}.data;
-            catch
-                eeg_final{condition,1} = [];
-            end
+                else
+                    eeg_final{condition,1} = [];
+                end
         end
-        if params.paradigm.task
+        if params.segment.on
             eeg_w = eeg_final;
         else
             eeg = eeg_final;
@@ -82,13 +85,13 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         %
         if ~all(cellfun(@isempty,eeg_final))
             file_proc_info = beapp_prepare_to_save_file('HAPPE+ER',file_proc_info, grp_proc_info_in, src_dir{1});
-            if params.paradigm.task
+            if params.segment.on
             save(strcat(file_proc_info.beapp_fname{1,1}),'eeg_w','file_proc_info');
             else
             save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info');
             end  
         end
-        clearvars -except grp_proc_info_in src_dir curr_file qual_control params  src_fname_all
+        clearvars -except grp_proc_info_in src_dir curr_file qual_control params errorLog
     end
 end
 %save output table and dataQC table

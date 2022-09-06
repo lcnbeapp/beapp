@@ -5,7 +5,9 @@ if happe_er_reprocessing == 0
     src_dir = src_dir_base;
 elseif happe_er_reprocessing == 1
         %% copy file_proc_infos 
-
+    if ~isdir([dest_dir_base{1,1} filesep '0 - rerun_file_proc_infos'])
+        mkdir([dest_dir_base{1,1} filesep '0 - rerun_file_proc_infos'])
+    end
     for ii = 1:length(fname_all)
         load([src_dir_base{1,1} filesep fname_all{1,ii}],'file_proc_info')
         save([dest_dir_base{1,1} filesep '0 - rerun_file_proc_infos' filesep strcat(fname_all{1,ii}(1:end-4),'file_info.mat')],'file_proc_info')

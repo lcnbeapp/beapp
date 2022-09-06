@@ -1,10 +1,10 @@
 %what I need out from each happe run
-function beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params)
+function beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params,errorLog)
 
 lnMeans = qual_control.lnMean;
 wavMeans = qual_control.wavMean;
 dataQC = qual_control.dataQC;
-dataQCNames = qual_control.dataQCNames;
+dataQCNames = qual_control.dataQCnames;
 if grp_proc_info_in.HAPPE_ER_reprocessing
     reprocess = 1;
     rerunExt = ['_rerun_' datestr(now, 'dd-mm-yyyy')];

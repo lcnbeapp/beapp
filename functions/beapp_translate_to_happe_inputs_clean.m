@@ -72,6 +72,8 @@ else
         for num_to_conv = 1:length(grp_proc_info.beapp_ica_additional_chans_lbls{1,1})
             addit_chans{num_to_conv} = char(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}(num_to_conv)) ; %char(strcat('E',num2str(grp_proc_info.beapp_ica_additional_chans_lbls{1,1}(num_to_conv))));
         end
+    else
+        addit_chans = [];
     end
     if grp_proc_info.beapp_ica_run_all_10_20   
         params.chans.IDs = unique([grp_proc_info.name_10_20_elecs, addit_chans]);

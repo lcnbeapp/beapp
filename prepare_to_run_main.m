@@ -10,11 +10,11 @@ end
 
 grp_proc_info_in.bw_total_freqs = sort(grp_proc_info_in.bw_total_freqs);
 
-if grp_proc_info_in.src_format_typ ==3
+if grp_proc_info_in.src_format_typ ==3 || grp_proc_info_in.src_format_typ ==5
     grp_proc_info_in.beapp_toggle_mods{'format','Module_Output_Type'} = {'seg'};
 end
+%set the variables for multitaper window if selected by userfname
 
-%set the variables for multitaper window if selected by user
 set_beapp_pmtm_vars;
 %% prepping net library 
 if ~isdir([grp_proc_info_in.ref_net_library_dir]);
@@ -65,5 +65,5 @@ if ~grp_proc_info_in.beapp_toggle_mods{'format','Module_On'}
         grp_proc_info_in.src_unique_net_ref_rows, grp_proc_info_in.src_net_10_20_elecs,grp_proc_info_in.largest_nchan]=...
         beapp_rerun_set_up(grp_proc_info_in.beapp_toggle_mods,modnames{first_mod_ind},grp_proc_info_in.rerun_file_info_table,grp_proc_info_in.beapp_use_rerun_table,...
         grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,...
-        grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx);
+        grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx,grp_proc_info_in.HAPPE_ER_reprocessing);
 end

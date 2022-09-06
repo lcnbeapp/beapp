@@ -58,7 +58,12 @@ if event_tracks.size() > 0
     for curr_track = 1:(event_tracks.size)
         event_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_EventTrack, event_tracks.get(curr_track-1), full_filepath);
         all_events = event_obj.getEvents;
-        
+%__________________________________________________
+%YB pulling more info necessary for happe+er
+        name = event_obj.getName; 
+        trackType = event_obj.getTrackType();
+%__________________________________________________
+
         for curr_event = 1:all_events.size;
             
             event = all_events.get(curr_event-1); % Java arrays are 0 based
@@ -86,11 +91,28 @@ if event_tracks.size() > 0
                 evt_info(eventInd).evt_times_micros_rel = double(event_time_epoch_rel_in_micros);
                 evt_info(eventInd).evt_times_epoch_rel=double(event_rec_period);
                 evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+round(file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000))+1;
+                               % evt_info(eventInd).evt_times_samp_rel=double(event_time_rec_period_samps)+round(file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000));
+
                 evt_info(eventInd).evt_times_samp_abs = double(event_time_samp_abs)+file_proc_info_in.src_file_offset_in_ms *(file_proc_info_in.src_srate/1000)+1;
                 evt_info(eventInd).evt_ind=double(eventInd);
                 evt_info(eventInd).evt_duration_samps=time2samples(event.getDuration,file_proc_info_in.src_srate,6,'fix');
                 evt_info(eventInd).duration_time=event.getDuration;
+ %____________________________________________________________________________________________________
+ %YB pulling out extra info for happe+er/future use
+                evt_info(eventInd).description=char(event.getDescription());
+                evt_info(eventInd).sourcedevice = char(event.getSourceDevice());
+                evt_info(eventInd).name = char(name);
+                evt_info(eventInd).tracktype = char(trackType); 
+                evt_info(eventInd).label  = char(event.getLabel());
+               % evt_info(eventInd).relativebegintime = event_obj.getRelativeBeginTime(); %figure out how this gets pulled in just happe_er
+                evt_info(eventInd).classid = char(event.getClassID());
+
                 
+                keylist = event.getKeys();
+                evt_info = mff_importkeys(evt_info, eventInd, keylist, 0); %last output set to false so wont save backup, could changei n future
+
+ %____________________________________________________________________________________________________
+
                 % check if event code matches your behavioral coding event
                 if ~isempty(grp_proc_info_in.behavioral_coding.events{1})
                     [~,evt_behav_index] = find(strcmp(grp_proc_info_in.behavioral_coding.events,char(event.getCode)));

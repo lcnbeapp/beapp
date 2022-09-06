@@ -115,6 +115,7 @@ grp_proc_info.beapp_toggle_mods{'ica',{'Module_On','Module_Export_On'}}=[1,1]; %
 grp_proc_info.beapp_toggle_mods{'rereference',{'Module_On','Module_Export_On'}}=[0,0]; %Turn on rereferencing
 grp_proc_info.beapp_toggle_mods{'detrend',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on detrending 
 grp_proc_info.beapp_toggle_mods{'segment',{'Module_On','Module_Export_On'}}=[1,1]; % Turn on segmentation
+grp_proc_info.beapp_toggle_mods{'HAPPE+ER',{'Module_On','Module_Export_On'}}=[1,1]; %Turn on HAPPE+ER Pre-processing pipeline - will automatically not run any other preprocessing pipeline
 grp_proc_info.beapp_toggle_mods{'psd',{'Module_On','Module_Export_On'}}=[0,0]; %flag that toggles the PSD calculations
 grp_proc_info.beapp_toggle_mods{'itpc',{'Module_On','Module_Export_On'}}=[0,0]; %turns ITPC analysis on, use with event data only
 grp_proc_info.beapp_toggle_mods{'topoplot',{'Module_On','Module_Export_On'}}=[0,0]; % Turn on topoplots
@@ -213,9 +214,9 @@ grp_proc_info.beapp_event_code_onset_strs={'Segment'}; %Ex {'stm+'} the event co
 
 % Desired condition names: Order must match cell numbers if cell sets are being used, or event tags if only event tags are being used
 grp_proc_info.beapp_event_eprime_values.condition_names = {'Segment'};
-%grp_proc_info.beapp_event_eprime_values.event_codes(:,1) = [1]; % these MUST line up across all possible cell sets
-%grp_proc_info.beapp_event_eprime_values.event_codes(:,2) = [2];
-%grp_proc_info.beapp_event_eprime_values.event_codes(:,3) = [3];
+grp_proc_info.beapp_event_eprime_values.event_codes(:,1) = [1]; % these MUST line up across all possible cell sets
+grp_proc_info.beapp_event_eprime_values.event_codes(:,2) = [2];
+grp_proc_info.beapp_event_eprime_values.event_codes(:,3) = [3];
 
 % only used for conditioned baseline, otherwise optional: 
 grp_proc_info.beapp_event_code_offset_strs={''}; %def = {''} Ex {'TRSP'} the event codes assigned during data collection to signifiy the offset of the stimulus (should match onset strs)
@@ -232,7 +233,50 @@ grp_proc_info.evt_analysis_win_end = .800;  % def = .800; end time in seconds fo
 grp_proc_info.evt_trial_baseline_removal = 0; % def = 0; flag on use of pop_rmbaseline in segmentation module. 
 grp_proc_info.evt_trial_baseline_win_start = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0). Must be within range you've segmented on. 
 grp_proc_info.evt_trial_baseline_win_end = -.100; % def = -0.100;  start time in seconds for baseline, relative to the event marker of interest (ex -0.100, 0) 
-
+%__________________________________________________________________________
+%__________________________________________________________________________
+%                           HAPPE-V3 SPECIFICATIONS
+% Channels to analyze
+grp_proc_info.chans_to_analyze = 'all' ; %can be 'all','coi_include','coi_exclude' if 'coi_include or coi_exclude', it will analyze or exclude from analysis 10-20 (if turned on) and additional channels (from additional_channels_ica)
+% Resampling - Resampling value set in resampling specifications above
+grp_proc_info.happe_resamp_on = 0; %Toggle on/off happe resampling, if on, will resample to grp_proc_info.beapp_rsamp_srate in RESAMPLING specifications
+% Linenoise - Linenoise reduction will occur at frequency set above in LINENOISE section
+grp_proc_info.lineNoise_harms_on = 0 ; %turning on line noise reduction at other frequencies (not always but often at harmonics of electric linenoise frequency) default 0, if you turn to 1 set next variable 
+grp_proc_info.lineNoise_harms_freqs = []; %vector of other frequencies for linenoise reduction, default [];
+% Artifact Detection
+grp_proc_info.badChans_rej=1; %turn on bad channel rejection? default one 
+% Rereferencing - Rereferencing method set in REREFERENCING specifications 
+grp_proc_info.reref_on = 1; %[0 off, 1 on] if on, will use rereferencing method set in reref specifications (NOTE: happe v3 only supports average, subset, and rest)
+grp_proc_info.reref_flat = 0; %0: No rereference channel to include 1: Include rereference/flat channel  NOTE: If you want to exclude ref from processing, choose 'coi_exclude' above and include ref in your additional channels 
+grp_proc_info.reref_chan= []; %default [], if there is rereference channel in your data, list name here, will only be used of reref_flat is turned on
+% Segmentation - Segmentation boundaries, rejection method, and max threshold set in segmentation specifications above
+grp_proc_info.happe_segment_on = 1; %toggle on/off happe segmentation
+grp_proc_info.art_thresh_min = -150;  %Min amplitude for artifact rejection -200 for infant data, and -150 for child, adolescent, and adult data
+grp_proc_info.segRej_ROI_on = 0; %default uses all channels (0) , 1 would use specific set of rois (regions of interest)
+grp_proc_info.segRej_ROI_chans = {}; %default empty cell, otherwise enter channels to use for seg rejection with the format 'E[channelnum' ex 'E12' separated by commas
+grp_proc_info.segment_interp = 0; %'Interpolate the specific channels data determined ' ...'to be artifact/bad within each segment? N=0, Y = 1
+%Save format
+grp_proc_info.save_format = [1];  %'Format to save processed data:\n  1 = .txt file (electrodes as columns, time as rows) - Choose this for ERP timeseries\n  2 = .mat file (MATLAB format)\n  3 = .set file (EEGLAB format)\n']) ;  
+%__________________________________________________________________________
+%               HAPPE-V3 Inputs for Non-ERP Analyses Only
+% Artifact Detection
+grp_proc_info.muscIL_on = []; % 0 or 1, default off: On will use ICLabel to reduce remaining muscle artifact, NOTE: This will drastically increase processing time. Recommended for files with significant muscle artifact.
+% Visualization
+grp_proc_info.vis_psd_min = []; % If visualizatio("Minimum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_psd_max = [] ;%("Maximum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_topoplot_freqs = []; %
+%__________________________________________________________________________
+%       HAPPE-V3 Inputs for ERP (Event Related data + ERP analyses) Only
+% Toggle on ERP Analysis
+grp_proc_info.ERPAnalysis = 0; %0 off 1 on
+% Filtering - High and low pass values set in filtering specifications above 
+grp_proc_info.ERPfilter = []; % Type of filter which will apply bandpass filter at values set in filtering section 0: fir = Hamming windowed sinc FIR filter (EEGLAB''s standard filter) 1: 'butter = IIR butterworth filter (ERPLAB''s standard filter)\n']) ;
+% Artifact Detection
+grp_proc_info.wavelet_softThresh = 0; % Default 0 (hard threshold), 1  = soft threshold, Using a soft threshold slightly preserves ERP amplitude but may keep slightly more artifact in the data. Using a hard threshold removes more artifact but at the slight cost of ERP amplitude.
+% Visualization
+grp_proc_info.vis_erp_min = [] ; %  Start time, in MILLISECONDS, for the ERP timeseries figure
+grp_proc_info.vis_erp_max = [] ; % End time, in MILLISECONDS, for the ERP timeseries figure
+%__________________________________________________________________________
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications
 % select n of usable segments PER CONDITION to use for output measure

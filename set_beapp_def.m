@@ -102,16 +102,16 @@ grp_proc_info.beapp_ver={'BEAPP_v4_1'};
 grp_proc_info.eeglab_ver = {'eeglab14_1_2b'};
 grp_proc_info.fieldtrip_ver = {'fieldtrip-20160917'};
 grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
-
+grp_proc_info.HAPPE_ver = {'HAPPE_v2_3_0'};
 %% directory defaults and paths
 grp_proc_info.beapp_pname={''}; %the Matlab paths where the BEAPP code is located 
 grp_proc_info.src_dir={''}; %source directory containing the EEG data exported from Netstation, left empty in defaults because it must be set by the user 
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','psd','itpc','topoplot','fooof','pac','bycycle'};
-Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','psd','seg','seg'}'; %TODO: make output from psd 'psd'
-Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','psd','out','out','out','out','out'}';
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','HAPPE+ER','psd','itpc','topoplot','fooof','pac','bycycle'};
+Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','psd','seg','seg'}'; %TODO: make output from psd 'psd'
+Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','out','out','out','out','out'}';
 
 Mod_Names=ModuleNames(:);
 Module_On = true(length(ModuleNames),1); % flag all modules on as default
@@ -140,18 +140,19 @@ grp_proc_info.beapp_toggle_mods{'prepp','Module_Xls_Out_On'}=1; %flags the expor
 %% paths for packages and tables
 grp_proc_info.beapp_ft_pname={[grp_proc_info.beapp_root_dir{1},filesep,'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep,grp_proc_info.fieldtrip_ver{1}]}; 
 grp_proc_info.beapp_format_mff_jar_lib = [grp_proc_info.beapp_root_dir{1} filesep 'reference_data' filesep 'MFF-1.2.jar']; %the java class file needed when reading mff source files
+grp_proc_info.beapp_format_mff_matlab_package = [grp_proc_info.beapp_root_dir{1} filesep 'Packages' filesep 'MFFMatlabIO4.0'];
 grp_proc_info.ref_net_library_dir=[grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library'];
 grp_proc_info.ref_net_library_options = ([grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library_options.mat']);
 grp_proc_info.ref_eeglab_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep, 'sample_locs'];
 grp_proc_info.ref_def_template_folder = [fileparts(mfilename('fullpath')) filesep, 'run_templates'];
-
+grp_proc_info.ref_HAPPE_V2_3_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.HAPPE_ver{1}];
 % initialize input tables: only necessary if inputs are .mats, non-uniform offset information is
 % needed for mff files, or if you'd like to rerun a subselection of files
 grp_proc_info.beapp_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'beapp_file_info_table.mat'];
 grp_proc_info.rerun_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'rerun_fselect_table.mat'];
 grp_proc_info.beapp_alt_beapp_file_info_table_location = {''};
 grp_proc_info.beapp_alt_rerun_file_info_table_location = {''};
-
+grp_proc_info.HAPPE_ER_parameters_file_location = {''};
 %% general defaults
 grp_proc_info.beapp_advinputs_on=0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 grp_proc_info.hist_run_tag = datetime('now'); % run_tag records when beapp was started
@@ -273,6 +274,39 @@ grp_proc_info.select_nth_trial = [];
 grp_proc_info.segment_stim_relative_to = {''}; 
 grp_proc_info.segment_nth_stim_str = {''};
 grp_proc_info.beapp_event_group_stim=0;
+%% defaults for HAPPE+ER additional inputs
+%Format
+grp_proc_info.HAPPE_ER_reprocessing = 0; %choose2('raw', 'reprocess') ;
+grp_proc_info.chans_to_analyze = 'all';
+grp_proc_info.typeFields = {'code'}; % Add any additional type fields besides "code", separating other entries with a comma ;        
+grp_proc_info.happe_net_type = []; %NET Type %fprintf(['Acquisition layout type:\n  1 = EGI Geodesic Sensor ' ...% 'Net\n  2 = EGI HydroCel Geodesic Sensor Net\n  3 = Neuroscan Quik-Cap' ...%'\n  4 = Other'
+grp_proc_info.happe_net_num_channels = []; %number of channels on net
+grp_proc_info.happe_resamp_on = 0; %turn on or off happe resampling
+grp_proc_info.lineNoise_harms_on = 0 ; %turning on line noise reduction at other frequencies (not always but often at harmonics of electric linenoise frequency) default 0, if you turn to 1 set next variable 
+grp_proc_info.lineNoise_harms_freqs = []; %vector of other frequencies for linenoise reduction, default [];
+grp_proc_info.badChans_rej= 0; %turn on bad channel rejection? defualt one
+grp_proc_info.wavelet_softThresh = 0; %0 default set to hard to retain more data/assuming more artifact in data, could switch to soft if desired
+grp_proc_info.reref_on = 0; %set to on but can turn off
+grp_proc_info.reref_chan= []; %default [], if there is rereference channel in your data, list name here
+grp_proc_info.art_thresh_min = -150;  % -200 to 200 for infant data, and -150 to 150 for child, adolescent, and adult data
+grp_proc_info.segRej_ROI_on = 0; %default uses all channels (0) , 1 would use specific set of rois (regions of interest)
+grp_proc_info.segRej_ROI_chans = {}; %default empty cell, otherwise enter channels to use for seg rejection with the format 'E[channelnum' ex 'E12' separated by commas
+grp_proc_info.segment_interp = 0; %'Interpolate the specific channels data determined ' ...'to be artifact/bad within each segment? N=0, Y = 1
+grp_proc_info.muscIL_on = 0;
+grp_proc_info.happe_segment_on = 0;
+grp_proc_info.ERPAnalysis = 0; 
+grp_proc_info.reref_flat = 0;
+%SAVE FORMAT
+grp_proc_info.save_format = [1];  %'Format to save processed data:\n  1 = .txt file (electrodes as ' ...
+  %  'columns, time as rows) - Choose this for ERP timeseries\n  2 = .mat' ...
+  %  ' file (MATLAB format)\n  3 = .set file (EEGLAB format)\n']) ;  
+%FILTER 
+grp_proc_info.ERPfilter = []; %['Choose a filter:\n 0: fir = Hamming windowed sinc FIR filter (EEGLAB''s standard filter)\n  ' ...           %  or 1: 'butter = IIR butterworth filter (ERPLAB''s standard filter)\n']) ;%Visualizations            
+grp_proc_info.vis_psd_min = []; % If visualizatio("Minimum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_psd_max = [] ;%("Maximum value for power spectrum figure:\n> ") ;
+grp_proc_info.vis_topoplot_freqs = []; %
+grp_proc_info.vis_erp_min = []; % input('Start time, in MILLISECONDS, for the ERP timeseries figure:\n> ') ;
+grp_proc_info.vis_erp_max = [] ; % input(['End time, in MILLISECONDS, for the ERP timeseries figure:\n' ...                   % '> ']) ;
 %% variables for general output module processing 
 %OUTPUT MEASURE SPECIFICATIONS
 % trial selection specifications

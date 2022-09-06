@@ -34,10 +34,10 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function [beapp_fname_all,src_unique_net_vstructs,unique_net_types,src_unique_net_ref_rows,src_net_10_20_elecs,largest_nchan] =...
     beapp_rerun_set_up(beapp_toggle_mods, first_module_on,rerun_fselect_table_str,beapp_use_rerun_table,unique_net_types,...
-    ref_net_library_options,ref_net_library_dir,run_per_file,file_idx)
+    ref_net_library_options,ref_net_library_dir,run_per_file,file_idx,happe_er_reprocessing)
 
 % find first module on in this run
-first_src_dir = find_input_dir(first_module_on,beapp_toggle_mods);
+first_src_dir = find_input_dir(first_module_on,beapp_toggle_mods,happe_er_reprocessing);
 
 if isempty(first_src_dir{1})
     error(['No appropriate source files found for first module flagged on (' first_module_on '), please check source directories and data types']);

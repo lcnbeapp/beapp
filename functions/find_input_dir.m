@@ -30,23 +30,35 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function src_dir = find_input_dir(current_module_name,beapp_toggle_mods)
+function src_dir = find_input_dir(current_module_name,beapp_toggle_mods,varargin)
 
 disp('|====================================|');
 disp(['Running data through the ' current_module_name ' module']);
-
-row= find(strcmp(beapp_toggle_mods.Mod_Names,current_module_name));
+beapp_toggle_mods_temp = beapp_toggle_mods;
+row= find(strcmp(beapp_toggle_mods_temp.Mod_Names,current_module_name));
 src_dir={''};
+if length(varargin) > 0
+    happe_reprocess = varargin{1};
+else
+    happe_reprocess = 0;
+end
+
+if happe_reprocess
+    curr_row = row;
+    [prev_path] = strsplit(beapp_toggle_mods_temp.Module_Dir{1},filesep);
+    beapp_toggle_mods_temp.Module_Dir{curr_row} = [fileparts(beapp_toggle_mods.Module_Dir{curr_row}) filesep strcat('HAPPE+ER',prev_path{end}(7:end))];
+else
 curr_row = row-1;
+end
 
 if isempty(row)
     error('BEAPP: please check that at least one module has been turned on for this run');
 end
 
 while (isempty(src_dir{1}) && curr_row >0)
-    if isdir(beapp_toggle_mods.Module_Dir{curr_row}) && ~isempty(dir([beapp_toggle_mods.Module_Dir{curr_row},filesep,'*.mat']))
-        if strcmp(beapp_toggle_mods.Module_Output_Type(curr_row),beapp_toggle_mods.Module_Input_Type(row))
-            src_dir = beapp_toggle_mods.Module_Dir(curr_row);
+    if isdir(beapp_toggle_mods_temp.Module_Dir{curr_row}) && ~isempty(dir([beapp_toggle_mods_temp.Module_Dir{curr_row},filesep,'*.mat']))
+        if strcmp(beapp_toggle_mods_temp.Module_Output_Type(curr_row),beapp_toggle_mods_temp.Module_Input_Type(row)) || happe_reprocess
+            src_dir = beapp_toggle_mods_temp.Module_Dir(curr_row);
             disp([current_module_name ' module : Using data from source directory ' src_dir{1}]);
         end
     end

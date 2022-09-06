@@ -21,11 +21,11 @@ catch
     disp('couldnt split params')
 end
 file_proc_info.beapp_nchans_used = length(params.chans.IDs);
+file_proc_info.net_vstruct = chan_info;
 try
-    file_proc_info.beapp_indx = {1:size(eegByTags{1,1}.data,1)}; % indices for electrodes being used for analysis at current time
+    file_proc_info.beapp_indx = cellfun(@(x) str2num(x(2:end)),{file_proc_info.net_vstruct.labels}); % indices for electrodes being used for analysis at current time
 catch
 end
-file_proc_info.net_vstruct = chan_info;
 if  params.downsample>0
     file_proc_info.beapp_srate = params.downsample;
 else

@@ -70,7 +70,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         eeg_final = cell(length(eeg_out),1);
         for condition = 1:length(eeg_out)
                 if ~isempty(eeg_out{1,condition})
-                eeg_final{condition,1} = eeg_out{1,condition}.data;
+                    eeg_final{condition,1} = nan(129,size(eeg_out{1,condition}.data,2),size(eeg_out{1,condition}.data,3));
+                eeg_final{condition,1}(file_proc_info.beapp_indx,:,:) = eeg_out{1,condition}.data;
                 else
                     eeg_final{condition,1} = [];
                 end

@@ -1,9 +1,9 @@
 
-function [src_dir] = happe_er_rerun_file_check(happe_er_reprocessing,src_dir_base,dest_dir_base,fname_all)
+function [src_dir] = happe_v3_rerun_file_check(happe_v3_reprocessing,src_dir_base,dest_dir_base,fname_all)
 
-if happe_er_reprocessing == 0
+if happe_v3_reprocessing == 0
     src_dir = src_dir_base;
-elseif happe_er_reprocessing == 1
+elseif happe_v3_reprocessing == 1
         %% copy file_proc_infos 
     if ~isdir([dest_dir_base{1,1} filesep '0 - rerun_file_proc_infos'])
         mkdir([dest_dir_base{1,1} filesep '0 - rerun_file_proc_infos'])
@@ -36,6 +36,6 @@ elseif happe_er_reprocessing == 1
     end
     end
 else
-    error(strcat('happe_er_reprocessing is set to', happe_er_reprocessing,'Set grp_proc_info.happe_er_reprocessing to either 1 or 0'))
+    error(strcat('happe_v3_reprocessing is set to', happe_v3_reprocessing,'Set grp_proc_info.happe_v3_reprocessing to either 1 or 0'))
 end
 end

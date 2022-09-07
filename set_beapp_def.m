@@ -102,14 +102,14 @@ grp_proc_info.beapp_ver={'BEAPP_v4_1'};
 grp_proc_info.eeglab_ver = {'eeglab14_1_2b'};
 grp_proc_info.fieldtrip_ver = {'fieldtrip-20160917'};
 grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
-grp_proc_info.HAPPE_ver = {'HAPPE_v2_3_0'};
+grp_proc_info.HAPPE_ver_3 = {'HAPPE_v2_3_0_for_beapp-master'};
 %% directory defaults and paths
 grp_proc_info.beapp_pname={''}; %the Matlab paths where the BEAPP code is located 
 grp_proc_info.src_dir={''}; %source directory containing the EEG data exported from Netstation, left empty in defaults because it must be set by the user 
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','HAPPE+ER','psd','itpc','topoplot','fooof','pac','bycycle'};
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','HAPPE_V3','psd','itpc','topoplot','fooof','pac','bycycle'};
 Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','psd','seg','seg'}'; %TODO: make output from psd 'psd'
 Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','out','out','out','out','out'}';
 
@@ -145,14 +145,14 @@ grp_proc_info.ref_net_library_dir=[grp_proc_info.beapp_root_dir{1},filesep,'refe
 grp_proc_info.ref_net_library_options = ([grp_proc_info.beapp_root_dir{1},filesep,'reference_data',filesep,'net_library_options.mat']);
 grp_proc_info.ref_eeglab_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.eeglab_ver{1},filesep, 'sample_locs'];
 grp_proc_info.ref_def_template_folder = [fileparts(mfilename('fullpath')) filesep, 'run_templates'];
-grp_proc_info.ref_HAPPE_V2_3_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.HAPPE_ver{1}];
+grp_proc_info.ref_HAPPE_V2_3_loc_dir = [grp_proc_info.beapp_root_dir{1},filesep, 'Packages',filesep,grp_proc_info.HAPPE_ver_3{1}];
 % initialize input tables: only necessary if inputs are .mats, non-uniform offset information is
 % needed for mff files, or if you'd like to rerun a subselection of files
 grp_proc_info.beapp_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'beapp_file_info_table.mat'];
 grp_proc_info.rerun_file_info_table =[grp_proc_info.beapp_root_dir{1} filesep 'user_inputs',filesep,'rerun_fselect_table.mat'];
 grp_proc_info.beapp_alt_beapp_file_info_table_location = {''};
 grp_proc_info.beapp_alt_rerun_file_info_table_location = {''};
-grp_proc_info.HAPPE_ER_parameters_file_location = {''};
+grp_proc_info.HAPPE_v3_parameters_file_location = {''};
 %% general defaults
 grp_proc_info.beapp_advinputs_on=0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 grp_proc_info.hist_run_tag = datetime('now'); % run_tag records when beapp was started
@@ -274,9 +274,9 @@ grp_proc_info.select_nth_trial = [];
 grp_proc_info.segment_stim_relative_to = {''}; 
 grp_proc_info.segment_nth_stim_str = {''};
 grp_proc_info.beapp_event_group_stim=0;
-%% defaults for HAPPE+ER additional inputs
+%% defaults for HAPPE V3 additional inputs
 %Format
-grp_proc_info.HAPPE_ER_reprocessing = 0; %choose2('raw', 'reprocess') ;
+grp_proc_info.HAPPE_v3_reprocessing = 0; %choose2('raw', 'reprocess') ;
 grp_proc_info.chans_to_analyze = 'all';
 grp_proc_info.typeFields = {'code'}; % Add any additional type fields besides "code", separating other entries with a comma ;        
 grp_proc_info.happe_net_type = []; %NET Type %fprintf(['Acquisition layout type:\n  1 = EGI Geodesic Sensor ' ...% 'Net\n  2 = EGI HydroCel Geodesic Sensor Net\n  3 = Neuroscan Quik-Cap' ...%'\n  4 = Other'

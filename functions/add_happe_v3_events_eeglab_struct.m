@@ -1,4 +1,4 @@
-function [EEGraw] = add_happe_er_events_eeglab_struct(file_proc_info,EEGraw)
+function [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw)
 %need to figure out which appleis to all data types and which are specific
 if file_proc_info.src_format_typ == 2
     for event = 1:length(file_proc_info.evt_info{1,1})

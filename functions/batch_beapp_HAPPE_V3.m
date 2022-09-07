@@ -1,6 +1,5 @@
-%% batch_beapp_HAPP_ER (grp_proc_info)
-%run HAPPE_ER pipeline through BEAPP
-%  a template for new modules in BEAPP
+%% batch_beapp_HAPPE_V3 (grp_proc_info)
+%run HAPPE Version 3 pipeline through BEAPP
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
@@ -31,11 +30,11 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function grp_proc_info_in = batch_beapp_HAPPE_ER(grp_proc_info_in)
-src_dir_orig = find_input_dir('HAPPE+ER',grp_proc_info_in.beapp_toggle_mods,grp_proc_info_in.HAPPE_ER_reprocessing);
+function grp_proc_info_in = batch_beapp_HAPPE_V3(grp_proc_info_in)
+src_dir_orig = find_input_dir('HAPPE+ER',grp_proc_info_in.beapp_toggle_mods,grp_proc_info_in.HAPPE_v3_reprocessing);
 disp('|====================================|');
 % If rerunning happe, copy necessary files to dest_src_dir and move there
-src_dir = happe_er_rerun_file_check(grp_proc_info_in.HAPPE_ER_reprocessing,src_dir_orig,grp_proc_info_in.beapp_toggle_mods.Module_Dir(find(strcmpi(grp_proc_info_in.beapp_toggle_mods.Properties.RowNames, 'HAPPE+ER'))),grp_proc_info_in.beapp_fname_all);
+src_dir = happe_v3_rerun_file_check(grp_proc_info_in.HAPPE_v3_reprocessing,src_dir_orig,grp_proc_info_in.beapp_toggle_mods.Module_Dir(find(strcmpi(grp_proc_info_in.beapp_toggle_mods.Properties.RowNames, 'HAPPE+ER'))),grp_proc_info_in.beapp_fname_all);
 
 % Translate beapp's user inputs to happe params (if necessary) and load / initialize data/pipeline assesment structs
 [qual_control,params] = set_happe_v3_params_qcs(grp_proc_info_in);
@@ -43,18 +42,18 @@ src_dir = happe_er_rerun_file_check(grp_proc_info_in.HAPPE_ER_reprocessing,src_d
 
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     cd(src_dir{1});
-    if grp_proc_info_in.HAPPE_ER_reprocessing || exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
+    if grp_proc_info_in.HAPPE_v3_reprocessing || exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
         tic;
-        if ~grp_proc_info_in.HAPPE_ER_reprocessing
+        if ~grp_proc_info_in.HAPPE_v3_reprocessing
             load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
             [EEGraw] = beapp2eeglab(file_proc_info,eeg{1,1},1,1);
-            [EEGraw] = add_happe_er_events_eeglab_struct(file_proc_info,EEGraw);       % add events specific to happe-er/based on file type
+            [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw);       % add events specific to happe-er/based on file type
         else
             load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
             EEGraw = NaN(5,1);
         end
         %% Run HAPPE-ER Processing steps
-        [eeg_out, dataQC,chan_info,lnMeans,wavMeans,errorLog] = HAPPE_v2_3_yb(params,EEGraw, grp_proc_info_in.HAPPE_ER_reprocessing,{grp_proc_info_in.beapp_fname_all{curr_file}},fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE+ER_',grp_proc_info_in.beapp_curr_run_tag)),dirNames); % Call HAPPE V3
+        [eeg_out, dataQC,chan_info,lnMeans,wavMeans,errorLog] = HAPPE_v2_3_for_beapp(params,EEGraw, grp_proc_info_in.HAPPE_v3_reprocessing,{grp_proc_info_in.beapp_fname_all{curr_file}},fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE+ER_',grp_proc_info_in.beapp_curr_run_tag)),dirNames); % Call HAPPE V3
         %% Update file_output_struct
         if ~iscell(eeg_out)
             eeg_out = {eeg_out};
@@ -64,14 +63,14 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         qual_control(1).dataQC = [qual_control(1).dataQC; dataQC];
         %% Update File Proc Info
         if ~isempty(eeg_out)
-            file_proc_info = update_file_proc_info_posthappe_er(grp_proc_info_in,file_proc_info,qual_control,params,eeg_out,chan_info);
+            file_proc_info = update_file_proc_info_posthappe_v3(grp_proc_info_in,file_proc_info,qual_control,params,eeg_out,chan_info);
         end
         %% Convert Data back to BEAPP for segmented files
         eeg_final = cell(length(eeg_out),1);
         for condition = 1:length(eeg_out)
                 if ~isempty(eeg_out{1,condition})
                     eeg_final{condition,1} = nan(129,size(eeg_out{1,condition}.data,2),size(eeg_out{1,condition}.data,3));
-                eeg_final{condition,1}(file_proc_info.beapp_indx,:,:) = eeg_out{1,condition}.data;
+                eeg_final{condition,1}(file_proc_info.beapp_indx{1,1},:,:) = eeg_out{1,condition}.data;
                 else
                     eeg_final{condition,1} = [];
                 end
@@ -92,11 +91,11 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info');
             end  
         end
-        clearvars -except grp_proc_info_in src_dir curr_file qual_control params errorLog
+        clearvars -except grp_proc_info_in src_dir curr_file qual_control params errorLog dirNames
     end
 end
 %save output table and dataQC table
-beapp_save_happe_er_qual_control(grp_proc_info_in,qual_control,params,errorLog)
+beapp_save_happe_v3_qual_control(grp_proc_info_in,qual_control,params,errorLog)
 rmpath(genpath(grp_proc_info_in.ref_HAPPE_V2_3_loc_dir));
 end
 

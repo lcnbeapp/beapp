@@ -105,7 +105,7 @@
 
 % GENERAL ADVANCED USER INPUTS for BEAPP:
 grp_proc_info.beapp_dir_warn_off = 1; % def = 0; if 1, mute directory warnings
-grp_proc_info.beapp_use_rerun_table = 1; % def = 0; if 1, use rerun table to run a subset of files. not needed for normal reruns
+grp_proc_info.beapp_use_rerun_table = 0; % def = 0; if 1, use rerun table to run a subset of files. not needed for normal reruns
 grp_proc_info.beapp_rmv_bad_chan_on = 0; % def = 0; 1 if you'd like to remove channels flagged as bad in PREP or HAPPE
 grp_proc_info.beapp_run_per_file = 0; %turn on to run only 1 file in beapp_file_info_table; intended for computer cluster use
 grp_proc_info.beapp_file_idx = 1; %used only if running per file

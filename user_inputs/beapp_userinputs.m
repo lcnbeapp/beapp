@@ -101,7 +101,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % GENERAL USER INPUTS for BEAPP: Set these for any data runs
 grp_proc_info.src_dir={'C:\Sample_directory'}; %the directory containing your source filesopen 
-grp_proc_info.beapp_curr_run_tag = ''; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
+grp_proc_info.beapp_curr_run_tag = 'NONE'; % The tag you would like to append to folder names for this run. def = '' or 'NONE'. 'NONE' mutes timestamping. If not given on a rerun, a timestamp will be used. 
 grp_proc_info.beapp_prev_run_tag = ''; % def = ''.  run tag for previous run that you would like to use as source data for rerun. can be timestamp, but must be exact.
 grp_proc_info.beapp_advinputs_on= 0; %flag that toggles advanced user options, default is 0 (user did not set advanced user values)
 
@@ -236,6 +236,7 @@ grp_proc_info.evt_trial_baseline_win_end = -.100; % def = -0.100;  start time in
 %__________________________________________________________________________
 %__________________________________________________________________________
 %                           HAPPE-V3 SPECIFICATIONS
+grp_proc_info.HAPPE_v3_reprocessing = 0; %choose2('raw', 'reprocess') ;
 % Channels to analyze
 grp_proc_info.chans_to_analyze = 'all' ; %can be 'all','coi_include','coi_exclude' if 'coi_include or coi_exclude', it will analyze or exclude from analysis 10-20 (if turned on) and additional channels (from additional_channels_ica)
 % Resampling - Resampling value set in resampling specifications above

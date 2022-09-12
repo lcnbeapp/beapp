@@ -102,7 +102,7 @@ grp_proc_info.beapp_ver={'BEAPP_v4_1'};
 grp_proc_info.eeglab_ver = {'eeglab14_1_2b'};
 grp_proc_info.fieldtrip_ver = {'fieldtrip-20160917'};
 grp_proc_info.beapp_root_dir = {fileparts(mfilename('fullpath'))}; %sets the directory to the BEAPP code assuming that it is in same directory as set_beapp_def
-grp_proc_info.HAPPE_ver_3 = {'HAPPE_v2_3_0_for_beapp-master'};
+grp_proc_info.HAPPE_ver_3 = {'HAPPE_v2_3_0_for_beapp'};
 %% directory defaults and paths
 grp_proc_info.beapp_pname={''}; %the Matlab paths where the BEAPP code is located 
 grp_proc_info.src_dir={''}; %source directory containing the EEG data exported from Netstation, left empty in defaults because it must be set by the user 
@@ -276,7 +276,6 @@ grp_proc_info.segment_nth_stim_str = {''};
 grp_proc_info.beapp_event_group_stim=0;
 %% defaults for HAPPE V3 additional inputs
 %Format
-grp_proc_info.HAPPE_v3_reprocessing = 0; %choose2('raw', 'reprocess') ;
 grp_proc_info.chans_to_analyze = 'all';
 grp_proc_info.typeFields = {'code'}; % Add any additional type fields besides "code", separating other entries with a comma ;        
 grp_proc_info.happe_net_type = []; %NET Type %fprintf(['Acquisition layout type:\n  1 = EGI Geodesic Sensor ' ...% 'Net\n  2 = EGI HydroCel Geodesic Sensor Net\n  3 = Neuroscan Quik-Cap' ...%'\n  4 = Other'

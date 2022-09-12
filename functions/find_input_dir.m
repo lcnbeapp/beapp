@@ -46,7 +46,7 @@ end
 if happe_reprocess
     curr_row = row;
     [prev_path] = strsplit(beapp_toggle_mods_temp.Module_Dir{1},filesep);
-    beapp_toggle_mods_temp.Module_Dir{curr_row} = [fileparts(beapp_toggle_mods.Module_Dir{curr_row}) filesep strcat('HAPPE+ER',prev_path{end}(7:end))];
+    beapp_toggle_mods_temp.Module_Dir{curr_row} = [fileparts(beapp_toggle_mods.Module_Dir{curr_row}) filesep strcat('HAPPE_V3',prev_path{end}(7:end))];
 else
 curr_row = row-1;
 end

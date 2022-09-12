@@ -75,11 +75,10 @@ calibVal = info_n_obj.getCalibrations;
 %% store general eeg source file information
 %______________________________________________________________________________________
 % Inputs used for HAPPE+ER
-file_proc_info.happe_er.src_recordtimematlab = mff_decodetime(timeVal);
 file_proc_info.happe_er.etc.src_timezone = timeZone;
 file_proc_info.happe.etc.info.src_montage_name = info_n_obj.getInfoNFileTypeInformation.getMontageName;
-file_proc_info.happe_er.etc.src_subject = get_mff_subject(subject_info_obj);
-file_proc_info.happe_er.etc.src_layout = beapp_mff_import_sensor_layout(sensor_layout_obj);
+%file_proc_info.happe_er.etc.src_subject = get_mff_subject(subject_info_obj);
+%file_proc_info.happe_er.etc.src_layout = beapp_mff_import_sensor_layout(sensor_layout_obj);
 file_proc_info.happe_er.etc.info.calibration = get_mff_calibration(calibVal);
 file_proc_info.happe_er.etc.info.InfoNFileType.value = info_n_obj.getInfoNFileType;
 file_proc_info.happ_er.xmax = 1;

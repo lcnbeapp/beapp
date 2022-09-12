@@ -177,7 +177,7 @@ grp_proc_info_main = prepare_to_run_main (grp_proc_info_main);
 
 % check if other modules are on in addition to happe+er and throw warning
 % if so check history??
-beapp_happe_er_module_warning(grp_proc_info_main.beapp_toggle_mods)
+beapp_happe_V3_module_warning(grp_proc_info_main.beapp_toggle_mods)
     % run pipeline modules
     if grp_proc_info_main.beapp_toggle_mods{'format','Module_On'}
         grp_proc_info_main = batch_beapp_format(grp_proc_info_main);
@@ -199,10 +199,10 @@ beapp_happe_er_module_warning(grp_proc_info_main.beapp_toggle_mods)
         grp_proc_info_main = batch_beapp_ica(grp_proc_info_main);
     end
     
-    if grp_proc_info_main.beapp_toggle_mods{'HAPPE+ER','Module_On'} %skips running all other modules if this is turned on
+    if grp_proc_info_main.beapp_toggle_mods{'HAPPE_V3','Module_On'} %skips running all other modules if this is turned on
         
         
-        grp_proc_info_main = batch_beapp_HAPPE_ER(grp_proc_info_main);
+        grp_proc_info_main = batch_beapp_HAPPE_V3(grp_proc_info_main);
     end
     if grp_proc_info_main.beapp_toggle_mods{'rereference','Module_On'}
         grp_proc_info_main = batch_beapp_rereference(grp_proc_info_main);

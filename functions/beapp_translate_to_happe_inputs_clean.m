@@ -226,7 +226,7 @@ end
 addpath([grp_proc_info.src_dir{1,1}, filesep, 'input_parameters']) ;
 cd ([grp_proc_info.src_dir{1,1}, filesep, 'input_parameters']) ;
 paramFile = [datestr(now, 'dd-mm-yyyy') '_', grp_proc_info.beapp_curr_run_tag, '.mat'];
-grp_proc_info.HAPPE_ER_parameters_file_location = {[grp_proc_info.src_dir{1,1} filesep, 'input_parameters', filesep, paramFile]};
+grp_proc_info.HAPPE_v3_parameters_file_location = {[grp_proc_info.src_dir{1,1} filesep, 'input_parameters', filesep, paramFile]};
 % SAVE PARAMETERS: Save the params variable to a .mat file using the name created above.
 params.HAPPEver = '2_3_0' ;
 fprintf('Saving parameters...') ;

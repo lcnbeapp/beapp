@@ -1,12 +1,12 @@
 function [qual_control,params] = set_happe_v3_params_qcs(grp_proc_info_in)
 
 
-if ~isempty(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1}) && ~exist(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1})
-    error('Cannot find HAPPE+ER Parameter file at given path, please check path in beapp_set_input_file_locations')
-elseif isempty(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1})
+if ~isempty(grp_proc_info_in.HAPPE_v3_parameters_file_location{1,1}) && ~exist(grp_proc_info_in.HAPPE_v3_parameters_file_location{1,1})
+    error('Cannot find HAPPE_V3 Parameter file at given path, please check path in beapp_set_input_file_locations')
+elseif isempty(grp_proc_info_in.HAPPE_v3_parameters_file_location{1,1})
         grp_proc_info_in =beapp_translate_to_happe_inputs_clean(grp_proc_info_in);% beapp_create_happe_params(grp_proc_info_in);
 end
-load(grp_proc_info_in.HAPPE_ER_parameters_file_location{1,1})
+load(grp_proc_info_in.HAPPE_v3_parameters_file_location{1,1})
 
 %% INITIALIZE QUALITY REPORT METRICS
 fprintf('Initializing report metrics...\n') ;
@@ -49,7 +49,7 @@ if params.paradigm.task
     end
 end
 
- if params.paradigm.task && size(params.paradigm.onsetTags,2) > 1
+ if params.paradigm.task && size(params.paradigm.onsetTags,2) >= 1
         dataQCnames = [dataQCnames dataQCnames_task] ;
       %  dataQC = [dataQC dataQC_task] ;
         if params.paradigm.conds.on

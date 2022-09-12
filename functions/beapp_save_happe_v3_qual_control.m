@@ -4,7 +4,7 @@ function beapp_save_happe_v3_qual_control(grp_proc_info_in,qual_control,params,e
 lnMeans = qual_control.lnMean;
 wavMeans = qual_control.wavMean;
 dataQC = qual_control.dataQC;
-dataQCNames = qual_control.dataQCnames;
+dataQCNames = {qual_control.dataQCnames};
 if grp_proc_info_in.HAPPE_v3_reprocessing
     reprocess = 1;
     rerunExt = ['_rerun_' datestr(now, 'dd-mm-yyyy')];
@@ -14,10 +14,8 @@ else
 end
 %% GENERATE OUTPUT TABLES
 fprintf('Generating quality assessment outputs...\n') ;
-srcDir = grp_proc_info_in.src_dir{1,1};
-allDirNames = {'intermediate_processing', 'wavelet_cleaned_continuous', ...
-    'muscIL', 'ERP_filtered', 'segmenting', 'processed', ...
-    'quality_assessment_outputs'} ;
+srcDir = [grp_proc_info_in.src_dir{1,1} filesep strcat('out_',grp_proc_info_in.beapp_curr_run_tag)];
+allDirNames = {'quality_assessment_outputs_HAPPE_V3'} ;
 if ~params.paradigm.ERP.on; allDirNames(ismember(allDirNames, 'ERP_filtered')) = []; end
 if ~params.muscIL; allDirNames(ismember(allDirNames, 'muscIL')) = []; end
 dirNames = cell(1,size(allDirNames,2)) ;
@@ -28,7 +26,7 @@ for i=1:length(allDirNames)
     end
 end
 cd([srcDir filesep dirNames{contains(dirNames, ...
-    'quality_assessment_outputs')}]) ;
+    'quality_assessment_outputs_HAPPE_V3')}]) ;
 try
     % CREATE AND SAVE PIPELINE QUALITY ASSESSMENT
     if ~reprocess

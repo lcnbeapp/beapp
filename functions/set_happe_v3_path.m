@@ -40,7 +40,7 @@ end
 %             'folder containing the dataset(s).\n']) ;
 %     end
 % end
-srcDir = fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE+ER_',grp_proc_info_in.beapp_curr_run_tag)); % YB ADDED enters path to folder containing datasets
+srcDir = fullfile(grp_proc_info_in.src_dir{1,1},strcat('HAPPE_V3_',grp_proc_info_in.beapp_curr_run_tag)); % YB ADDED enters path to folder containing datasets
 cd (srcDir) ;
 
 %% CREATE OUTPUT FOLDERS
@@ -50,7 +50,7 @@ cd(srcDir) ;
 fprintf('Creating output folders...\n') ;
 allDirNames = {'intermediate_processing', 'wavelet_cleaned_continuous', ...
     'muscIL', 'ERP_filtered', 'segmenting', 'processed', ...
-    'quality_assessment_outputs'} ;
+    } ;
 if ~params.paradigm.ERP.on; allDirNames(ismember(allDirNames, 'ERP_filtered')) = []; end
 if ~params.muscIL; allDirNames(ismember(allDirNames, 'muscIL')) = []; end
 dirNames = cell(1,size(allDirNames,2)) ;

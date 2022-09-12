@@ -109,7 +109,7 @@ if event_tracks.size() > 0
 
                 
                 keylist = event.getKeys();
-                evt_info = mff_importkeys(evt_info, eventInd, keylist, 0); %last output set to false so wont save backup, could changei n future
+               % evt_info = mff_importkeys(evt_info, eventInd, keylist, 0); %last output set to false so wont save backup, could changei n future
 
  %____________________________________________________________________________________________________
 

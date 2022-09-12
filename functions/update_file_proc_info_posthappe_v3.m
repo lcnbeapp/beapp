@@ -1,4 +1,4 @@
-function file_proc_info = update_file_proc_info_posthappe_v3(grp_proc_info_in,file_proc_info,dataQCTab,params,eegByTags,chan_info)
+function file_proc_info = update_file_proc_info_posthappe_v3(grp_proc_info_in,file_proc_info,dataQCTab,params,eegByTags,chan_info,curr_file)
     file_proc_info.evt_seg_win_evt_ind = [];
     counter = 1;
     while isempty(file_proc_info.evt_seg_win_evt_ind)
@@ -23,7 +23,7 @@ end
 file_proc_info.beapp_nchans_used = length(params.chans.IDs);
 file_proc_info.net_vstruct = chan_info;
 if length(file_proc_info.beapp_indx{1,1}) ~= size(chan_info,2)
-    file_proc_info.beapp_indx = cell2mat(cellfun(@(x) str2num(x(2:end)),{file_proc_info.net_vstruct.labels})); % indices for electrodes being used for analysis at current time
+    file_proc_info.beapp_indx{1,1} = cell2mat(cellfun(@(x) str2num(x(2:end)),{file_proc_info.net_vstruct.labels},'UniformOutput',false)); % indices for electrodes being used for analysis at current time
 end
 if  params.downsample>0
     file_proc_info.beapp_srate = params.downsample;
@@ -54,7 +54,12 @@ for condition_idx = 1:iterator
     else
         cond_phrase = strcat('_',file_proc_info.evt_conditions_being_analyzed.Condition_Name(condition_idx),'_');
     end
-    file_proc_info.evt_conditions_being_analyzed.Num_Segs_Pre_Rej(condition_idx) = cell2mat(dataQCTab(1).dataQC(find(strcmp({dataQCTab.dataQCnames},char(strcat('Number',cond_phrase,'Segs_Pre-Seg_Rej'))))));
-    file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(condition_idx) = cell2mat(dataQCTab(1).dataQC(find(strcmp({dataQCTab.dataQCnames},char(strcat('Number',cond_phrase,'Segs_Post-Seg_Rej'))))));
+    try
+    file_proc_info.evt_conditions_being_analyzed.Num_Segs_Pre_Rej(condition_idx) = cell2mat(dataQCTab(1).dataQC(curr_file,find(strcmp({dataQCTab.dataQCnames},char(strcat('Number',cond_phrase,'Segs_Pre-Seg_Rej'))))));
+    file_proc_info.evt_conditions_being_analyzed.Num_Segs_Post_Rej(condition_idx) = cell2mat(dataQCTab(1).dataQC(curr_file,find(strcmp({dataQCTab.dataQCnames},char(strcat('Number',cond_phrase,'Segs_Post-Seg_Rej'))))));
+    catch
+        disp('couldnt update condition_tags')
+    end
+
 end
 

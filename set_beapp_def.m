@@ -288,6 +288,7 @@ grp_proc_info.wavelet_softThresh = 0; %0 default set to hard to retain more data
 grp_proc_info.reref_on = 0; %set to on but can turn off
 grp_proc_info.reref_chan= []; %default [], if there is rereference channel in your data, list name here
 grp_proc_info.art_thresh_min = -150;  % -200 to 200 for infant data, and -150 to 150 for child, adolescent, and adult data
+grp_proc_info.art_thresh_max = 150;
 grp_proc_info.segRej_ROI_on = 0; %default uses all channels (0) , 1 would use specific set of rois (regions of interest)
 grp_proc_info.segRej_ROI_chans = {}; %default empty cell, otherwise enter channels to use for seg rejection with the format 'E[channelnum' ex 'E12' separated by commas
 grp_proc_info.segment_interp = 0; %'Interpolate the specific channels data determined ' ...'to be artifact/bad within each segment? N=0, Y = 1

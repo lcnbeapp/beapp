@@ -86,7 +86,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         if ~all(cellfun(@isempty,eeg_final))
             file_proc_info = beapp_prepare_to_save_file('HAPPE_V3',file_proc_info, grp_proc_info_in, src_dir{1});
             if params.segment.on
-            save(strcat(file_proc_info.beapp_fname{1,1}),'eeg_w','file_proc_info');
+                                save(strcat(file_proc_info.beapp_fname{1,1}),'eeg_w','file_proc_info','-v7.3','-nocompression');
             else
             save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info');
             end  

@@ -109,9 +109,9 @@ grp_proc_info.src_dir={''}; %source directory containing the EEG data exported f
 grp_proc_info.beapp_genout_dir={''}; %general output directory that is used to store output when the directory that the output would normally be stored in is temporary
 
 %% initialize module flags (which modules are on and off)
-ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','segment','HAPPE_V3','psd','itpc','topoplot','fooof','pac','bycycle'};
+ModuleNames = {'format','prepp','filt','rsamp','ica','rereference','detrend','HAPPE_V3','segment','psd','itpc','topoplot','fooof','pac','bycycle'};
 Module_Input_Type = {'cont','cont','cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','psd','seg','seg'}'; %TODO: make output from psd 'psd'
-Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','seg','seg','psd','out','out','out','out','out'}';
+Module_Output_Type ={'cont','cont','cont','cont','cont','cont','cont','cont or seg','seg','psd','out','out','out','out','out'}'; % note happe_v3 can output seg or cont
 
 Mod_Names=ModuleNames(:);
 Module_On = true(length(ModuleNames),1); % flag all modules on as default

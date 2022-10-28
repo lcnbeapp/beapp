@@ -37,7 +37,7 @@ disp(['Running data through the ' current_module_name ' module']);
 beapp_toggle_mods_temp = beapp_toggle_mods;
 row= find(strcmp(beapp_toggle_mods_temp.Mod_Names,current_module_name));
 src_dir={''};
-if length(varargin) > 0
+if length(varargin) > 0 && beapp_toggle_mods_temp('HAPPE_V3',:).Module_On
     happe_reprocess = varargin{1};
 else
     happe_reprocess = 0;
@@ -57,7 +57,7 @@ end
 
 while (isempty(src_dir{1}) && curr_row >0)
     if isdir(beapp_toggle_mods_temp.Module_Dir{curr_row}) && ~isempty(dir([beapp_toggle_mods_temp.Module_Dir{curr_row},filesep,'*.mat']))
-        if strcmp(beapp_toggle_mods_temp.Module_Output_Type(curr_row),beapp_toggle_mods_temp.Module_Input_Type(row)) || happe_reprocess
+        if contains(beapp_toggle_mods_temp.Module_Output_Type(curr_row),beapp_toggle_mods_temp.Module_Input_Type(row)) || happe_reprocess
             src_dir = beapp_toggle_mods_temp.Module_Dir(curr_row);
             disp([current_module_name ' module : Using data from source directory ' src_dir{1}]);
         end

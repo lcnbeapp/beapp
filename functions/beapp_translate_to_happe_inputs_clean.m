@@ -75,8 +75,15 @@ else
     else
         addit_chans = [];
     end
-    if grp_proc_info.beapp_ica_run_all_10_20   
-        params.chans.IDs = unique([grp_proc_info.name_10_20_elecs, addit_chans]);
+    if grp_proc_info.beapp_ica_run_all_10_20  
+        % load net library options and find net 10-20 equivalents
+        load(grp_proc_info.ref_net_library_options)
+
+        uniq_net_ind = find(strcmp(grp_proc_info.src_unique_nets, net_library_options.Net_Full_Name));
+        net_10_20_chan_equivalents = net_library_options.Net_10_20_Electrode_Equivalents{uniq_net_ind};
+        net_10_20_eeglab_format = arrayfun(@(x) strcat('E',num2str(x)), net_10_20_chan_equivalents, 'UniformOutput', 0);
+        %params.chans.IDs = unique([grp_proc_info.name_10_20_elecs, addit_chans]);
+        params.chans.IDs = unique([net_10_20_eeglab_format,addit_chans]);
     else
     params.chans.IDs = unique(addit_chans);
     end
@@ -140,6 +147,8 @@ else; params.muscIL = 0;
 end
 %% SEGMENTATION SECTION MAPPED
 params.segment.on = grp_proc_info.happe_segment_on;  % on by default
+params.baseCorr.on = 0;
+if params.segment.on
 if params.paradigm.task
     params.segment.start = grp_proc_info.evt_seg_win_start ;
     params.segment.end = grp_proc_info.evt_seg_win_end; 
@@ -153,6 +162,7 @@ if params.paradigm.task
     end
 elseif ~params.paradigm.task; params.segment.length = grp_proc_info.win_size_in_secs ; %Segment length, in SECONDS
 end
+end
 %% INTERPOLATION SECTION Interpolate the specific channels data determined 'to be artifact/bad within each segment? [Y/N]
 if ~params.loadInfo.chanlocs.inc  % || ~params.badChans.rej
     params.segment.interp = 0 ;
@@ -160,7 +170,7 @@ else
     params.segment.interp =grp_proc_info.segment_interp ;
 end
 %% SEGMENT REJECTION SECTION MAPPED
-if  grp_proc_info.beapp_reject_segs_by_amplitude || grp_proc_info.beapp_happe_segment_rejection
+if  params.segment.on && (grp_proc_info.beapp_reject_segs_by_amplitude || grp_proc_info.beapp_happe_segment_rejection)
     params.segRej.on = 1;
 else
     params.segRej.on = 0;

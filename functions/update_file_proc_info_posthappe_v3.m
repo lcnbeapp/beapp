@@ -21,9 +21,13 @@ catch
     disp('couldnt split params')
 end
 file_proc_info.beapp_nchans_used = length(params.chans.IDs);
-file_proc_info.net_vstruct = chan_info;
+net_vstruct_temp = chan_info; %commented out so that all channel
+%info would be preservered, and unused channels will have nan in data
 if length(file_proc_info.beapp_indx{1,1}) ~= size(chan_info,2)
-    file_proc_info.beapp_indx{1,1} = cell2mat(cellfun(@(x) str2num(x(2:end)),{file_proc_info.net_vstruct.labels},'UniformOutput',false)); % indices for electrodes being used for analysis at current time
+    file_proc_info.beapp_indx{1,1} = cell2mat(cellfun(@(x) str2num(x(2:end)),{net_vstruct_temp.labels},'UniformOutput',false)); % indices for electrodes being used for analysis at current time
+    if sum(contains({net_vstruct_temp.labels},'Cz'))==1
+        file_proc_info.beapp_indx{1,1}= [file_proc_info.beapp_indx{1,1} 129];
+    end
 end
 if  params.downsample>0
     file_proc_info.beapp_srate = params.downsample;

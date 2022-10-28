@@ -170,6 +170,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 end
 
                 % analyze desired part of segment for event related data
+               if ~isempty(eeg_itc{curr_condition,1})
                 if grp_proc_info_in.src_data_type ==2
                     try
                         analysis_win_start_t_ind = find(t{curr_condition,1} >= grp_proc_info_in.evt_analysis_win_start*1000,1,'first');
@@ -186,7 +187,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 else
                     error('BEAPP: ITPC cannot be run on baseline data');
                 end
-
+               end
                 diary on;
                 % calculate output statistics selected by user on analysis
                 % window

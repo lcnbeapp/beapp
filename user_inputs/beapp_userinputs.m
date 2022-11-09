@@ -8,7 +8,7 @@
 % 
 % Contributors to BEAPP:
 % April R. Levin, MD (april.levin@childrens.harvard.edu)
-% Adriana Méndez Leal (asmendezleal@gmail.com)
+% Adriana MÃ©ndez Leal (asmendezleal@gmail.com)
 % Laurel Gabard-Durnam, PhD (laurel.gabarddurnam@gmail.com)
 % Heather M. O'Leary (Heather.oleary1@gmail.com)
 % 
@@ -17,7 +17,7 @@
 % april.levin@childrens.harvard.edu
 %
 % In publications, please reference:
-% Levin AR, Méndez Leal AS, Gabard-Durnam LJ and O’Leary HM (2018) 
+% Levin AR, MÃ©ndez Leal AS, Gabard-Durnam LJ and Oâ€™Leary HM (2018) 
 % BEAPP: The Batch Electroencephalography Automated Processing Platform.
 %  Front. Neurosci. 12:513. doi: 10.3389/fnins.2018.00513
 %
@@ -79,14 +79,14 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Children’s Hospital (BCH), the BCH Department of
+% In no event shall Boston Childrenâ€™s Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Children’s Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Childrenâ€™s Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided “as is.” Boston Children’s 
+% damage. Software and documentation is provided â€œas is.â€ Boston Childrenâ€™s 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -262,7 +262,7 @@ grp_proc_info.save_format = [1];  %'Format to save processed data:\n  1 = .txt f
 %__________________________________________________________________________
 %               HAPPE-V3 Inputs for Non-ERP Analyses Only
 % Artifact Detection
-grp_proc_info.muscIL_on = []; % 0 or 1, default off: On will use ICLabel to reduce remaining muscle artifact, NOTE: This will drastically increase processing time. Recommended for files with significant muscle artifact.
+grp_proc_info.muscIL_on = 0; % 0 or 1, default off: On will use ICLabel to reduce remaining muscle artifact, NOTE: This will drastically increase processing time. Recommended for files with significant muscle artifact.
 % Visualization
 grp_proc_info.vis_psd_min = []; % If visualizatio("Minimum value for power spectrum figure:\n> ") ;
 grp_proc_info.vis_psd_max = [] ;%("Maximum value for power spectrum figure:\n> ") ;

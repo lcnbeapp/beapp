@@ -2,21 +2,7 @@ function [grp_proc_info] = beapp_translate_to_happe_inputs(grp_proc_info)
 %Creates params struct based on beapp_user_inputs
 params.lowDensity = 0 ; % currenlty not supported for .mff and .raw so toggled off for now choose2('N', 'Y') %low density is 1-32 channels - way to fig this out from net type?
 params.paradigm = struct() ;
-%% Data type: Resting-state/baseline or Task-related EEG
-if grp_proc_info.src_data_type == 1 %baseline
-    params.paradigm.task = 0; %0 maps to 'rest'
-    params.paradigm.ERP.on = 0;
-else %condition baseline or event related
-    params.paradigm.task =1; %1 maps to 'task';
-    params.paradigm.ERP.on = grp_proc_info.ERPAnalysis;
-end
-% Line below copied from setParams SET QC FREQS BASED ON THE PARADIGM: Use the paradigm to determine which set of frequencies to use in evaluating pipeline metrics.
-if params.paradigm.ERP.on; params.QCfreqs = [.5, 1, 2, 5, 8, 12, ...
-        20, 30, 45, 70] ;
-else; params.QCfreqs = [2, 5, 8, 12, 20, 30, 45, 70] ;
-end
 %% Task Onset Tags In progress
-params.paradigm.onsetTags = grp_proc_info.beapp_event_code_onset_strs; % used to be this UI_cellArray(1,{}) ;
 % if size(params.paradigm.onsetTags,2) > 1
 % fprintf(['Do multiple onset tags belong to a single condition?' ...
 %  ' [Y/N]\nExample: "happy_face" and "sad_face" belong to ' ...
@@ -53,6 +39,21 @@ if params.paradigm.conds.on
     %                     end
     %                 end
 else; params.paradigm.conds.on = 0 ;
+end
+%% Data type: Resting-state/baseline or Task-related EEG
+if grp_proc_info.src_data_type == 1 %baseline
+    params.paradigm.task = 0; %0 maps to 'rest'
+    params.paradigm.ERP.on = 0;
+    params.paradigm.onsetTags = {};
+else %condition baseline or event related
+    params.paradigm.task =1; %1 maps to 'task';
+    params.paradigm.ERP.on = grp_proc_info.ERPAnalysis;
+    params.paradigm.onsetTags = grp_proc_info.beapp_event_code_onset_strs; % used to be this UI_cellArray(1,{}) ;
+end
+% Line below copied from setParams SET QC FREQS BASED ON THE PARADIGM: Use the paradigm to determine which set of frequencies to use in evaluating pipeline metrics.
+if params.paradigm.ERP.on; params.QCfreqs = [.5, 1, 2, 5, 8, 12, ...
+        20, 30, 45, 70] ;
+else; params.QCfreqs = [2, 5, 8, 12, 20, 30, 45, 70] ;
 end
 %% ERP FILTER CUT-OFFS - SECTION MAPPED
 params.paradigm.ERP.lowpass = grp_proc_info.beapp_filters{'Lowpass','Filt_Cutoff_Freq'} ; %Common low-pass filter is 30 - 45 Hz.

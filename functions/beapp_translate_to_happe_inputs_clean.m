@@ -1,4 +1,4 @@
-function [grp_proc_info] = beapp_translate_to_happe_inputs(grp_proc_info)
+function [grp_proc_info] = beapp_translate_to_happe_inputs_clean(grp_proc_info)
 %Creates params struct based on beapp_user_inputs
 params.lowDensity = 0 ; % currenlty not supported for .mff and .raw so toggled off for now choose2('N', 'Y') %low density is 1-32 channels - way to fig this out from net type?
 params.paradigm = struct() ;
@@ -187,7 +187,7 @@ end
 if strcmpi(params.segRej.method, 'amplitude') || ...
         strcmpi(params.segRej.method, 'both')
     params.segRej.minAmp = grp_proc_info.art_thresh_min ;%Minimum signal amplitude to use as the artifact threshold
-    params.segRej.maxAmp = grp_proc_info.art_thresh; %Maximum signal amplitude to use as the artifact threshold
+    params.segRej.maxAmp = grp_proc_info.art_thresh_max; %Maximum signal amplitude to use as the artifact threshold
 end
 params.segRej.ROI.on = grp_proc_info.segRej_ROI_on ; 
 if params.segRej.ROI.on

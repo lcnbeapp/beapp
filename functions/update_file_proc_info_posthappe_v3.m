@@ -34,23 +34,29 @@ if  params.downsample>0
 else
     file_proc_info.beapp_srate = eegByTags{1,counter}.srate; %will be same sampling rate for each condition, pulls from first
 end
-%% create and populate evt_conditions_being_analyzed
-if ~grp_proc_info_in.beapp_event_use_tags_only 
-    [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,~] =...
-        beapp_extract_condition_labels(file_proc_info.beapp_fname{1},file_proc_info.src_data_type,...
-        file_proc_info.evt_header_tag_information,file_proc_info.evt_info,...
-        grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs);
+%% create and populate evt_conditions_being_analyzedif 
+if grp_proc_info_in.src_data_type ==1 %standard baseline, not between tags
+    file_proc_info.grp_wide_possible_cond_names_at_segmentation = {'baseline'};
+    file_proc_info.evt_conditions_being_analyzed = table(NaN,{'baseline'},{''},...
+        NaN(1,1),NaN(1,1),NaN(1,1),...
+        'VariableNames',{'Eprime_Cell_Name','Condition_Name','Evt_Codes',...
+        'Num_Segs_Pre_Rej','Num_Segs_Post_Rej','Good_Behav_Trials_Pre_Rej'});
+    iterator = 1;
+
 else
-    [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,~] = beapp_extract_conditions_tags_only ...
-        (grp_proc_info_in.beapp_event_code_onset_strs , file_proc_info.evt_info, grp_proc_info_in.beapp_event_eprime_values,file_proc_info.beapp_fname{1});
+    if ~grp_proc_info_in.beapp_event_use_tags_only
+        [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,~] =...
+            beapp_extract_condition_labels(file_proc_info.beapp_fname{1},file_proc_info.src_data_type,...
+            file_proc_info.evt_header_tag_information,file_proc_info.evt_info,...
+            grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs);
+    else
+        [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,~] = beapp_extract_conditions_tags_only ...
+            (grp_proc_info_in.beapp_event_code_onset_strs , file_proc_info.evt_info, grp_proc_info_in.beapp_event_eprime_values,file_proc_info.beapp_fname{1});
+    end
+    iterator = size(file_proc_info.evt_conditions_being_analyzed,1);
+
 end
 
-if grp_proc_info_in.src_data_type == 1
-    iterator = 1;
-    file_proc_info.evt_conditions_being_analyzed = table;
-else
-    iterator = size(file_proc_info.evt_conditions_being_analyzed,1);
-end
 
 for condition_idx = 1:iterator
     if grp_proc_info_in.src_data_type == 1

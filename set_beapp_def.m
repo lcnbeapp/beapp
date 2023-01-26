@@ -17,14 +17,14 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided ìas is.î Boston Childrenís 
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -46,7 +46,7 @@
 % 
 % Contributors to BEAPP:
 % April R. Levin, MD (april.levin@childrens.harvard.edu)
-% Adriana MÈndez Leal (asmendezleal@gmail.com)
+% Adriana M√©ndez Leal (asmendezleal@gmail.com)
 % Laurel Gabard-Durnam, PhD (laurel.gabarddurnam@gmail.com)
 % Heather M. O'Leary (Heather.oleary1@gmail.com)
 % 
@@ -56,7 +56,7 @@
 %
 %
 % In publications, please reference:
-% Levin AR., MÈndez Leal A., Gabard-Durnam L., O'Leary, HM (2017) BEAPP: The Batch Electroencephalography Automated Processing Platform
+% Levin AR., M√©ndez Leal A., Gabard-Durnam L., O'Leary, HM (2017) BEAPP: The Batch Electroencephalography Automated Processing Platform
 % Manuscript in preparation
 % 
 % Additional Credits:
@@ -89,7 +89,7 @@
 % Adequacy of low-density estimates. Clinical Neurophysiology, 117(2), 369-380
 % 
 % HAPP-E Version 1.0
-% Gabard-Durnam L., MÈndez Leal A., and Levin AR (2017) The Harvard Automated Pre-processing Pipeline for EEG (HAPP-E)
+% Gabard-Durnam L., M√©ndez Leal A., and Levin AR (2017) The Harvard Automated Pre-processing Pipeline for EEG (HAPP-E)
 % Manuscript in preparation
 
 % Requirements:
@@ -219,6 +219,7 @@ grp_proc_info.beapp_rsamp_nsamp=[]; %number of samples after resampling
 
 %% ICA variables
 grp_proc_info.name_10_20_elecs = {'FP1','FP2','F7','F3','F4','F8','C3','C4','T5','PZ','T6','O1','O2','T3','T4','P3','P4','Fz'}; % does not include CZ
+grp_proc_info.name_selected_10_20_chans_lbls = {grp_proc_info.name_10_20_elecs}; %by default, include all 10-20, later beapp will check if current net doesn't include all and update variable
 grp_proc_info.beapp_ica_type  = 1; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
 grp_proc_info.beapp_ica_run_all_10_20 = 1;
 grp_proc_info.beapp_ica_10_20_chans_lbls{1} = []; 

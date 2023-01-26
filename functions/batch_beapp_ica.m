@@ -116,7 +116,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
             ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude,...
-            grp_proc_info_in.beapp_ica_run_all_10_20,grp_proc_info_in.beapp_ica_10_20_chans_lbls);
+            grp_proc_info_in.beapp_ica_run_all_10_20,grp_proc_info_in.beapp_ica_10_20_chans_lbls,grp_proc_info_in.name_selected_10_20_chans_lbls);
         
         for curr_rec_period = 1:size(eeg,2)
             

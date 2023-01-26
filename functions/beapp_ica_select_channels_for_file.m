@@ -33,7 +33,7 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude,use_all_10_20,ica_10_20_chans2use)
+function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude,use_all_10_20,ica_10_20_chans2use,name_selected_10_20_elecs)
 
 % get 10-20 labels and additional user set channels for this net
 uniq_net_ind = find(strcmp(src_unique_nets, file_proc_info.net_typ{1}));
@@ -61,7 +61,7 @@ else
     end
 end
 
-[file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels] = name_10_20_elecs{:};
+[file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs(~isnan(file_proc_info.net_10_20_elecs))).labels] = name_selected_10_20_elecs{uniq_net_ind}{:}; 
 
 if ~all(cellfun(@isempty,chans_to_exclude))
     lbls_chans_to_exclude_this_net = {file_proc_info.net_vstruct(chans_to_exclude{uniq_net_ind}).labels};

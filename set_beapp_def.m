@@ -220,6 +220,7 @@ grp_proc_info.beapp_rsamp_nsamp=[]; %number of samples after resampling
 
 %% ICA variables
 grp_proc_info.name_10_20_elecs = {'FP1','FP2','F7','F3','F4','F8','C3','C4','T5','PZ','T6','O1','O2','T3','T4','P3','P4','Fz'}; % does not include CZ
+grp_proc_info.name_selected_10_20_chans_lbls = {grp_proc_info.name_10_20_elecs}; %by default, include all 10-20, later beapp will check if current net doesn't include all and update variable
 grp_proc_info.beapp_ica_type  = 1; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
 grp_proc_info.beapp_ica_run_all_10_20 = 1;
 grp_proc_info.beapp_ica_10_20_chans_lbls{1} = []; 

@@ -43,10 +43,21 @@ src_dir = happe_v3_rerun_file_check(grp_proc_info_in.HAPPE_v3_reprocessing,src_d
 for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
     cd(src_dir{1});
     if grp_proc_info_in.HAPPE_v3_reprocessing || exist(strcat(src_dir{1},filesep,grp_proc_info_in.beapp_fname_all{curr_file}),'file')
-        tic;
+        
         if ~grp_proc_info_in.HAPPE_v3_reprocessing
             load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
-            [EEGraw] = beapp2eeglab(file_proc_info,eeg{1,1},1,1);
+        else
+            load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
+            EEGraw = NaN(5,1);
+        end
+        
+        for curr_rec_period = 1:size(eeg,2)
+
+        tic;
+        if ~grp_proc_info_in.HAPPE_v3_reprocessing
+            curr_eeg = eeg{:,curr_rec_period};
+          %  load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
+            [EEGraw] = beapp2eeglab(file_proc_info,curr_eeg,1,1);
             [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw);       % add events specific to happe-er/based on file type
         else
             load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
@@ -63,7 +74,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         qual_control(1).dataQC = [qual_control(1).dataQC; dataQC];
         %% Update File Proc Info
         if ~isempty(eeg_out)
-            file_proc_info = update_file_proc_info_posthappe_v3(grp_proc_info_in,file_proc_info,qual_control,params,eeg_out,chan_info,curr_file);
+            file_proc_info = update_file_proc_info_posthappe_v3(grp_proc_info_in,file_proc_info,qual_control,params,eeg_out,chan_info,curr_file,curr_rec_period);
         end
         %% Convert Data back to BEAPP for segmented files
         eeg_final = cell(length(eeg_out),1);
@@ -76,9 +87,10 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 end
         end
         if params.segment.on
-            eeg_w = eeg_final;
+            eeg_w{1,curr_rec_period} = eeg_final;
         else
-            eeg = eeg_final;
+            eeg{1,curr_rec_period} = eeg_final;
+        end
         end
         %% save and update file history
         cd(grp_proc_info_in.beapp_toggle_mods{'HAPPE_V3','Module_Dir'}{1});

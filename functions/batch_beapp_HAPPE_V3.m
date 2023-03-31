@@ -3,21 +3,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 %
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 %
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software
 % contributors to BEAPP be liable to any party for direct, indirect,
 % special, incidental, or consequential damages, including lost profits,
 % arising out of the use of this software and its documentation, even if
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience,
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience,
 % and software contributors have been advised of the possibility of such
-% damage. Software and documentation is provided ìas is.î Boston Childrenís
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs
 % Hospital, the Laboratories of Cognitive Neuroscience, and software
 % contributors are under no obligation to provide maintenance, support,
 % updates, enhancements, or modifications.
@@ -57,8 +57,8 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         if ~grp_proc_info_in.HAPPE_v3_reprocessing
             curr_eeg = eeg{:,curr_rec_period};
           %  load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
-            [EEGraw] = beapp2eeglab(file_proc_info,curr_eeg,1,1);
-            [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw);       % add events specific to happe-er/based on file type
+            [EEGraw] = beapp2eeglab(file_proc_info,curr_eeg,curr_rec_period,1);
+            [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw,curr_rec_period);       % add events specific to happe-er/based on file type
         else
             load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
             EEGraw = NaN(5,1);

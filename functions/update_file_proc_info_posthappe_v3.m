@@ -36,7 +36,7 @@ else
     file_proc_info.beapp_srate = eegByTags{1,counter}.srate; %will be same sampling rate for each condition, pulls from first
 end
 %% create and populate evt_conditions_being_analyzedif 
-if grp_proc_info_in.src_data_type ==1 |1 %standard baseline, not between tags
+if grp_proc_info_in.src_data_type ==1 %standard baseline, not between tags
     file_proc_info.grp_wide_possible_cond_names_at_segmentation = {'baseline'};
     file_proc_info.evt_conditions_being_analyzed = table(NaN,{'baseline'},{''},...
         NaN(1,1),NaN(1,1),NaN(1,1),...
@@ -60,7 +60,7 @@ end
 
 
 for condition_idx = 1:iterator
-    if grp_proc_info_in.src_data_type == 1 | 1
+    if grp_proc_info_in.src_data_type == 1 | 1 %do we want to take out | 1. seems to hard code cond_phrase to = '_'
         cond_phrase = '_';
     else
         cond_phrase = strcat('_',file_proc_info.evt_conditions_being_analyzed.Condition_Name(condition_idx),'_');

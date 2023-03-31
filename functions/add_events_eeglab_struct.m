@@ -48,14 +48,10 @@ for curr_event=1:length(evt_info_curr_rec_period)
 %     EEG.event(curr_event).behav_code=evt_info_curr_rec_period(curr_event).behav_code;
     
     % add event label, time latency, and sample number to EEGLAB structure
-    %RL comented out below lines. NOTE: not sure why but after running the first epoch,
-    %there would be a type feature filled out in the evt_info that matched the ePrime Cell Label (wasn't there during first epoch)
-    %so I commented it out so HAPPE would be able to recognize tags whereas it would throw an error is the Cell Labels replaced it
-    %if isfield(evt_info_curr_rec_period,'type')
-    %    EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).type);
-    %end
+    if isfield(evt_info_curr_rec_period,'type')
+        EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).type);
+    end
     
-    EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).evt_codes);
     EEG.event(curr_event).latency=double(evt_info_curr_rec_period(curr_event).evt_times_samp_rel); 
     EEG.event(curr_event).init_index=double(evt_info_curr_rec_period(curr_event).evt_ind); 
     EEG.event(curr_event).urevent=EEG.event(curr_event).init_index;

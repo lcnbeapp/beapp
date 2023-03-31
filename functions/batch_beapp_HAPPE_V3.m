@@ -52,10 +52,24 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         end
         
         for curr_rec_period = 1:size(eeg,2)
-
         tic;
         if ~grp_proc_info_in.HAPPE_v3_reprocessing
             curr_eeg = eeg{:,curr_rec_period};
+            %update file_proc_info's events
+            if isfield(file_proc_info,'evt_info')
+                if ~isfield(file_proc_info, 'evt_header_tag_information')
+                        file_proc_info.evt_header_tag_information = [];
+                end
+            if ~grp_proc_info_in.beapp_event_use_tags_only
+            [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,skip_file] =...
+                beapp_extract_condition_labels(file_proc_info.beapp_fname{1},grp_proc_info_in.src_data_type,...
+                file_proc_info.evt_header_tag_information,file_proc_info.evt_info,...
+                grp_proc_info_in.beapp_event_eprime_values,grp_proc_info_in.beapp_event_code_onset_strs);
+             else
+             [file_proc_info.evt_info,file_proc_info.evt_conditions_being_analyzed,skip_file] = beapp_extract_conditions_tags_only ...
+                (grp_proc_info_in.beapp_event_code_onset_strs, file_proc_info.evt_info, grp_proc_info_in.beapp_event_eprime_values,file_proc_info.beapp_fname{1});
+            end
+            end
           %  load(grp_proc_info_in.beapp_fname_all{curr_file},'eeg','file_proc_info');
             [EEGraw] = beapp2eeglab(file_proc_info,curr_eeg,curr_rec_period,1);
             [EEGraw] = add_happe_v3_events_eeglab_struct(file_proc_info,EEGraw,curr_rec_period);       % add events specific to happe-er/based on file type

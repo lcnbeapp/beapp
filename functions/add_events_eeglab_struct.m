@@ -8,21 +8,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 %
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 %
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software
 % contributors to BEAPP be liable to any party for direct, indirect,
 % special, incidental, or consequential damages, including lost profits,
 % arising out of the use of this software and its documentation, even if
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience,
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience,
 % and software contributors have been advised of the possibility of such
-% damage. Software and documentation is provided ìas is.î Boston Childrenís
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs
 % Hospital, the Laboratories of Cognitive Neuroscience, and software
 % contributors are under no obligation to provide maintenance, support,
 % updates, enhancements, or modifications.
@@ -48,10 +48,14 @@ for curr_event=1:length(evt_info_curr_rec_period)
 %     EEG.event(curr_event).behav_code=evt_info_curr_rec_period(curr_event).behav_code;
     
     % add event label, time latency, and sample number to EEGLAB structure
-    if isfield(evt_info_curr_rec_period,'type')
-        EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).type);
-    end
+    %RL comented out below lines. NOTE: not sure why but after running the first epoch,
+    %there would be a type feature filled out in the evt_info that matched the ePrime Cell Label (wasn't there during first epoch)
+    %so I commented it out so HAPPE would be able to recognize tags whereas it would throw an error is the Cell Labels replaced it
+    %if isfield(evt_info_curr_rec_period,'type')
+    %    EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).type);
+    %end
     
+    EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).evt_codes);
     EEG.event(curr_event).latency=double(evt_info_curr_rec_period(curr_event).evt_times_samp_rel); 
     EEG.event(curr_event).init_index=double(evt_info_curr_rec_period(curr_event).evt_ind); 
     EEG.event(curr_event).urevent=EEG.event(curr_event).init_index;

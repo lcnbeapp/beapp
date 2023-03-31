@@ -36,7 +36,7 @@ else
     file_proc_info.beapp_srate = eegByTags{1,counter}.srate; %will be same sampling rate for each condition, pulls from first
 end
 
-if grp_proc_info.happe_segment_on
+if grp_proc_info_in.happe_segment_on
 %% create and populate evt_conditions_being_analyzedif happe segmentation was run
 if grp_proc_info_in.src_data_type ==1 %standard baseline, not between tags
     file_proc_info.grp_wide_possible_cond_names_at_segmentation = {'baseline'};

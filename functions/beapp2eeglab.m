@@ -46,7 +46,11 @@ EEG=eeg_emptyset;
 EEG.data = eeg_curr_rec_period;
 EEG.srate=file_proc_info.beapp_srate;
 EEG.setname = file_proc_info.beapp_fname{1};
-EEG.nbchan=file_proc_info.beapp_nchans_used(1);
+if file_proc_info.hist_run_table{'ica','Mod_Run'} | file_proc_info.hist_run_table{'prepp','Mod_Run'}
+    EEG.nbchan=file_proc_info.beapp_nchans_used(curr_rec_period);
+else
+    EEG.nbchan=file_proc_info.beapp_nchans_used(1);
+end
 EEG.chanlocs=file_proc_info.net_vstruct;
 EEG.history=sprintf(['EEG = pop_importdata(''dataformat'',''matlab'',''nbchan'',0,''data'',',file_proc_info.beapp_fname{1},'''',',''setname'',''BEAPP_Dataset'',''srate'',0,''pnts'',0,''xmin'',0);\n','EEG = eeg_checkset( EEG );']);
 EEG.noiseDetection.status = [];

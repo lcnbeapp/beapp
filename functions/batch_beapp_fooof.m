@@ -5,21 +5,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 %
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 %
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software
 % contributors to BEAPP be liable to any party for direct, indirect,
 % special, incidental, or consequential damages, including lost profits,
 % arising out of the use of this software and its documentation, even if
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience,
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience,
 % and software contributors have been advised of the possibility of such
-% damage. Software and documentation is provided ìas is.î Boston Childrenís
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs
 % Hospital, the Laboratories of Cognitive Neuroscience, and software
 % contributors are under no obligation to provide maintenance, support,
 % updates, enhancements, or modifications.
@@ -40,6 +40,10 @@ max_n_channels = 256; %maximum number of channels in the EEG dataset -- currentl
 
 if grp_proc_info_in.fooof_average_chans == 1 && isempty(grp_proc_info_in.fooof_channel_groups) %make a table
         fooof_results = NaN(size(grp_proc_info_in.beapp_fname_all,2),grp_proc_info_in.fooof_max_n_peaks*6+5);
+        %TH
+        if grp_proc_info_in.include_diagnosis
+            fooof_results(:,end+1)= strings(12,1);
+        end
         row_labels = cell(1,size(grp_proc_info_in.beapp_fname_all,2));
 else %make a 3d matrix
     if grp_proc_info_in.fooof_average_chans == 1 && ~isempty(grp_proc_info_in.fooof_channel_groups)
@@ -127,6 +131,10 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                         fooof_results(curr_file,10+(6*(j-1))) = curr_results.gaussian_params(j,2);
                         fooof_results(curr_file,11+(6*(j-1))) = curr_results.gaussian_params(j,3);
                     end
+                    %TH Adds diagnosis number
+                        if grp_proc_info_in.include_diagnosis
+                            fooof_results(curr_file,end) = file_proc_info.diagnosis;
+                        end
                 end
 
             else %%average in groups
@@ -161,6 +169,10 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                             fooof_results(i,9+(6*(j-1)),curr_file) = curr_results.gaussian_params(j,1);
                             fooof_results(i,10+(6*(j-1)),curr_file) = curr_results.gaussian_params(j,2);
                             fooof_results(i,11+(6*(j-1)),curr_file) = curr_results.gaussian_params(j,3);
+                        end
+                        %TH
+                        if grp_proc_info_in.include_diagnosis
+                            fooof_results(curr_file,end) = file_proc_info.diagnosis;
                         end
                     end
                 end
@@ -230,6 +242,10 @@ for i = 1:grp_proc_info_in.fooof_max_n_peaks
     column_labels{1,10+(6*(i-1))} = strcat('Gauss_AMP_peak_',num2str(i));
     column_labels{1,11+(6*(i-1))} = strcat('Gauss_BW_peak_',num2str(i));
 end
+%TH
+if grp_proc_info_in.include_diagnosis && grp_proc_info_in.fooof_average_chans
+column_labels{1,end+1}='diagnosis';
+end
     
 %%save fooof_data
 file_proc_info = beapp_prepare_to_save_file('fooof',file_proc_info, grp_proc_info_in, src_dir{1});
@@ -254,6 +270,7 @@ if grp_proc_info_in.fooof_xlsout_on == 1 && grp_proc_info_in.fooof_average_chans
 %If chans are run seperately
 elseif grp_proc_info_in.fooof_xlsout_on == 1 && grp_proc_info_in.fooof_average_chans == 0
     for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
+        load(fullfile(src_dir{1},grp_proc_info_in.beapp_fname_all{curr_file}),'file_proc_info'); %TH
         curr_results = fooof_results(:,:,curr_file);
         %fill in labels for all possible channels
         row_labels = cell(max_n_channels,1);
@@ -263,16 +280,29 @@ elseif grp_proc_info_in.fooof_xlsout_on == 1 && grp_proc_info_in.fooof_average_c
         curr_results = [column_labels;num2cell(curr_results)];
         row_labels = ['row';row_labels];
         curr_results = [row_labels,curr_results];
-        xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+        %TH
+        if grp_proc_info_in.include_diagnosis
+            diagnosis_string=grp_proc_info_in.diagnosis_map{([grp_proc_info_in.diagnosis_map{:,[1]}]==file_proc_info.diagnosis),2};
+            xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report_',diagnosis_string,'.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+        else
+            xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+        end
     end
 %If chans are averaged in groups
 elseif grp_proc_info_in.fooof_xlsout_on == 1
     row_labels = ['row';row_labels];
     for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
+         load(fullfile(src_dir{1},grp_proc_info_in.beapp_fname_all{curr_file}),'file_proc_info'); %TH
          curr_results = fooof_results(:,:,curr_file);
          curr_results = [column_labels;num2cell(curr_results)];
          curr_results = [row_labels,curr_results];
-         xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+        %TH
+        if grp_proc_info_in.include_diagnosis
+            diagnosis_string=grp_proc_info_in.diagnosis_map{([grp_proc_info_in.diagnosis_map{:,[1]}]==file_proc_info.diagnosis),2};
+            xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report_',diagnosis_string,'.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+        else
+            xlswrite(strcat(grp_proc_info_in.beapp_curr_run_tag,'_fooof_report.xls'),curr_results,grp_proc_info_in.beapp_fname_all{curr_file});
+         end
     end
 end
 

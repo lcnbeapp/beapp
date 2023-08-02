@@ -18,21 +18,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 % 
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided ìas is.î Boston Childrenís 
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -56,10 +56,10 @@ addpath(ref_dir);
 
 % get file list and extract file specific information from input tables
 [grp_proc_info_in.src_fname_all,grp_proc_info_in.src_linenoise_all,...
-    grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,~] = ...
+    grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,~,grp_proc_info_in.diagnosis_all] = ...
     beapp_load_nonmat_flist_and_evt_table(grp_proc_info_in.src_dir,'.mff',...
     grp_proc_info_in.event_tag_offsets,grp_proc_info_in.src_linenoise,grp_proc_info_in.beapp_file_info_table,...
-    grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx);
+    grp_proc_info_in.src_format_typ,grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx,grp_proc_info_in.include_diagnosis,grp_proc_info_in.diagnosis_map);
 
 % load nets the user has input, for speed
 if ~isempty(grp_proc_info_in.src_unique_nets{1})
@@ -88,6 +88,7 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     tic;
     % save filename and path
     file_proc_info.src_fname=grp_proc_info_in.src_fname_all(curr_file);
+    file_proc_info.diagnosis=grp_proc_info_in.diagnosis_all(curr_file); %TH
     file_proc_info.beapp_fname=grp_proc_info_in.beapp_fname_all(curr_file);
     full_filepath=strcat(grp_proc_info_in.src_dir{1},filesep,file_proc_info.src_fname{1});
     cd(full_filepath)

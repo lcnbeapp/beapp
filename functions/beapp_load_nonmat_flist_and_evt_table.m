@@ -17,21 +17,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 % 
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided ìas is.î Boston Childrenís 
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -44,8 +44,8 @@
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-function [src_fname_all,src_linenoise_all,src_offsets_in_ms_all,beapp_fname_all,src_net_typ_all]  = beapp_load_nonmat_flist_and_evt_table ...
-(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc, src_format_typ,run_per_file,file_idx)
+function [src_fname_all,src_linenoise_all,src_offsets_in_ms_all,beapp_fname_all,src_net_typ_all,diagnosis_all]  = beapp_load_nonmat_flist_and_evt_table ...
+(src_dir,file_extension,event_tag_offsets,src_linenoise,event_file_info_table_loc, src_format_typ,run_per_file,file_idx,include_diagnosis,diagnosis_map)
 
 % get list of files of source type in source directory
 cd(src_dir{1});
@@ -83,6 +83,22 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ 
     else
        src_linenoise_all = src_linenoise *ones(1,length(src_fname_all));
     end 
+
+    %TH
+    if include_diagnosis 
+        if ~(length(unique([diagnosis_map{:,1}]))==length([diagnosis_map{:,1}]))
+        error('BEAPP: User has assigned more than one diagnosis string to a single number in grp_proc_info_in.diagnosis_map');
+        else
+        diagnosis_all= beapp_file_info_table.Diagnosis(ind_table); 
+            if ismember(0,(ismember(diagnosis_all,[diagnosis_map{:,1}])))
+                %disp filename and number
+                file_number= find(ismember(diagnosis_all,[diagnosis_map{:,1}])==0);
+                error(['BEAPP: User has assigned diagnosis number ' num2str(diagnosis_all(file_number(1))) ' to ' src_fname_all{file_number(1)} ' in info table. Number not included in grp_proc_info_in.diagnosis_map'])
+            end
+        end
+    else
+        diagnosis_all=nan(1,length(src_fname_all)); 
+    end
     
     % EEGLAB, often will need to pull net name
     if src_format_typ == 4 || src_format_typ == 5

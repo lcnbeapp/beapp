@@ -134,7 +134,7 @@ grp_proc_info.src_unique_nets= {''}; % def ={''} If not running HAPP-E with mult
 grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
 grp_proc_info.src_eeg_vname={'EEG_Segment1','Category_1_Segment1','Category_1','EEGSegment1','CA61_011419_L0A'}; %possible variable name of the EEG data EEG_Segment1
 
-%TH Formatting specifications: Optional Diagnosis
+%Formatting specifications: Optional Diagnosis
 grp_proc_info.include_diagnosis = 1; %Default = 0, if 1, pulls diagnosis information from file info table, and will sort files based on that
 grp_proc_info.diagnosis_map={}; % Default will be empty, should be nX2 array where n = the number of distinct diagnoses and n>0, column 1 is the number and column two is the string label. ex {1, 'TD'; 2, 'ASD'}
 

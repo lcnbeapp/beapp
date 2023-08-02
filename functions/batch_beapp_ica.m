@@ -210,6 +210,14 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 ICA_report_table.Median_Artifact_Probability_of_Kept_ICs_Per_Rec_Period(curr_file) = {ica_report_struct.median_art_prob_per_rec_period};
             end
             ICA_report_table.Time_Elapsed_For_File(curr_file) = {num2str(file_ica_toc/60)};
+
+            %TH 
+            if grp_proc_info_in.include_diagnosis 
+                diagnosis_string=grp_proc_info_in.diagnosis_map{([grp_proc_info_in.diagnosis_map{:,[1]}]==file_proc_info.diagnosis),2};
+                ICA_report_table.Diagnosis(curr_file)=cellstr(diagnosis_string);
+            else
+                ICA_report_table.Diagnosis(curr_file)=num2cell(NaN);
+            end
         end
         
         file_proc_info.ica_stats.Number_Good_Channels_Selected_Per_Rec_Period = {ica_report_struct.good_chans_per_rec_period};

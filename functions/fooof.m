@@ -75,6 +75,14 @@ function fooof_results = fooof(freqs, psd, f_range, settings, filename, grp_proc
         xlabel('Frequency')
         ylabel('Power')
         legend('Original Spectrum', 'Full Model Fit', 'Background Fit')
+        %TH
+         if grp_proc_info_in.include_diagnosis
+            diagnosis_folder=grp_proc_info_in.diagnosis_map{([grp_proc_info_in.diagnosis_map{:,[1]}]==file_proc_info.diagnosis),2};
+            if exist(fullfile(cd,diagnosis_folder),'file')==0
+                mkdir(cd,diagnosis_folder);
+            end
+            cd(fullfile(cd, diagnosis_folder));
+        end
         saveas(h, strcat(filename,'.png'))
         src_dir = find_input_dir('fooof',grp_proc_info_in.beapp_toggle_mods);
         close;

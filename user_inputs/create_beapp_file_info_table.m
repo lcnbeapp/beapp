@@ -19,9 +19,10 @@ FileName = flist;
 SamplingRate = NaN(length(flist),1);
 NetType= cell(length(flist),1);
 LineNoise = 60*ones(length(flist),1);%USA
+Diagnosis=NaN(length(flist),1); %TH
 
-beapp_file_info_table = table(FileName, SamplingRate, NetType,LineNoise);
-beapp_file_info_table.Properties.VariableNames = {'FileName','SamplingRate','NetType','Line_Noise_Freq'};
+beapp_file_info_table = table(FileName, SamplingRate, NetType,LineNoise,Diagnosis); %TH 
+beapp_file_info_table.Properties.VariableNames = {'FileName','SamplingRate','NetType','Line_Noise_Freq','Diagnosis'}; %TH
 beapp_file_info_table.FileName = flist;
 
 for curr_file = 1: length(flist)

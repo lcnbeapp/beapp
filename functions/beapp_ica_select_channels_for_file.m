@@ -7,21 +7,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 %
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 %
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software
 % contributors to BEAPP be liable to any party for direct, indirect,
 % special, incidental, or consequential damages, including lost profits,
 % arising out of the use of this software and its documentation, even if
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience,
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience,
 % and software contributors have been advised of the possibility of such
-% damage. Software and documentation is provided ìas is.î Boston Childrenís
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs
 % Hospital, the Laboratories of Cognitive Neuroscience, and software
 % contributors are under no obligation to provide maintenance, support,
 % updates, enhancements, or modifications.
@@ -33,7 +33,7 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude,use_all_10_20,ica_10_20_chans2use)
+function [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,src_unique_nets, happe_additional_chans_lbls,name_10_20_elecs,chans_to_exclude,use_all_10_20,ica_10_20_chans2use,name_selected_10_20_elecs)
 
 % get 10-20 labels and additional user set channels for this net
 uniq_net_ind = find(strcmp(src_unique_nets, file_proc_info.net_typ{1}));
@@ -61,7 +61,7 @@ else
     end
 end
 
-[file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs).labels] = name_10_20_elecs{:};
+[file_proc_info.net_vstruct(file_proc_info.net_10_20_elecs(~isnan(file_proc_info.net_10_20_elecs))).labels] = name_selected_10_20_elecs{uniq_net_ind}{:}; 
 
 if ~all(cellfun(@isempty,chans_to_exclude))
     lbls_chans_to_exclude_this_net = {file_proc_info.net_vstruct(chans_to_exclude{uniq_net_ind}).labels};

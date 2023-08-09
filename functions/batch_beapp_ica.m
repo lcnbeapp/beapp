@@ -7,7 +7,7 @@
 % output for ICA alone will be raw data + ICA weights and sphere matrices
 %
 % HAPP-E Version 1.0
-% Gabard-Durnam LJ, MÈndez Leal AS, and Levin AR (2017) The Harvard Automated Pre-processing Pipeline for EEG (HAPP-E)
+% Gabard-Durnam LJ, M√©ndez Leal AS, and Levin AR (2017) The Harvard Automated Pre-processing Pipeline for EEG (HAPP-E)
 % Manuscript in preparation
 %
 % MARA
@@ -16,21 +16,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 %
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 %
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software
 % contributors to BEAPP be liable to any party for direct, indirect,
 % special, incidental, or consequential damages, including lost profits,
 % arising out of the use of this software and its documentation, even if
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience,
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience,
 % and software contributors have been advised of the possibility of such
-% damage. Software and documentation is provided ìas is.î Boston Childrenís
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs
 % Hospital, the Laboratories of Cognitive Neuroscience, and software
 % contributors are under no obligation to provide maintenance, support,
 % updates, enhancements, or modifications.
@@ -116,7 +116,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         % select channels depending on user settings
         [chan_IDs, file_proc_info] = beapp_ica_select_channels_for_file (file_proc_info,grp_proc_info_in.src_unique_nets,...
             ica_chan_labels_in_eeglab_format,grp_proc_info_in.name_10_20_elecs,grp_proc_info_in.beapp_indx_chans_to_exclude,...
-            grp_proc_info_in.beapp_ica_run_all_10_20,grp_proc_info_in.beapp_ica_10_20_chans_lbls);
+            grp_proc_info_in.beapp_ica_run_all_10_20,grp_proc_info_in.beapp_ica_10_20_chans_lbls,grp_proc_info_in.name_selected_10_20_chans_lbls);
         
         for curr_rec_period = 1:size(eeg,2)
             

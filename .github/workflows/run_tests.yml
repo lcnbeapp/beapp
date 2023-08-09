@@ -1,0 +1,11 @@
+name: Run MATLAB Tests on Self-Hosted Runner
+on: [push]
+jobs:
+  my-job:
+    name: Run MATLAB Tests
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Run tests
+        uses: matlab-actions/run-tests@v1

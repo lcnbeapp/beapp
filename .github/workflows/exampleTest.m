@@ -1,6 +1,6 @@
 function tests = exampleTest
 % Add my library path
-    beapp_main('use_script')
+   % beapp_main('use_script')
     %test a thing
 tests = functiontests(localfunctions);
 end

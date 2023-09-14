@@ -104,7 +104,7 @@
 % beapp_userinputs, and will override default settings
 
 % GENERAL ADVANCED USER INPUTS for BEAPP:
-grp_proc_info.beapp_dir_warn_off = 0; % def = 0; if 1, mute directory warnings
+grp_proc_info.beapp_dir_warn_off = 1; % def = 0; if 1, mute directory warnings
 grp_proc_info.beapp_use_rerun_table = 0; % def = 0; if 1, use rerun table to run a subset of files. not needed for normal reruns
 grp_proc_info.beapp_rmv_bad_chan_on = 0; % def = 0; 1 if you'd like to remove channels flagged as bad in PREP or HAPPE
 grp_proc_info.beapp_run_per_file = 0; %turn on to run only 1 file in beapp_file_info_table; intended for computer cluster use
@@ -120,9 +120,8 @@ grp_proc_info.src_eeglab_cond_info_field = 'condition'; % name of field with con
 grp_proc_info.src_buff_start_nsec=2; %number of seconds buffer at the start of the EEG recording that can be excluded after filtering and artifact removal (buff1_nsec)
 grp_proc_info.src_buff_end_nsec=2; %number of seconds buffer at the end of the EEG recording that can be excluded after filtering and artifact removal (buff2_nsec)
 
-% ICA/HAPPE/MARA
-% def = 0; turns on HAPPE/MARA visualisations - will then require user feedback for each file
-grp_proc_info.happe_plotting_on = 0; 
+% ICA/HAPPE/MARA/HAPPE-ER
+grp_proc_info.happe_plotting_on = 1; % def = 0; turns on HAPPE/MARA visualisations - will then require user feedback for each file
 
 % REREFENCING SPECIFICATIONS 
 grp_proc_info.beapp_csdlp_interp_flex=4; % m=2...10, 4 spline. def = 4; Used in CSD toolbox only
@@ -174,7 +173,7 @@ grp_proc_info.slid_win_sz = 2; %size, in seconds, of sliding window
 grp_proc_info.pac_calc_zscores = 1; %will take longer for pac to run if on. Requires a larger window size
 grp_proc_info.pac_calc_btwn_chans = 1; %Compute PAC between 2 channels, instead of within each channel (BETA)
 grp_proc_info.pac_variable_hf_filt = 0; %Varies the high frequency filter width to prevent overlap with low frequency (not recommended)
-grp_proc_info.pac_save_amp_dist = 0; %save the binned high frequency amplitude distribution
+grp_proc_info.pac_save_amp_dist = 1; %save the binned high frequency amplitude distribution
 
 %BYCYCLE
 grp_proc_info.bycyc_set_num_segs = 0;

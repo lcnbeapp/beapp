@@ -53,7 +53,7 @@ end
 [ref_dir,~]=fileparts(grp_proc_info_in.beapp_format_mff_jar_lib);
 javaaddpath(which(grp_proc_info_in.beapp_format_mff_jar_lib));
 addpath(ref_dir);
-
+addpath(genpath(grp_proc_info_in.beapp_format_mff_matlab_package))
 % get file list and extract file specific information from input tables
 [grp_proc_info_in.src_fname_all,grp_proc_info_in.src_linenoise_all,...
     grp_proc_info_in.src_offsets_in_ms_all,grp_proc_info_in.beapp_fname_all,~] = ...
@@ -113,13 +113,19 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     else
         
         %% read mff file metadata
+        
         signal_name_str=char(mff_binary_signal_flist(1));
         if  strcmp(signal_name_str,'[]')
             warning (['BEAPP file' file_proc_info.beapp_fname{1} ' : file does not have a signalN.bin file, which contains the source EEG data. Skipping']);
             continue;
         end
-        signal_name_str=char(signal_name_str(2:end-1)); % avoids compatibility issues with 2014a as extractfrombetween
+        if contains(signal_name_str,',') %above if statement didn't catch files with 2 signal bins, this checks nad gets rid of signal bins following first one
+            temp_signal_name = strsplit(signal_name_str,',');
+            signal_name_str = char(temp_signal_name{1}(2:end));
+        else
         
+        signal_name_str=char(signal_name_str(2:end-1)); % avoids compatibility issues with 2014a as extractfrombetween
+        end
         % get file metadata and basic signal information
         [grp_proc_info_in,file_proc_info,tmp_signal_info,time_units_exp,record_time] = ...
             beapp_read_mff_metadata(signal_name_str,full_filepath,grp_proc_info_in,file_proc_info,curr_file);

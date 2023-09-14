@@ -43,7 +43,7 @@ function file_proc_info = beapp_prepare_to_save_file(curr_mod,file_proc_info, gr
 cd(grp_proc_info_in.beapp_toggle_mods{curr_mod,'Module_Dir'}{1});
 
 % version control -- if file run history table doesn't exist, create
-if ~isfield(file_proc_info,'hist_run_table')
+if ~isfield(file_proc_info,'hist_run_table') || isempty(file_proc_info.hist_run_table)
     file_proc_info.hist_run_table = beapp_init_file_hist_table(grp_proc_info_in.beapp_toggle_mods.Mod_Names);
 end
 

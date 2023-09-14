@@ -35,9 +35,13 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 % set location for beapp to load user inputs and advanced inputs
-grp_proc_info.beapp_alt_user_input_location = {''}; % def = {''}, which will use beapp_userinputs.m 
+grp_proc_info.beapp_alt_user_input_location ={''}; % def = {''}, which will use beapp_userinputs.m 
 grp_proc_info.beapp_alt_adv_user_input_location = {''}; % def = {''}, which will use beapp_advinputs.m
 
 % set location for beapp to load mat, mff, or rerun file info tables
-grp_proc_info.beapp_alt_beapp_file_info_table_location = {''}; % def = {''}, which will use beapp_file_info_table.mat
-grp_proc_info.beapp_alt_rerun_file_info_table_location = {''}; % def = {''},  which will use rerun_fselect_table.mat
+grp_proc_info.beapp_alt_beapp_file_info_table_location = {''};% def = {''}, which will use beapp_file_info_table.mat
+grp_proc_info.beapp_alt_rerun_file_info_table_location ={''}; % def = {''},  which will use rerun_fselect_table.mat
+
+% set location for beapp to load HAPPE_V3 parameters file (only if using
+% HAPPE_V3 module)
+grp_proc_info.HAPPE_v3_parameters_file_location = {''}; % def = {''}, which will create a parameters file from settings in the user inputs script

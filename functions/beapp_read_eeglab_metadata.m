@@ -24,7 +24,7 @@ file_proc_info.beapp_nchan = file_proc_info.src_nchan;
 file_proc_info.hist_run_tag = grp_proc_info_in.hist_run_tag;
 file_proc_info.hist_run_table = beapp_init_file_hist_table (grp_proc_info_in.beapp_toggle_mods.Properties.RowNames);
 file_proc_info.epoch_inds_to_process = grp_proc_info_in.epoch_inds_to_process;
-file_proc_info.net_typ{1}=grp_proc_info_in.src_net_typ_all{curr_file}; 
+file_proc_info.net_typ{1}=grp_proc_info_in.src_net_typ_all(curr_file); 
 grp_proc_info_in.src_srate_all(curr_file)=file_proc_info.src_srate;
 file_proc_info.src_format_typ = grp_proc_info_in.src_format_typ;
 

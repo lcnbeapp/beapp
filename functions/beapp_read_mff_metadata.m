@@ -43,18 +43,52 @@ function [grp_proc_info_in,file_proc_info,tmp_signal_info,time_units_exp,record_
 recording_info_obj=mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_Info, 'info.xml', full_filepath);
 tmp_signal_info.signal_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_Signal, signal_string, full_filepath);
 sensor_layout_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_SensorLayout, ['sensorLayout.xml'], full_filepath);
+subject_info_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_Subject, ['subject.xml'], full_filepath);
+categories_info_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_Categories, ['categories.xml'], full_filepath);
 
 % used to get impedances, but API returns blank values. Contacted EGI
 % info1.xml name could change, never seen in our datasets
 info_n_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_InfoN, ['info1.xml'], full_filepath);
-
 % get signal information from signal object
 tmp_signal_info.sig_blocks = tmp_signal_info.signal_obj.getSignalBlocks();
 signal_block_obj = tmp_signal_info.sig_blocks.get(0);
 record_time = recording_info_obj.getRecordTime;
 tmp_rec_time= strsplit(char(record_time), 'T');
 
+%_____________________________________________________
+%YB added 7/21/22
+timeVal = char(record_time);
+% get the time zone (duplicate code in mff_importevents and mff_importinfo)
+minusSign = find(timeVal == '+');
+if isempty(minusSign)
+    minusSign = find(timeVal == '-');
+    minusSign = minusSign(end);
+end
+timeZone = timeVal(minusSign(end):end);
+if length(timeZone) > 6
+    timeZone =  [];
+    disp('Issue with decoding the time zone');
+end
+
+calibVal = info_n_obj.getCalibrations;
+%____________________________________________________________
 %% store general eeg source file information
+%______________________________________________________________________________________
+% Inputs used for HAPPE+ER
+file_proc_info.happe_er.etc.src_timezone = timeZone;
+file_proc_info.happe.etc.info.src_montage_name = info_n_obj.getInfoNFileTypeInformation.getMontageName;
+%file_proc_info.happe_er.etc.src_subject = get_mff_subject(subject_info_obj);
+%file_proc_info.happe_er.etc.src_layout = beapp_mff_import_sensor_layout(sensor_layout_obj);
+file_proc_info.happe_er.etc.info.calibration = get_mff_calibration(calibVal);
+file_proc_info.happe_er.etc.info.InfoNFileType.value = info_n_obj.getInfoNFileType;
+file_proc_info.happ_er.xmax = 1;
+if  isempty(categories_info_obj)
+    file_proc_info.happ_er.xmin = 0;
+else
+    file_proc_info.happ_er.xmin = get_mff_xmin(categories_info_obj,recording_info_obj.getMFFVersion);
+end
+
+%__________________________________________________________________________
 file_proc_info.src_nchan = double(signal_block_obj.numberOfSignals);
 file_proc_info.src_srate = double(signal_block_obj.signalFrequency(1));
 file_proc_info.src_mff_signal_version = tmp_signal_info.signal_obj.getVersion; % unclear if necessary, keeping for now

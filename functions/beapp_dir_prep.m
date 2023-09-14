@@ -98,6 +98,22 @@ if any(dir_prev_exist.Var1)
        'Continuing with pipeline';]);
     end
 end
+% Check if HAPPE_V3 turned on and if there are any modules with same tag
+% besides formatting
+HAPPE_mod_ind = find(strcmpi(modnames,'HAPPE_V3'));
+if grp_proc_info_in.beapp_toggle_mods.Module_On(HAPPE_mod_ind) && any(dir_prev_exist.Var1(2:(HAPPE_mod_ind-1)))
+    same_dirs = [grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))];
+    usr_cont = questdlg(['The following directories already exist with the same tag as your current run:';
+       [same_dirs(1:end-1,:)]; 'Continuing with the pipeline will result in HAPPE V3 pulling data from:'; [same_dirs(end-1,:)];...
+       'rather than the formatting module';...
+        'Would you like to continue?'],'HAPPE V3 Directory Warning','Yes','No','Yes');
+        if strcmp('Yes',usr_cont)
+            disp(sprintf(' \n Continuing with pipeline. \n Could not create directories:'));
+            disp([grp_proc_info_in.beapp_toggle_mods.Module_Dir(logical(dir_prev_exist.Var1))])
+        elseif  strcmp('No',usr_cont)
+            error('User did not proceed with run, exiting BEAPP'); 
+        end
+end
 
 if isempty(grp_proc_info_in.beapp_genout_dir{1})
     if strcmp(grp_proc_info_in.beapp_curr_run_tag,'') || strcmp(grp_proc_info_in.beapp_curr_run_tag,'NONE')

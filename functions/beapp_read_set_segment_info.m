@@ -1,10 +1,10 @@
-%% add_events_eeglab_struct(EEG,evt_info_curr_rec_period)
-% sets up an EEGLab structure to pull out events
-%
+%% beapp_read_set_segment_info
+% pull pre-created segment information from .set file
 % Inputs:
-% EEG : eeglab struct created from BEAPP
-% evt_info_curr_rec_period : BEAPP evt_info struct for file at current rec period
-% eg. file_proc_info.evt_info{curr_rec_period}
+% EEG_struct - loaded .set file from poploadset
+%
+% Function adapted from beapp_read_mff_segment_info, with some variables
+% irrelevant variables excluded
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
@@ -34,26 +34,32 @@
 % You should receive a copy of the GNU General Public License along with
 % this program. If not, see <http://www.gnu.org/licenses/>.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-function [EEG]=add_events_eeglab_struct(EEG,evt_info_curr_rec_period)
+function file_proc_info = beapp_read_set_segment_info(EEG_struct,file_proc_info,grp_proc_info_in)
+if grp_proc_info_in.src_data_type ~=1
+    all_categories = grp_proc_info_in.beapp_event_eprime_values.condition_names;
+else
+    all_categories = [];
+end
+file_proc_info.evt_seg_win_evt_ind = find(EEG_struct.times == 0);
+condition_name = cell(size(EEG_struct.epoch,2),1);
+if ~isempty(all_categories)
+    cat_names = cell(length(all_categories),1);
+    for curr_cat = 1:length(all_categories)
 
-for curr_event=1:length(evt_info_curr_rec_period)
-   
-    %MM added 8/28/19 (see what it does)
-%     EEG.event(curr_event).evt_codes=evt_info_curr_rec_period(curr_event).evt_codes;
-%     EEG.event(curr_event).evt_times_micros_rel=evt_info_curr_rec_period(curr_event).evt_times_micros_rel; %see if this fixes timing info
-%     EEG.event(curr_event).evt_times_samp_rel=evt_info_curr_rec_period(curr_event).evt_times_samp_rel;
-%     EEG.event(curr_event).evt_times_samp_abs=evt_info_curr_rec_period(curr_event).evt_times_samp_abs;
-%     EEG.event(curr_event).duration_time=evt_info_curr_rec_period(curr_event).duration_time;
-%     EEG.event(curr_event).evt_cel_type=evt_info_curr_rec_period(curr_event).evt_cel_type;
-%     EEG.event(curr_event).behav_code=evt_info_curr_rec_period(curr_event).behav_code;
-    
-    % add event label, time latency, and sample number to EEGLAB structure
-    if isfield(evt_info_curr_rec_period,'type')
-        EEG.event(curr_event).type=char(evt_info_curr_rec_period(curr_event).type);
+        evt_type_idx = cell2mat(cellfun(@(x) strcmpi(cell2mat(all_categories(curr_cat)), x), {EEG_struct.event.code},'UniformOutput',false));
+        evt_lat_idx =  cell2mat(cellfun(@(x) (cell2mat(x) == 0), {EEG_struct.epoch.eventlatency},'UniformOutput',false) ) ;
+
+        %checking that is has condition label and that that condition label happens
+        %at time zero (so is label that is segmented around)
+        cat_indices = (evt_type_idx&evt_lat_idx);
+        cat_epochs = [EEG_struct.event(cat_indices).epoch];
+        cat_names{curr_cat}= char(all_categories{curr_cat});
+
+        condition_name(cat_epochs) = deal({cat_names{curr_cat}});
+        clear cat cat_epoch
     end
-    
-    EEG.event(curr_event).latency=double(evt_info_curr_rec_period(curr_event).evt_times_samp_rel); 
-    EEG.event(curr_event).init_index=double(evt_info_curr_rec_period(curr_event).evt_ind); 
-    EEG.event(curr_event).urevent=EEG.event(curr_event).init_index;
-
+    seg_info = struct('condition_name',condition_name);
+    file_proc_info.seg_info = seg_info;
+    file_proc_info.seg_tasks=cat_names;
+    clearvars -except file_proc_info
 end

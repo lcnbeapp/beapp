@@ -49,6 +49,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
         else
             load(['0 - rerun_file_proc_infos' filesep strcat(grp_proc_info_in.beapp_fname_all{curr_file}(1:end-4),'file_info.mat')],'file_proc_info');
             EEGraw = NaN(5,1);
+            eeg = nan(1,1);
         end
         
         for curr_rec_period = 1:size(eeg,2)
@@ -101,9 +102,9 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 end
         end
         if params.segment.on
-            eeg_w{1,curr_rec_period} = eeg_final;
+            eeg_w(1,curr_rec_period) = eeg_final;
         else
-            eeg{1,curr_rec_period} = eeg_final;
+            eeg(1,curr_rec_period) = eeg_final;
         end
         end
         %% save and update file history
@@ -114,7 +115,7 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             if params.segment.on
                                 save(strcat(file_proc_info.beapp_fname{1,1}),'eeg_w','file_proc_info','-v7.3','-nocompression');
             else
-            save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info');
+            save(strcat(file_proc_info.beapp_fname{1,1}),'eeg','file_proc_info','-v7.3');
             end  
         end
         clearvars -except grp_proc_info_in src_dir curr_file qual_control params errorLog dirNames

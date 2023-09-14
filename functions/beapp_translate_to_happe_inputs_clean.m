@@ -48,7 +48,11 @@ if grp_proc_info.src_data_type == 1 %baseline
 else %condition baseline or event related
     params.paradigm.task =1; %1 maps to 'task';
     params.paradigm.ERP.on = grp_proc_info.ERPAnalysis;
-    params.paradigm.onsetTags = grp_proc_info.beapp_event_code_onset_strs; % used to be this UI_cellArray(1,{}) ;
+    if grp_proc_info.happe_segment_on
+        params.paradigm.onsetTags = grp_proc_info.beapp_event_code_onset_strs; % used to be this UI_cellArray(1,{}) ;
+    else
+         params.paradigm.onsetTags = {};
+    end
 end
 % Line below copied from setParams SET QC FREQS BASED ON THE PARADIGM: Use the paradigm to determine which set of frequencies to use in evaluating pipeline metrics.
 if params.paradigm.ERP.on; params.QCfreqs = [.5, 1, 2, 5, 8, 12, ...

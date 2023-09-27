@@ -21,6 +21,7 @@ elseif strcmp(new_or_existing_run,'existing')
     load([load_template_path,filesep,load_template_file],'grp_proc_info');
     grp_proc_info = reset_beapp_path_defaults(grp_proc_info); % update paths for current computer
     grp_proc_info = set_beapp_path(grp_proc_info);
+    grp_proc_info = sync_beapp_toggle_mods(grp_proc_info); % backwards compatibility for old gui runs, 
     else 
         warndlg('No template was selected, please select a template to load or create a new template');
     end

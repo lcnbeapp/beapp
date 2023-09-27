@@ -50,10 +50,10 @@ net_10_20_equiv = (net_library_options{logical(sum(cell2mat((cellfun(@(x) strcmp
 if grp_proc_info_in.beapp_ica_run_all_10_20 && any(sum(isnan(cell2mat(net_10_20_equiv)),2) > 0)
     grp_proc_info_in.beapp_ica_10_20_chans_lbls = cellfun(@(x) x(~isnan(x)),net_10_20_equiv,'UniformOutput',false);
     grp_proc_info_in.beapp_ica_run_all_10_20 = 0;
-    grp_proc_info_in.name_selected_10_20_chans_lbls = cellfun(@(x) grp_proc_info_in.name_10_20_elecs(logical(~isnan(x))),net_10_20_equiv,'UniformOutput',false);
-else
-    grp_proc_info_in.name_selected_10_20_chans_lbls = repmat(grp_proc_info_in.name_selected_10_20_chans_lbls,size(net_10_20_equiv,1),1); %Copy 10_20_labels for each unique net
 end
+% set name_selected_10_20_chans_lbls, will be equivalent to grp_proc_info.name_10_20_elecs if all 10-20 channels are present in net 
+grp_proc_info_in.name_selected_10_20_chans_lbls = cellfun(@(x) grp_proc_info_in.name_10_20_elecs(logical(~isnan(x))),net_10_20_equiv,'UniformOutput',false);
+
 
 %% set output directories, create temporary report
 [grp_proc_info_in,modnames,first_mod_ind] = beapp_dir_prep(grp_proc_info_in);

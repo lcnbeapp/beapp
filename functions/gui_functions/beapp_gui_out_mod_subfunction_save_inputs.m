@@ -214,8 +214,10 @@ switch current_sub_panel
         
         
     otherwise 
-        warndlg (['Output module ' current_panel ' is not yet available in BEAPP']);
-        
+        warndlg (['Output module ' current_sub_panel ' is not yet available in BEAPP GUI']);
+
+        grp_proc_info.beapp_toggle_mods{current_sub_panel,'Module_On'} = 0;
+
 end
 if ~isequal(strhalt_adv,'')
     grp_proc_info = beapp_gui_adv_out_mod_settings_save_inputs(current_sub_panel,resstruct_adv_out_mod_settings,grp_proc_info);

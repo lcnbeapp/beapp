@@ -11,7 +11,7 @@ switch current_sub_panel
         empty_10_cell = cell(10,1);
         empty_10_cell(:) = deal({''});
         
-        out_mod_inds = find(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out'));
+        out_mod_inds = find(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out')|ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'psd'));
         bw_names = empty_10_cell;
         bw_low_freqs = NaN(10,1);
         bw_high_freqs = NaN(10,1);
@@ -194,7 +194,11 @@ switch current_sub_panel
          skipline_panel ='off';
              %todo: add method dropdown
     otherwise
-        warndlg (['Output module ' current_panel ' is not yet available in BEAPP']);
+        warndlg (['Output module ' current_sub_panel ' is not yet available in BEAPP GUI, please turn off']);
+        out_mod_button_list = [{{'style','text','string','This panel does not have settings'}}];
+        out_mod_button_geometry ={1};
+       out_mod_ver_geometry =1;
+       skipline_panel = 'on';
         
 end
 

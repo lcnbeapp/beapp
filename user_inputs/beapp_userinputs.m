@@ -8,7 +8,7 @@
 % 
 % Contributors to BEAPP:
 % April R. Levin, MD (april.levin@childrens.harvard.edu)
-% Adriana Méndez Leal (asmendezleal@gmail.com)
+% Adriana MÃ©ndez Leal (asmendezleal@gmail.com)
 % Laurel Gabard-Durnam, PhD (laurel.gabarddurnam@gmail.com)
 % Heather M. O'Leary (Heather.oleary1@gmail.com)
 % 
@@ -17,7 +17,7 @@
 % april.levin@childrens.harvard.edu
 %
 % In publications, please reference:
-% Levin AR, Méndez Leal AS, Gabard-Durnam LJ and O’Leary HM (2018) 
+% Levin AR, MÃ©ndez Leal AS, Gabard-Durnam LJ and Oâ€™Leary HM (2018) 
 % BEAPP: The Batch Electroencephalography Automated Processing Platform.
 %  Front. Neurosci. 12:513. doi: 10.3389/fnins.2018.00513
 %
@@ -79,14 +79,14 @@
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Children’s Hospital (BCH), the BCH Department of
+% In no event shall Boston Childrenâ€™s Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Children’s Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Childrenâ€™s Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided “as is.” Boston Children’s 
+% damage. Software and documentation is provided â€œas is.â€ Boston Childrenâ€™s 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -133,6 +133,10 @@ grp_proc_info.src_linenoise= 60; % def = 60. for the notch filter, HAPPE,cleanli
 grp_proc_info.src_unique_nets= {''}; % def ={''} If not running HAPP-E with multiple nets, optional for speed. Required for more than one net if running HAPP-E
 grp_proc_info.epoch_inds_to_process = []; % def = []. ex [1], [3,4]Index of desired epochs to analyze (for ex. if resting is always in the first epoch, for baseline analysis = [1]);
 grp_proc_info.src_eeg_vname={'EEG_Segment1','Category_1_Segment1','Category_1','EEGSegment1','CA61_011419_L0A'}; %possible variable name of the EEG data EEG_Segment1
+
+%Formatting specifications: Optional Diagnosis
+grp_proc_info.include_diagnosis = 1; %Default = 0, if 1, pulls diagnosis information from file info table, and will sort files based on that
+grp_proc_info.diagnosis_map={}; % Default will be empty, should be nX2 array where n = the number of distinct diagnoses and n>0, column 1 is the number and column two is the string label. ex {1, 'TD'; 2, 'ASD'}
 
 %Formatting specifications: Events
 %Formatting specifications: Event Offsets

@@ -11,21 +11,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 % 
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided ìas is.î Boston Childrenís 
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -52,6 +52,17 @@ run_time_for_file = toc;
 file_proc_info.hist_run_table{curr_mod,{'Mod_Run','Mod_Run_Time_for_File'}} = [1,run_time_for_file];
 file_proc_info.hist_run_table{curr_mod,{'Time_Run_Start','Curr_Run_Tag','Mod_Input_Dir','Mod_Output_Dir'}}...
     = {char(grp_proc_info_in.hist_run_tag),grp_proc_info_in.beapp_curr_run_tag,mod_input_dir,grp_proc_info_in.beapp_toggle_mods{curr_mod,'Module_Dir'}};
+
+%TH
+if strcmp(curr_mod,'pac') || strcmp(curr_mod,'itpc')
+    if grp_proc_info_in.include_diagnosis
+        diagnosis_folder=grp_proc_info_in.diagnosis_map{([grp_proc_info_in.diagnosis_map{:,[1]}]==file_proc_info.diagnosis),2};
+        if exist(fullfile(cd,diagnosis_folder),'file')==0
+            mkdir(cd,diagnosis_folder);
+        end
+        cd(fullfile(cd, diagnosis_folder));
+    end
+end
 
 % order fields
 file_proc_info = orderfields(file_proc_info);

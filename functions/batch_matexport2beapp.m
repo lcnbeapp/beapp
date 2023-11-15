@@ -8,21 +8,21 @@
 % ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 % The Batch Electroencephalography Automated Processing Platform (BEAPP)
 % Copyright (C) 2015, 2016, 2017
-% Authors: AR Levin, AS MÈndez Leal, LJ Gabard-Durnam, HM O'Leary
+% Authors: AR Levin, AS M√©ndez Leal, LJ Gabard-Durnam, HM O'Leary
 % 
 % This software is being distributed with the hope that it will be useful,
 % but WITHOUT ANY WARRANTY; without even implied warranty of
 % MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See GNU General
 % Public License for more details.
 % 
-% In no event shall Boston Childrenís Hospital (BCH), the BCH Department of
+% In no event shall Boston Children‚Äôs Hospital (BCH), the BCH Department of
 % Neurology, the Laboratories of Cognitive Neuroscience (LCN), or software 
 % contributors to BEAPP be liable to any party for direct, indirect, 
 % special, incidental, or consequential damages, including lost profits, 
 % arising out of the use of this software and its documentation, even if 
-% Boston Childrenís Hospital,the Laboratories of Cognitive Neuroscience, 
+% Boston Children‚Äôs Hospital,the Laboratories of Cognitive Neuroscience, 
 % and software contributors have been advised of the possibility of such 
-% damage. Software and documentation is provided ìas is.î Boston Childrenís 
+% damage. Software and documentation is provided ‚Äúas is.‚Äù Boston Children‚Äôs 
 % Hospital, the Laboratories of Cognitive Neuroscience, and software 
 % contributors are under no obligation to provide maintenance, support, 
 % updates, enhancements, or modifications.
@@ -75,6 +75,21 @@ grp_proc_info_in.src_net_typ_all = beapp_file_info_table.NetType(indexes_in_tabl
 grp_proc_info_in.src_srate_all = beapp_file_info_table.SamplingRate(indexes_in_table);
 grp_proc_info_in.src_unique_nets = unique(grp_proc_info_in.src_net_typ_all,'stable');
 
+%TH
+if grp_proc_info_in.include_diagnosis
+    if ~(length(unique([grp_proc_info_in.diagnosis_map{:,1}]))==length([grp_proc_info_in.diagnosis_map{:,1}]))
+        error('BEAPP: User has assigned more than one diagnosis string to a single number in grp_proc_info_in.diagnosis_map');
+    else
+    grp_proc_info_in.diagnosis_all=beapp_file_info_table.Diagnosis(indexes_in_table);  
+        if ismember(0,(ismember(grp_proc_info_in.diagnosis_all,[grp_proc_info_in.diagnosis_map{:,1}])))
+            file_number= find(ismember(grp_proc_info_in.diagnosis_all,[grp_proc_info_in.diagnosis_map{:,1}])==0);
+            error(['BEAPP: User has assigned diagnosis number ' num2str(grp_proc_info_in.diagnosis_all(file_number(1))) ' to ' grp_proc_info_in.src_fname_all{file_number(1)} ' in info table. Number not included in grp_proc_info_in.diagnosis_map'])
+        end 
+    end
+else
+    grp_proc_info_in.diagnosis_all = NaN(length(indexes_in_table));
+end
+
 % check if user has given file-specific line noise specifications
 if ~isnumeric(grp_proc_info_in.src_linenoise)
     if strcmp(grp_proc_info_in.src_linenoise,'input_table')
@@ -113,6 +128,7 @@ for curr_file=1:length(grp_proc_info_in.src_fname_all);
         % save source file variables
         file_proc_info.src_fname=grp_proc_info_in.src_fname_all(curr_file);
         file_proc_info.src_srate=grp_proc_info_in.src_srate_all(curr_file);
+        file_proc_info.diagnosis=grp_proc_info_in.diagnosis_all(curr_file); %TH
         file_proc_info.src_nchan=size(eeg{1},1);
         file_proc_info.src_epoch_nsamps(1)=size(eeg{1},2);
         file_proc_info.src_num_epochs = 1;

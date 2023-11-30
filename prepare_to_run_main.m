@@ -10,7 +10,7 @@ end
 
 grp_proc_info_in.bw_total_freqs = sort(grp_proc_info_in.bw_total_freqs);
 
-if grp_proc_info_in.src_format_typ ==3
+if grp_proc_info_in.src_format_typ ==3 || grp_proc_info_in.src_format_typ ==5
     grp_proc_info_in.beapp_toggle_mods{'format','Module_Output_Type'} = {'seg'};
 end
 

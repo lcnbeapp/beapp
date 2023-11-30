@@ -42,6 +42,7 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
     tic;
     
     % save filename and path
+
     file_proc_info.src_fname=grp_proc_info_in.src_fname_all(curr_file);
     file_proc_info.beapp_fname=grp_proc_info_in.beapp_fname_all(curr_file);
     full_filepath=strcat(grp_proc_info_in.src_dir{1},filesep,file_proc_info.src_fname{1});
@@ -134,16 +135,18 @@ for curr_file = 1: length(grp_proc_info_in.src_fname_all)
     % if segmented files, make data into condition x epoch array containing
     % 3d data arrays, as produces in segmentation modules
     % throw out bad segments if desired
-    if grp_proc_info_in.src_format_typ ==3
+    if grp_proc_info_in.src_format_typ ==5
         
-        if ndims (eeg) <3 && ~isempty(eeg)
+        if ndims (eeg{1,1}) <3 && ~isempty(eeg{1,1})
             % if only one segment, let the user know in case it's
             % unsegmented data
             warning ([file_proc_info.beapp_fname{1} ': src format typ indicated as segmented .set. File only contains one segment, confirm pre-segmented']);
         end
-        
-        [eeg_w, file_proc_info] = format_segmented_mff_data (eeg,file_proc_info,...
-            grp_proc_info_in.beapp_event_eprime_values.condition_names,grp_proc_info_in.mff_seg_throw_out_bad_segments);
+
+        % Read in epoch information - YB added
+file_proc_info = beapp_read_set_segment_info(EEG_struct,file_proc_info,grp_proc_info_in);        
+        [eeg_w, file_proc_info] = format_segmented_set_data (eeg{1,1},file_proc_info,...
+            grp_proc_info_in.beapp_event_eprime_values.condition_names,0,grp_proc_info_in.src_data_type);
         if ~all(cellfun(@isempty,eeg_w))
             save(file_proc_info.beapp_fname{1},'file_proc_info','eeg_w');
         end

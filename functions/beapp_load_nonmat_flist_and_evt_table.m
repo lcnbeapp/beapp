@@ -57,7 +57,7 @@ if isempty(src_file_list)
 end
 
 % pull in event offsets or individual linenoise freqs from table if needed 
-if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ == 4
+if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ == 4 || src_format_typ == 5
    load(event_file_info_table_loc);
     if run_per_file 
         beapp_file_info_table =  beapp_file_info_table(file_idx,:);
@@ -65,11 +65,11 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ 
     % find files listed both in source directory and offset info table
     [src_fname_all,ind_table] =  intersect(beapp_file_info_table.FileName,src_file_list,'stable');
     src_fname_all = src_fname_all';
-    
+   
     if isempty(src_fname_all)
         error (['BEAPP: User chose to use an offset or linenoise table, but no files listed in table were found in source directory' src_dir{1}]);
     end 
-    
+   
     % load offset info if file specific,otherwise use group value for all
     if strcmp(event_tag_offsets,'input_table')
         src_offsets_in_ms_all = beapp_file_info_table.FileOffset(ind_table);
@@ -83,7 +83,7 @@ if ~isnumeric(event_tag_offsets) || ~isnumeric(src_linenoise) || src_format_typ 
     else
        src_linenoise_all = src_linenoise *ones(1,length(src_fname_all));
     end 
-    
+   
     % EEGLAB, often will need to pull net name
     if src_format_typ == 4 || src_format_typ == 5
         % store group net types and sampling rates (from table)

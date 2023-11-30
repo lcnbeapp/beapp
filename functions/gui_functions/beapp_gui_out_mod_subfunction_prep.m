@@ -188,9 +188,10 @@ switch current_sub_panel
              {{'style','text','string','Specify participants to save reports for (leave blank to not specify)'}},...
              {{'style','edit','string',save_prt_str,'tag','pac_save_participants'}},...
              {{'style','text','string','Specify channels to save reports for (leave blank to not specify, seperate by spaces)'}},... 
-             {{'style','edit','string',num2str(grp_proc_info.pac_save_channels),'tag','pac_save_channels'}}];
-         out_mod_button_geometry = {1 [.5 .5] [.5 .25 .25] [.5 .5] [.5 .5] [.5 .25 .25] [.5 .5] [.5 .5] [.5 .5] [.5 .5] [.75 .25] [.75 .25]};
-         out_mod_ver_geometry=  [1 1.5 1 1 1 1 1 1 1 1 1 1];
+             {{'style','edit','string',num2str(grp_proc_info.pac_save_channels),'tag','pac_save_channels'}},...
+             extra_space_line,{{'style','pushbutton','string', 'Adv. PAC Settings','CallBack',['beapp_gui_trigger_adv_settings_panel']}}];%HS added Adv. pac settings button, 11/3/2023
+         out_mod_button_geometry = {1 [.5 .5] [.5 .25 .25] [.5 .5] [.5 .5] [.5 .25 .25] [.5 .5] [.5 .5] [.5 .5] [.5 .5] [.75 .25] [.75 .25] [.7 .3]};% HS,YB added '[.7 .3]' horizontal split for new button, 11/6/23
+         out_mod_ver_geometry=  [1 1.5 1 1 1 1 1 1 1 1 1 1 1];%HS,YB added another 1 for vertical space of adv. pac button, 11/6/23
          skipline_panel ='off';
              %todo: add method dropdown
     otherwise

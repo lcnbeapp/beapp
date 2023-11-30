@@ -10,7 +10,10 @@ strhalt_out_mod_out = '';
 skipline_panel = 'on';
 
 % pull a list of pre-processing modules
-out_mod_sub_panel_list = ['out_mod_general'; grp_proc_info.beapp_toggle_mods.Mod_Names(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out'))];
+% out_mod_sub_panel_list = ['out_mod_general'; grp_proc_info.beapp_toggle_mods.Mod_Names(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out'))];
+% HS add psd to panel list, HS 10/31/23
+out_mod_sub_panel_list = ['out_mod_general'; grp_proc_info.beapp_toggle_mods.Mod_Names(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out') | ...
+    ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'psd'))];
 
 if length(out_mod_sub_panel_list) ==1
     show_next_button = 'off';
@@ -38,7 +41,8 @@ while ~strcmp(strhalt_out_mod_out,'returninginputui_done')
     
     % change available panels based on user data type selection
     if out_mod_sub_panel_ctr ==1
-        cont_mods_log =  ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out');
+        %HS added | 'psd' output type 11/03/23
+        cont_mods_log =  ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out') | ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'psd');
         on_cont_mods = all([cont_mods_log,grp_proc_info.beapp_toggle_mods.Module_On],2);
         out_mod_sub_panel_list = ['out_mod_general'; grp_proc_info.beapp_toggle_mods.Mod_Names(on_cont_mods)];
     end

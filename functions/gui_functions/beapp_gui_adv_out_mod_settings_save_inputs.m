@@ -36,6 +36,15 @@ function grp_proc_info = beapp_gui_adv_out_mod_settings_save_inputs(current_sub_
             grp_proc_info.beapp_itpc_xlsout_av_on = resstruct_adv_out_mod_settings.itpc_xls_mean_on;
             grp_proc_info.beapp_itpc_params.use_common_baseline = resstruct_adv_out_mod_settings.itpc_comm_base_on;
             grp_proc_info.beapp_itpc_params.common_baseline_idx= str2double(resstruct_adv_out_mod_settings.itpc_comm_base_idx);
+
+% HS add PAC module 11/6/2023
+        case 'pac'
+            grp_proc_info.slid_win_on = resstruct_adv_out_mod_settings.slid_win_on;
+            grp_proc_info.slid_win_sz = str2double(resstruct_adv_out_mod_settings.slid_win_sz);
+            grp_proc_info.pac_calc_zscores = resstruct_adv_out_mod_settings.pac_calc_zscores;
+            grp_proc_info.pac_calc_btwn_chans = resstruct_adv_out_mod_settings.pac_calc_btwn_chans;
+            grp_proc_info.pac_variable_hf_filt = resstruct_adv_out_mod_settings.pac_variable_hf_filt;
+            grp_proc_info.pac_save_amp_dist = resstruct_adv_out_mod_settings.pac_save_amp_dist;
             
     end
 end

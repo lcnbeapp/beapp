@@ -2,6 +2,7 @@ function [adv_out_mod_button_list,adv_out_mod_button_geometry,adv_out_mod_ver_ge
     beapp_gui_adv_out_mod_settings_prep(current_sub_panel,grp_proc_info)
 
 extra_space_line = {{'style','text','string',''}};
+
 switch current_sub_panel
     case 'psd'
         panel_title = 'Advanced PSD Settings';
@@ -45,8 +46,21 @@ switch current_sub_panel
             {{'style','edit','string',grp_proc_info.beapp_itpc_params.common_baseline_idx,'tag','itpc_comm_base_idx'}}];
         adv_out_mod_button_geometry = {1 1 1 [.5 .5]};
         adv_out_mod_ver_geometry = [1 1 1 1];
+
+%HS add advanced pac settings 11/03/2023
+    case 'pac'
+            panel_title = 'Advanced PAC Settings';
+        adv_out_mod_button_list = [{{'style','checkbox','string','Measure PAC across time', 'tag', 'slid_win_on', 'Value', grp_proc_info.slid_win_on}}...
+            {{'style', 'text', 'string', 'Size of sliding window (seconds):'}}...
+            {{'style', 'edit', 'string', grp_proc_info.slid_win_sz, 'tag', 'slid_win_sz'}}...
+            {{'style', 'checkbox', 'string', 'Calc. Z-score (Requires a larger window size & will take longer for PAC to run)', 'tag', 'pac_calc_zscores', 'Value', grp_proc_info.pac_calc_zscores}}...
+            {{'style', 'checkbox', 'string', 'Compute PAC between 2 channels (instead of within each channel)', 'tag', 'pac_calc_btwn_chans', 'Value', grp_proc_info.pac_calc_btwn_chans}}...
+            {{'style', 'checkbox', 'string', 'Vary the high frequency filter width to prevent overlap with low frequency (not recommended)', 'tag', 'pac_variable_hf_filt', 'Value', grp_proc_info.pac_variable_hf_filt}}...
+            {{'style', 'checkbox', 'string', 'Save the binned high frequency amplitude distribution', 'tag', 'pac_save_amp_dist', 'Value', grp_proc_info.pac_save_amp_dist}}];
+        adv_out_mod_button_geometry ={1 [.5 .5] 1 1 1 1};
+        adv_out_mod_ver_geometry =[1 1 1 1 1 1];  
         
-       otherwise
+    otherwise
         adv_out_mod_button_list = [{{'style','text','string','This panel does not have advanced settings'}}];
         adv_out_mod_button_geometry ={1};
         adv_out_mod_ver_geometry =1;

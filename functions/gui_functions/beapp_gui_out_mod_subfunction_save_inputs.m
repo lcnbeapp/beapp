@@ -5,7 +5,7 @@ switch current_sub_panel
       case 'out_mod_general'
           
           % grab preproc module indicies
-          out_mod_inds = find(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out'));
+          out_mod_inds = find(ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'out') |ismember(grp_proc_info.beapp_toggle_mods.Module_Output_Type,'psd'));%%YB 10/20/23
           
           % save module on settings
           grp_proc_info.beapp_toggle_mods.Module_On(out_mod_inds) = ...

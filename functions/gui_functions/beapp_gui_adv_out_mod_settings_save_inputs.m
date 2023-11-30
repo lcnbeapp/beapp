@@ -39,8 +39,6 @@ function grp_proc_info = beapp_gui_adv_out_mod_settings_save_inputs(current_sub_
 
 % HS add PAC module 11/6/2023
         case 'pac'
-            grp_proc_info.slid_win_on = resstruct_adv_out_mod_settings.slid_win_on;
-            grp_proc_info.slid_win_sz = str2double(resstruct_adv_out_mod_settings.slid_win_sz);
             grp_proc_info.pac_calc_zscores = resstruct_adv_out_mod_settings.pac_calc_zscores;
             grp_proc_info.pac_calc_btwn_chans = resstruct_adv_out_mod_settings.pac_calc_btwn_chans;
             grp_proc_info.pac_variable_hf_filt = resstruct_adv_out_mod_settings.pac_variable_hf_filt;

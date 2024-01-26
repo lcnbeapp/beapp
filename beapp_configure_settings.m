@@ -39,7 +39,8 @@ beapp_set_input_file_locations;
 if strcmp(grp_proc_info.beapp_alt_user_input_location{1},'')
     beapp_userinputs;
 else
-    [~,input_script_name] = fileparts(grp_proc_info.beapp_alt_user_input_location{1});
+    [filepath,input_script_name] = fileparts(grp_proc_info.beapp_alt_user_input_location{1}); %RL edit
+    cd(filepath) %RL edit
     eval(input_script_name); clear input_script_name;
 end
 

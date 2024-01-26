@@ -39,27 +39,36 @@
 function [evt_info,any_behav_vals] =  beapp_exclude_trials_using_behavioral_codes (evt_info)
 behav_value_current = 0;
 any_behav_vals = 0;
+bad_val = '1'; %RL edit
 
 for curr_epoch = 1:length(evt_info)
     
     % move backwards through tags
     for curr_tag = length(evt_info{curr_epoch}): -1: 1 
         
-        % if tag has a behavioral code, save it to apply to closest evt tag
-        % of interest
+        %RL edit start
         if ~isnan(evt_info{curr_epoch}(curr_tag).behav_code)
-            behav_value_current = evt_info{curr_epoch}(curr_tag).behav_code;
-            any_behav_vals = 1;
-        
-            % if tag is evt tag AND there isn't already a behavioral code,
-            % use the saved behavioral code for this tag
-        elseif ~strcmp(char(evt_info{curr_epoch}(curr_tag).type),'Non_Target')
-             evt_info{curr_epoch}(curr_tag).behav_code = behav_value_current;
-             
-             % if bad value, exclude this event
-             if behav_value_current
+            if strcmp(char(evt_info{curr_epoch}(curr_tag).behav_code),bad_val)
                 evt_info{curr_epoch}(curr_tag).type = 'Non_Target';
-             end
-        end     
+            end
+        end
+
+%         % if tag has a behavioral code, save it to apply to closest evt tag
+%         % of interest
+%         if ~isnan(evt_info{curr_epoch}(curr_tag).behav_code)
+%             behav_value_current = evt_info{curr_epoch}(curr_tag).behav_code;
+%             any_behav_vals = 1;
+%         
+%             % if tag is evt tag AND there isn't already a behavioral code,
+%             % use the saved behavioral code for this tag
+%         elseif ~strcmp(char(evt_info{curr_epoch}(curr_tag).type),'Non_Target')
+%              evt_info{curr_epoch}(curr_tag).behav_code = behav_value_current;
+%              
+%              % if bad value, exclude this event
+%              if behav_value_current
+%                 evt_info{curr_epoch}(curr_tag).type = 'Non_Target';
+%              end
+%         end
+        %RL edit end
     end
 end

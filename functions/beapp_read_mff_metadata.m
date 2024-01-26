@@ -82,11 +82,13 @@ file_proc_info.happe.etc.info.src_montage_name = info_n_obj.getInfoNFileTypeInfo
 file_proc_info.happe_er.etc.info.calibration = get_mff_calibration(calibVal);
 file_proc_info.happe_er.etc.info.InfoNFileType.value = info_n_obj.getInfoNFileType;
 file_proc_info.happ_er.xmax = 1;
-if  isempty(categories_info_obj)
-    file_proc_info.happ_er.xmin = 0;
-else
-    file_proc_info.happ_er.xmin = get_mff_xmin(categories_info_obj,recording_info_obj.getMFFVersion);
-end
+%RL edit, comment out
+% if  isempty(categories_info_obj)
+%     file_proc_info.happ_er.xmin = 0;
+% else
+%     file_proc_info.happ_er.xmin = get_mff_xmin(categories_info_obj,recording_info_obj.getMFFVersion);
+% end
+%RL edit end
 
 %__________________________________________________________________________
 file_proc_info.src_nchan = double(signal_block_obj.numberOfSignals);

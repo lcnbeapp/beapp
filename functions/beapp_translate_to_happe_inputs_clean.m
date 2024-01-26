@@ -46,7 +46,7 @@ if grp_proc_info.src_data_type == 1 %baseline
     params.paradigm.ERP.on = 0;
     params.paradigm.onsetTags = {};
 else %condition baseline or event related
-    params.paradigm.task =1; %1 maps to 'task';
+    params.paradigm.task = grp_proc_info.happe_segment_on; %1 maps to 'task'; %RL changed from 1
     params.paradigm.ERP.on = grp_proc_info.ERPAnalysis;
     if grp_proc_info.happe_segment_on
         params.paradigm.onsetTags = grp_proc_info.beapp_event_code_onset_strs; % used to be this UI_cellArray(1,{}) ;

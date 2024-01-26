@@ -149,6 +149,12 @@ if event_tracks.size() > 0
                     end
                 end
                 
+                %RL edit start
+                if strcmp(char(event.getCode), grp_proc_info_in.behavioral_coding.events{1})
+                    evt_info(eventInd).behav_code = true;
+                end
+                %RL edit end
+
                 if ~isfield(evt_info,'evt_cel_type')
                     evt_info(eventInd).evt_cel_type = nan;
                 elseif isempty(evt_info(eventInd).evt_cel_type)

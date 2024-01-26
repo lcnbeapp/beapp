@@ -93,9 +93,18 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
                 % detrend segment according to user preference
                 curr_epoch_curr_cond_eeg_w{curr_condition,1} = detrend_segment(curr_epoch_curr_cond_eeg_w{curr_condition,1},grp_proc_info_in.segment_linear_detrend);
                 
-                cond_seg_counter(cond_seg_counter_curr_ind:cond_seg_counter_curr_ind+size(curr_epoch_curr_cond_eeg_w{curr_condition,1},3)-1) = curr_condition;
-                cond_seg_counter_curr_ind = cond_seg_counter_curr_ind +size(curr_epoch_curr_cond_eeg_w{curr_condition,1},3);
-                
+                %RL edit start
+                if isempty(curr_epoch_curr_cond_eeg_w{curr_condition,1})
+                    continue
+                else
+                try
+                    cond_seg_counter(cond_seg_counter_curr_ind:cond_seg_counter_curr_ind+size(curr_epoch_curr_cond_eeg_w{curr_condition,1},3)-1) = curr_condition;
+                    cond_seg_counter_curr_ind = cond_seg_counter_curr_ind +size(curr_epoch_curr_cond_eeg_w{curr_condition,1},3);
+                catch
+                    a=8
+                end
+                end
+                %RL edit end
                 clear eeg_msk_w_cond curr_cond_curr_epoch_msk
             end
             

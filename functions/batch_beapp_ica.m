@@ -198,8 +198,15 @@ for curr_file=1:length(grp_proc_info_in.beapp_fname_all)
             ICA_report_table.Number_Channels_UserSelected(curr_file) = {length(chan_IDs)};
             ICA_report_table.Number_Good_Channels_Selected_Per_Rec_Period(curr_file) = {ica_report_struct.good_chans_per_rec_period};
             if ~all(cellfun(@isempty,file_proc_info.beapp_bad_chans))
-                tmp = cellfun(@mat2str,file_proc_info.beapp_bad_chans, 'UniformOutput',0);
+                %RL edit start
+                out = cellfun(@mat2str,file_proc_info.beapp_bad_chans, 'UniformOutput',0);
+                tmp = [];
+                for i=1:size(out,1)
+                    tmp = [tmp out{i,1} ';'];
+                end
+                tmp = {tmp};
                 ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) =tmp;
+                %RL edit end
             else
                 ICA_report_table.Interpolated_Channel_IDs_Per_Rec_Period(curr_file) ={''};
             end

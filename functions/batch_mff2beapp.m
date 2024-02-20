@@ -97,7 +97,7 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     try
         curr_file_obj = mff_getObject(com.egi.services.mff.api.MFFResourceType.kMFF_RT_MFFFile, [], full_filepath);
     catch err
-        if strcmp(err.message,'Undefined variable "com" or class "com.egi.services.mff.api.MFFResourceType.kMFF_RT_MFFFile".')
+        if strcmp(err.message,'Undefined variable "com" or class "com.egi.services.mff.api.MFFResourceType.kMFF_RT_MFFFile".') || strcmp(err.message, 'Unable to resolve the name com.egi.services.mff.api.MFFResourceType.kMFF_RT_MFFFile.') %RL edit added or
             javaaddpath(which(grp_proc_info_in.beapp_format_mff_jar_lib));
             addpath(ref_dir);
         end
@@ -182,6 +182,11 @@ for curr_file = 1:length(grp_proc_info_in.src_fname_all)
     
     % delete data inside recording periods not selected
     if ~ isempty(file_proc_info.epoch_inds_to_process)
+        if strcmp(file_proc_info.epoch_inds_to_process, 'input_table') %RL added if statement
+            load(grp_proc_info_in.beapp_alt_beapp_file_info_table_location{1,1}, 'beapp_file_info_table')
+            file_proc_info.epoch_inds_to_process = beapp_file_info_table(strcmp(beapp_file_info_table.FileName,file_proc_info.src_fname),:).Epoch_Inds{1};
+            clear beapp_file_info_table
+        end
         try
             eeg = eeg(file_proc_info.epoch_inds_to_process);
             file_proc_info.evt_info = file_proc_info.evt_info(file_proc_info.epoch_inds_to_process);

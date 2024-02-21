@@ -40,7 +40,7 @@ if strcmp(grp_proc_info.beapp_alt_user_input_location{1},'')
     beapp_userinputs;
 else
     [filepath,input_script_name] = fileparts(grp_proc_info.beapp_alt_user_input_location{1}); %RL edit
-    eval(fullfile(filepath, input_script_name)); clear input_script_name; %RL edit added fullfile()
+    run(fullfile(filepath, input_script_name)); clear input_script_name filepath; %RL edit add run and fullfile
 end
 
 % get advanced user inputs from default or user specified location

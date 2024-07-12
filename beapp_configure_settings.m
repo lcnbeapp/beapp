@@ -39,8 +39,8 @@ beapp_set_input_file_locations;
 if strcmp(grp_proc_info.beapp_alt_user_input_location{1},'')
     beapp_userinputs;
 else
-    [~,input_script_name] = fileparts(grp_proc_info.beapp_alt_user_input_location{1});
-    eval(input_script_name); clear input_script_name;
+    [filepath,input_script_name] = fileparts(grp_proc_info.beapp_alt_user_input_location{1});
+    run(fullfile(filepath,input_script_name)); clear filepath input_script_name;
 end
 
 % get advanced user inputs from default or user specified location
@@ -48,8 +48,8 @@ if grp_proc_info.beapp_advinputs_on
     if strcmp(grp_proc_info.beapp_alt_adv_user_input_location{1},'')
         beapp_advinputs;
     else
-        [~,adv_input_script_name] = fileparts(grp_proc_info.beapp_alt_adv_user_input_location{1});
-        eval(adv_input_script_name);clear adv_input_script_name;
+        [adv_filepath,adv_input_script_name] = fileparts(grp_proc_info.beapp_alt_adv_user_input_location{1});
+        run(fullfile(adv_filepath,adv_input_script_name));clear adv_filepath adv_input_script_name;
     end
 end
 

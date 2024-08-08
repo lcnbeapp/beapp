@@ -324,17 +324,17 @@ grp_proc_info.beapp_xlsout_log_on=0; %toggles on that the natural log should be 
 grp_proc_info.beapp_xlsout_log10_on=1; %toggles on that the log10 should be reported
 grp_proc_info.beapp_xlsout_elect_indx=1:129; %Channel numbers for the report. If the channel numbers are net dependent then report all possible net channel numbers for all nets, can't specify different channels for different nets
 %% ITPC default variables
-grp_proc_info.beapp_itpc_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
+grp_proc_info.beapp_itpc_ersp_params.win_size=0.256;%64; %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
 grp_proc_info.beapp_itpc_xlsout_mx_on=1; % report max itpc
 grp_proc_info.beapp_itpc_xlsout_av_on=1; % report mean itpc
-grp_proc_info.beapp_itpc_params.baseline_norm=1;
-grp_proc_info.beapp_itpc_params.use_common_baseline=0;
-grp_proc_info.beapp_itpc_params.common_baseline_idx=1;
-grp_proc_info.beapp_itpc_params.set_freq_range=0;
-grp_proc_info.beapp_itpc_params.min_freq= 2;
-grp_proc_info.beapp_itpc_params.max_freq=50;
-grp_proc_info.beapp_itpc_params.min_cyc=1;
-grp_proc_info.beapp_itpc_params.max_cyc=8;
+grp_proc_info.beapp_itpc_ersp_params.baseline_norm=1;
+grp_proc_info.beapp_itpc_ersp_params.use_common_baseline=0;
+grp_proc_info.beapp_itpc_ersp_params.common_baseline_idx=1;
+grp_proc_info.beapp_itpc_ersp_params.set_freq_range=0;
+grp_proc_info.beapp_itpc_ersp_params.min_freq= 2;
+grp_proc_info.beapp_itpc_ersp_params.max_freq=50;
+grp_proc_info.beapp_itpc_ersp_params.min_cyc=1;
+grp_proc_info.beapp_itpc_ersp_params.max_cyc=8;
 %% FOOOF default variables 
 grp_proc_info.fooof_min_freq = 1; %The frequency range of the psd fooof will run on
 grp_proc_info.fooof_max_freq = 50;

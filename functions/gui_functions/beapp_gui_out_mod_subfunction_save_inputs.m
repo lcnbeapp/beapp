@@ -69,17 +69,17 @@ switch current_sub_panel
     case 'itpc'
 %         tmp_win_size = str2double(resstruct_out_mod_settings.itpc_win_size);
 %         if isnan(tmp_win_size) || isempty(tmp_win_size) || tmp_win_size<0
-%              warndlg( ['ITPC window size must be a number greater than 0. BEAPP will use previously entered value: '  num2str(grp_proc_info.beapp_itpc_params.win_size)]);
+%              warndlg( ['ITPC window size must be a number greater than 0. BEAPP will use previously entered value: '  num2str(grp_proc_info.beapp_itpc_ersp_params.win_size)]);
 %         else 
 %             %the win_size (in seconds) to calculate ERSP and ITPC from the ERPs of the composed dataset (e.g. should result in a number of samples an integer and divide trials equaly ex: 10)
-%              grp_proc_info.beapp_itpc_params.win_size=  tmp_win_size; 
+%              grp_proc_info.beapp_itpc_ersp_params.win_size=  tmp_win_size; 
 %         end
-        grp_proc_info.beapp_itpc_params.baseline_norm = resstruct_out_mod_settings.itpc_base_norm_on;
-        grp_proc_info.beapp_itpc_params.set_freq_range = resstruct_out_mod_settings.itpc_set_freq_range;
-        grp_proc_info.beapp_itpc_params.min_freq = str2double(resstruct_out_mod_settings.itpc_min_freq);
-        grp_proc_info.beapp_itpc_params.max_freq = str2double(resstruct_out_mod_settings.itpc_max_freq);
-        grp_proc_info.beapp_itpc_params.min_cyc = str2double(resstruct_out_mod_settings.itpc_min_cyc);
-        grp_proc_info.beapp_itpc_params.max_cyc = str2double(resstruct_out_mod_settings.itpc_max_cyc);
+        grp_proc_info.beapp_itpc_ersp_params.baseline_norm = resstruct_out_mod_settings.itpc_base_norm_on;
+        grp_proc_info.beapp_itpc_ersp_params.set_freq_range = resstruct_out_mod_settings.itpc_set_freq_range;
+        grp_proc_info.beapp_itpc_ersp_params.min_freq = str2double(resstruct_out_mod_settings.itpc_min_freq);
+        grp_proc_info.beapp_itpc_ersp_params.max_freq = str2double(resstruct_out_mod_settings.itpc_max_freq);
+        grp_proc_info.beapp_itpc_ersp_params.min_cyc = str2double(resstruct_out_mod_settings.itpc_min_cyc);
+        grp_proc_info.beapp_itpc_ersp_params.max_cyc = str2double(resstruct_out_mod_settings.itpc_max_cyc);
         
         %flags the export data to xls report option on
         grp_proc_info.beapp_toggle_mods{'itpc','Module_Xls_Out_On'} = resstruct_out_mod_settings.itpc_xls_rep_on;  

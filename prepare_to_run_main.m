@@ -2,6 +2,18 @@ function grp_proc_info_in = prepare_to_run_main (grp_proc_info_in)
 
 grp_proc_info_in.hist_run_tag = datetime('now'); 
 %% check user inputs and adjust settings
+
+% Back Compatability for field update beapp_itpc_params --> beapp_itpc_ersp_params change
+if isfield(grp_proc_info_in,'beapp_itpc_params')
+        overlapped_fields = intersect(fields( grp_proc_info_in.beapp_itpc_ersp_params),fields( grp_proc_info_in.beapp_itpc_params));
+        fields_to_update = overlapped_fields(cellfun(@(x) ~isequal(grp_proc_info_in.beapp_itpc_ersp_params.(x),grp_proc_info_in.beapp_itpc_params.(x)),overlapped_fields));
+        warning(sprintf(['Old user inputs field "beapp_itpc_params" detected wtih conflicting values from new fields "beapp_itpc_ersp_params", BEAPP will overwrite beapp_itpc_ersp_params and remove old fields:\n', repmat('''%s''\n', 1, numel(fields_to_update))] ,fields_to_update{:}))
+        for i_f = 1:length(fields_to_update)
+        grp_proc_info_in.beapp_itpc_ersp_params.(fields_to_update{i_f}) = grp_proc_info_in.beapp_itpc_params.(fields_to_update{i_f});
+        end
+        grp_proc_info_in = rmfield(grp_proc_info_in,'beapp_itpc_params');
+end
+
 grp_proc_info_in=orderfields(grp_proc_info_in);
 if ~(islogical(grp_proc_info_in.beapp_toggle_mods.Module_On)&&islogical(grp_proc_info_in.beapp_toggle_mods.Module_Export_On)&&islogical(grp_proc_info_in.beapp_toggle_mods.Module_Xls_Out_On))
     err('User module inputs must be one or zero');
@@ -43,18 +55,6 @@ if ~isempty(nets_to_add)
     add_nets_to_library(net_list,grp_proc_info_in.ref_net_library_options,...
         grp_proc_info_in.ref_net_library_dir, grp_proc_info_in.ref_eeglab_loc_dir,grp_proc_info_in.name_10_20_elecs);  
 end
-
-% check if current net doesn't have all of the 10-20 electrodes, correct
-% use_all_ica_10_20 if so - YB 1/25/23
-net_10_20_equiv = (net_library_options{logical(sum(cell2mat((cellfun(@(x) strcmp(net_library_options.Net_Full_Name,x),grp_proc_info_in.src_unique_nets,'UniformOutput',false))),2)),'Net_10_20_Electrode_Equivalents'});
-if grp_proc_info_in.beapp_ica_run_all_10_20 && any(sum(isnan(cell2mat(net_10_20_equiv)),2) > 0)
-    grp_proc_info_in.beapp_ica_10_20_chans_lbls = cellfun(@(x) x(~isnan(x)),net_10_20_equiv,'UniformOutput',false);
-    grp_proc_info_in.beapp_ica_run_all_10_20 = 0;
-end
-% set name_selected_10_20_chans_lbls, will be equivalent to grp_proc_info.name_10_20_elecs if all 10-20 channels are present in net 
-grp_proc_info_in.name_selected_10_20_chans_lbls = cellfun(@(x) grp_proc_info_in.name_10_20_elecs(logical(~isnan(x))),net_10_20_equiv,'UniformOutput',false);
-
-
 %% set output directories, create temporary report
 [grp_proc_info_in,modnames,first_mod_ind] = beapp_dir_prep(grp_proc_info_in);
 diary off;
@@ -78,3 +78,13 @@ if ~grp_proc_info_in.beapp_toggle_mods{'format','Module_On'}
         grp_proc_info_in.src_unique_nets,grp_proc_info_in.ref_net_library_options,grp_proc_info_in.ref_net_library_dir,...
         grp_proc_info_in.beapp_run_per_file,grp_proc_info_in.beapp_file_idx);
 end
+
+% check if current net doesn't have all of the 10-20 electrodes, correct
+% use_all_ica_10_20 if so - YB 1/25/23
+net_10_20_equiv = (net_library_options{logical(sum(cell2mat((cellfun(@(x) strcmp(net_library_options.Net_Full_Name,x),grp_proc_info_in.src_unique_nets,'UniformOutput',false))),2)),'Net_10_20_Electrode_Equivalents'});
+if grp_proc_info_in.beapp_ica_run_all_10_20 && any(sum(isnan(cell2mat(net_10_20_equiv)),2) > 0)
+    grp_proc_info_in.beapp_ica_10_20_chans_lbls = cellfun(@(x) x(~isnan(x)),net_10_20_equiv,'UniformOutput',false);
+    grp_proc_info_in.beapp_ica_run_all_10_20 = 0;
+end
+% set name_selected_10_20_chans_lbls, will be equivalent to grp_proc_info.name_10_20_elecs if all 10-20 channels are present in net 
+grp_proc_info_in.name_selected_10_20_chans_lbls = cellfun(@(x) grp_proc_info_in.name_10_20_elecs(logical(~isnan(x))),net_10_20_equiv,'UniformOutput',false);

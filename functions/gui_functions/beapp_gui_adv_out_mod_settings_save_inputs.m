@@ -34,8 +34,8 @@ function grp_proc_info = beapp_gui_adv_out_mod_settings_save_inputs(current_sub_
         case 'itpc'
             grp_proc_info.beapp_itpc_xlsout_mx_on = resstruct_adv_out_mod_settings.itpc_xls_max_on;
             grp_proc_info.beapp_itpc_xlsout_av_on = resstruct_adv_out_mod_settings.itpc_xls_mean_on;
-            grp_proc_info.beapp_itpc_params.use_common_baseline = resstruct_adv_out_mod_settings.itpc_comm_base_on;
-            grp_proc_info.beapp_itpc_params.common_baseline_idx= str2double(resstruct_adv_out_mod_settings.itpc_comm_base_idx);
+            grp_proc_info.beapp_itpc_ersp_params.use_common_baseline = resstruct_adv_out_mod_settings.itpc_comm_base_on;
+            grp_proc_info.beapp_itpc_ersp_params.common_baseline_idx= str2double(resstruct_adv_out_mod_settings.itpc_comm_base_idx);
 
 % HS add PAC module 11/6/2023
         case 'pac'

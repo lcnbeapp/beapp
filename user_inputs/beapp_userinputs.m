@@ -161,6 +161,7 @@ grp_proc_info.beapp_rsamp_srate = 250; %target sampling rate for resampling, if 
 % ICA SPECIFICATIONS
 grp_proc_info.beapp_ica_type  = 2; % 1 = ICA with MARA, 2 = HAPPE, 3 = only ICA 
 grp_proc_info.beapp_toggle_mods{'ica','Module_Xls_Out_On'} = 1; % flag that toggles ICA xls report option on
+grp_proc_info.override_happe_av_reference = 0; %default 0, if turned on, happe will instead use the kind of referencing set in the reference module of the user inputs
 
 %choose whether to run all 10_20 electrodes (if running HAPPE or MARA,
 %recommended to use all
